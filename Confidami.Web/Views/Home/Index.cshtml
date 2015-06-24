@@ -1,0 +1,38 @@
+﻿@model Confidami.Web.ViewModel.PostViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="row">
+    <form action="@Url.Action("AddPost", "Home")" method="POST">
+        <p> Aggiungi post</p>
+        <p>
+            <label form="">Titolo</label>
+        </p>
+        <p><input type="text" id="title" name="title" /></p>
+        <p>
+            <label for="body">Messaggio</label>
+        </p>
+        <p>  <textarea id="body" rows="5" cols="40" name="body"></textarea></p>
+
+        <input type="submit" class="btn-default" value="Aggiungi">
+    </form>
+</div>
+
+<p> Lista</p>
+@foreach (var post in Model.Posts)
+{
+    <div class="row">
+
+            <p>
+                <label form="">Titolo</label>
+            </p>
+            <p><input type="text" id="title" name="title" disabled="" value="@post.Title"/></p>
+            <p>
+                <label for="body">Messaggio</label>
+            </p>
+            <p>  <textarea id="body" rows="5" cols="40" name="body" disabled="" placeholder="@post.Body"></textarea></p>
+    </div>
+}
