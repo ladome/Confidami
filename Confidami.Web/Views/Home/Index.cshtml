@@ -5,20 +5,30 @@
 }
 
 
-<div class="row">
-    <form action="@Url.Action("AddPost", "Home")" method="POST">
-        <p> Aggiungi post</p>
-        <p>
-            <label form="">Titolo</label>
-        </p>
-        <p><input type="text" id="title" name="title" /></p>
-        <p>
-            <label for="body">Messaggio</label>
-        </p>
-        <p>  <textarea id="body" rows="5" cols="40" name="body"></textarea></p>
+<div class="row">   
+    <div class="col-md-12">
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <form role="form" action="@Url.Action("AddPost", "Home")" method="POST">
+                        <div class="form-group has-feedback" id="title">
+                            <label class="control-label" for="title">Titolo</label>
+                            <input class="form-control" id="title" name="title" placeholder="Titolo"
+                                   type="text">
+                        </div>
+                        <div class="form-group" id="body">
+                            <label class="control-label" for="body">
+                                Messaggio
+                                <br>
+                            </label>
+                            <input class="form-control" id="body" name="body" placeholder="Messaggio"
+                                   type="text">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                </div>
+            </div>
+    </div>
 
-        <input type="submit" class="btn-default" value="Aggiungi">
-    </form>
 </div>
 
 <p> Lista</p>
