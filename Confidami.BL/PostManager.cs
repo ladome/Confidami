@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Confidami.Common;
@@ -12,19 +13,21 @@ namespace Confidami.BL
 {
     public class PostManager
     {
-        private readonly PostRepository _repo;
+        private readonly PostRepository _postRepository;
+        private readonly CategoryRepository _categoryRepository;
 
-        public PostManager() : this(new PostRepository()) { }
+        public PostManager() : this(new PostRepository(), new CategoryRepository()) { }
 
 
-        public PostManager(PostRepository repo)
+        public PostManager(PostRepository postRepository, CategoryRepository categoryRepository)
         {
-            _repo = repo;
+            _postRepository = postRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public BaseResponse AddPost(Post post)
         {
-            _repo.InserPost(post);
+            _postRepository.InserPost(post);
             return new BaseResponse();
         }
 
@@ -55,7 +58,12 @@ namespace Confidami.BL
 
         public IEnumerable<Post> GetAllPost()
         {
-            return _repo.GetAllPosts();
+            return _postRepository.GetAllPosts();
+        }
+
+        public IEnumerable<Category> GetAllCategories()
+        {
+            return _categoryRepository.GetCategories();
         }
 
 

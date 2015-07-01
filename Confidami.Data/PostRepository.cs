@@ -33,4 +33,15 @@ namespace Confidami.Data
             }
         }
     }
+
+    public class CategoryRepository
+    {
+        public IEnumerable<Category> GetCategories()
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<Category>(QueryStore.AllCategory);
+            }
+        }
+    }
 }

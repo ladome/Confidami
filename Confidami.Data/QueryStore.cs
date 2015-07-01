@@ -29,6 +29,11 @@ namespace Confidami.Data
           ,[TimestampApprovation]
            FROM [tblPosts]  p
            inner join tblpoststatus st on p.idStatus = st.idstatus   
-           where deleted = 0";
+           where deleted = 0 order by Timestamp desc";
+
+        public const string AllCategory =
+            @"SELECT [IdCategory],[Description]
+            FROM [tblCategory]";
+
     }
 }

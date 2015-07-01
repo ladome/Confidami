@@ -1,10 +1,12 @@
-﻿@model Confidami.Web.ViewModel.PostViewModel
+﻿@using System.Web.UI.WebControls
+@model Confidami.Web.ViewModel.PostViewModel
 
 @{
     ViewBag.Title = "Home Page";
 }
 
-
+@Html.ValidationSummary(false)
+<h2>Inserisci abuso</h2>
 <div class="row">   
     <div class="col-md-12">
             <div class="panel-body">
@@ -23,6 +25,18 @@
                             <input class="form-control" id="body" name="body" placeholder="Messaggio"
                                    type="text">
                         </div>
+                        <div class="form-group" id="category">
+                            <label class="control-label" for="body">
+                                Categoria
+                                <br>
+                            </label>
+                            <select name="idcategory">
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.IdCategory">@cat.Description</option>
+                                }
+                            </select>
+                        </div>
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                 </div>
@@ -31,18 +45,23 @@
 
 </div>
 
-<p> Lista</p>
-@foreach (var post in Model.Posts)
-{
-    <div class="row">
 
-            <p>
-                <label form="">Titolo</label>
-            </p>
-            <p><input type="text" id="title" name="title" disabled="" value="@post.Title"/></p>
-            <p>
-                <label for="body">Messaggio</label>
-            </p>
-            <p>  <textarea id="body" rows="5" cols="40" name="body" disabled="" placeholder="@post.Body"></textarea></p>
-    </div>
+<h2>Lista</h2>
+@if (Model != null)
+{
+foreach (var post in Model.Posts)
+ {
+     <div class="row">
+         <div class="col-md-12">
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <label>@post.Title</label>
+                 </div>
+                 <div class="panel-body">
+                     <textarea>@post.Body</textarea>
+                 </div>
+             </div>
+         </div>
+     </div>
+ }
 }

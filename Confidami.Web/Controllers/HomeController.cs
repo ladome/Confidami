@@ -12,13 +12,16 @@ namespace Confidami.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly PostManager _postManager;
 
+        public HomeController()
+        {
+            _postManager = new PostManager();
+        }
 
         public ActionResult Index()
         {
-            var res = new PostManager().GetAllPost();
-            var vm = res.Select(x => new PostViewModel() {Body = x.Body, Title = x.Title}).ToList();
-            return View(new PostViewModel() { Posts = vm });
+            return View(FillPostViewMoldel());
         }
 
         public ActionResult About()
@@ -37,6 +40,8 @@ namespace Confidami.Web.Controllers
 
         public ActionResult AddPost(PostViewModel post)
         {
+            if (!ModelState.IsValid)
+                return View("Index",FillPostViewMoldel());
             new PostManager().AddPost(new Post()
             {
                 Body = post.Body,
@@ -48,6 +53,15 @@ namespace Confidami.Web.Controllers
                 SlugUrl = ""
             });
             return Redirect("Index");
+        }
+
+
+        private PostViewModel FillPostViewMoldel()
+        {
+            var res = _postManager.GetAllPost();
+            var posts = res.Select(x => new PostViewModel() { Body = x.Body, Title = x.Title }).ToList();
+            var categories = _postManager.GetAllCategories();
+            return new PostViewModel() {Posts = posts, Categories = categories};
         }
 
     }
