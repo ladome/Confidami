@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using Confidami.BL.Mapper;
+using Confidami.Common;
+using Confidami.Common.Utility;
 using Confidami.Data;
 using Confidami.Model;
 
@@ -16,26 +13,38 @@ namespace Confidami.BL
     {
         private readonly PostRepository _postRepository;
         private readonly CategoryRepository _categoryRepository;
+        private readonly FileManager _fileManager;
 
-        public PostManager() : this(new PostRepository(), new CategoryRepository()) { }
+        public PostManager() : this(new PostRepository(), new CategoryRepository(),new FileManager())
+        {
+        }
 
 
-        public PostManager(PostRepository postRepository, CategoryRepository categoryRepository)
+        public PostManager(PostRepository postRepository, CategoryRepository categoryRepository, FileManager fileManager)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _fileManager = fileManager;
         }
 
         public BaseResponse AddPost(Post post)
         {
-            var res = _postRepository.InserPost(post);
-            return new BaseResponse() {Success = res, Message = res ? "Post inserito" : "Post non inserito"};
+            bool res = true;
+
+            if (!post.HasAttachments)
+                res = _postRepository.InserPost(post);
+            else
+            {
+                post.Attachments.ForEach(x=> _fileManager.UploadFileInDefaultFolder(x.InputStream,x.FileName,x.ContentType,x.ContentLenght));
+            }
+
+            return new BaseResponse {Success = res, Message = res ? "Post inserito" : "Post non inserito"};
         }
 
         public BaseResponse ApprovePost(long idPost)
         {
-            var res = _postRepository.ChangePostStatus(idPost, PostStatus.Approved);
-            return new BaseResponse()
+            bool res = _postRepository.ChangePostStatus(idPost, PostStatus.Approved);
+            return new BaseResponse
             {
                 Success = res,
                 Message = res ? "Post status cambiato" : "Post status non cambiato"
@@ -44,8 +53,8 @@ namespace Confidami.BL
 
         public BaseResponse RejectPost(long idPost)
         {
-            var res = _postRepository.ChangePostStatus(idPost, PostStatus.Rejected);
-            return new BaseResponse()
+            bool res = _postRepository.ChangePostStatus(idPost, PostStatus.Rejected);
+            return new BaseResponse
             {
                 Success = res,
                 Message = res ? "Post status cambiato" : "Post status non cambiato"
@@ -54,8 +63,8 @@ namespace Confidami.BL
 
         public BaseResponse OnApprovationPost(long idPost)
         {
-            var res = _postRepository.ChangePostStatus(idPost, PostStatus.OnApprovation);
-            return new BaseResponse()
+            bool res = _postRepository.ChangePostStatus(idPost, PostStatus.OnApprovation);
+            return new BaseResponse
             {
                 Success = res,
                 Message = res ? "Post status cambiato" : "Post status non cambiato"
@@ -64,7 +73,7 @@ namespace Confidami.BL
 
         public BaseResponse DeletePost(long idPost)
         {
-            return new BaseResponse();            
+            return new BaseResponse();
         }
 
         public Post GetPost(long idpost)
@@ -84,12 +93,12 @@ namespace Confidami.BL
 
         public IEnumerable<Post> GetPostByCategory(int idCategory)
         {
-            return new List<Post>();            
+            return new List<Post>();
         }
 
         public IEnumerable<Post> GetPostByStatus(PostStatus status)
         {
-           return PostMapper.Map( _postRepository.GetPostByStatus((int)status));
+            return PostMapper.Map(_postRepository.GetPostByStatus((int) status));
         }
 
         public IEnumerable<Post> GetAllPost()
@@ -101,8 +110,29 @@ namespace Confidami.BL
         {
             return _categoryRepository.GetCategories();
         }
-
-
     }
 
+
+    public class FileManager
+    {
+        public void UploadFileInDefaultFolder(Stream file, string fileName, string contentType, int contentLenght)
+        {
+            file.CannotBeNull("stream");
+            fileName.CannotBeNull("fileName");
+            string defaultFolfer = Config.UploadsFolder;
+            var path = Path.IsPathRooted(defaultFolfer)? defaultFolfer: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer);
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var buffer = new byte[contentLenght];
+            file.Read(buffer,0,contentLenght);
+            using (var fileStream = new FileStream(Path.Combine(path,fileName),FileMode.Create))
+            {
+              fileStream.Write(buffer,0,contentLenght);
+            }
+            }
+    }
 }

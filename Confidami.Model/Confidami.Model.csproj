@@ -42,6 +42,7 @@
     <Compile Include="BaseResponse.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Post.cs" />
+    <Compile Include="PostStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -7,12 +7,24 @@
     ViewBag.Title = "Home Page";
 }
 
+
+<style>
+    #dropZone {
+        background: gray;
+        border: black dashed 3px;
+        width: 200px;
+        padding: 50px;
+        text-align: center;
+        color: white;
+    }
+</style>
 @Html.ValidationSummary(false)
 <h2>Inserisci abuso</h2>
 <div class="row">
     <div class="col-md-12">
         <div class="panel-body">
-            <form role="form" action="@Url.Action("AddPost", "Home")" method="POST">
+
+            <form role="form" action="@Url.Action("AddPost", "Home")" class="dropzone" id="formUpload" method="POST" enctype="multipart/form-data">
                 <div class="form-group has-feedback" id="title">
                     <label class="control-label" for="title">Titolo</label>
                     <input class="form-control" id="title" name="title" placeholder="Titolo"
@@ -23,7 +35,6 @@
                         Messaggio
                         <br>
                     </label>
-
                     <input class="form-control" id="body" name="body" placeholder="Messaggio"
                            type="text">
                 </div>
@@ -39,20 +50,18 @@
                         }
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Aggiungi</button>
             </form>
+            <button type="submit" class="btn btn-primary" id="submit-all">Aggiungi</button>
+
         </div>
     </div>
-
 </div>
-
-
 <h2>Lista</h2>
 @if (Model != null)
 {
     foreach (var post in Model.Posts)
     {
-        if(Model.IsAdmin)
+        if (Model.IsAdmin)
         {
             <form role="form" action="@Url.Action(ActionsStore.Approve, ControllerStore.Post)" method="POST">
                 <div class="row">
@@ -95,4 +104,37 @@
             </div>
         }
     }
+}
+@section scripts {
+    <script type="text/javascript">
+
+        Dropzone.options.formUpload = {
+
+            //prevents Dropzone from uploading dropped files immediately
+            autoProcessQueue: false,
+            maxFilesize: 3,
+            addRemoveLinks: true,
+            autoDiscover: false,
+
+            init: function () {
+                var submitButton = document.querySelector("#submit-all");
+                var myDropzone = this; //closure
+
+                submitButton.addEventListener("click", function () {
+
+                    if (myDropzone.getQueuedFiles().length > 0) {
+                        myDropzone.processQueue();
+                    } else {
+                        $("#formUpload").submit();
+                    }
+                    //tell Dropzone to process all queued files
+                    myDropzone.processQueue();
+
+
+                });
+
+            }
+        };
+
+    </script>
 }

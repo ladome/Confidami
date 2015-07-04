@@ -1,10 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Confidami.Model
 {
     public class Post
     {
-        
+        public Post()
+        {
+            Attachments = new List<PostAttachments>();
+        }
+
         public int IdPost { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
@@ -14,13 +21,16 @@ namespace Confidami.Model
         public string StatusDescription { get; set; }
         public DateTime TimeStamp { get; set; }
         public DateTime TimeStampApprovation { get; set; }
+
+        public List<PostAttachments> Attachments { get; set; }
+        public bool HasAttachments { get { return Attachments.Any(); } }
     }
 
-    public enum PostStatus
+    public class PostAttachments
     {
-        OnApprovation = 0,
-        Approved = 1,
-        Rejected = 2
+        public Stream InputStream { get; set; }
+        public string ContentType { get; set; }
+        public int ContentLenght { get; set; }
+        public string FileName { get; set; }
     }
-
 }
