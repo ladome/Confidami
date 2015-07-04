@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbUtilities.cs" />
+    <Compile Include="Entities\PostDb.cs" />
     <Compile Include="PostRepository.cs" />
     <Compile Include="QueryStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +56,10 @@
     <ProjectReference Include="..\Confidami.Common\Confidami.Common.csproj">
       <Project>{886A0AA8-1C5F-4E8D-8B75-B9148A243786}</Project>
       <Name>Confidami.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Confidami.Model\Confidami.Model.csproj">
+      <Project>{1C73A697-339E-4067-A0C5-67EE5354EA21}</Project>
+      <Name>Confidami.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

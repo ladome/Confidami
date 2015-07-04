@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-using System.Web.UI;
 using Confidami.BL;
-using Confidami.Common;
+using Confidami.Model;
 using Confidami.Web.ViewModel;
 
 namespace Confidami.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly PostManager _postManager;
 
@@ -21,6 +17,7 @@ namespace Confidami.Web.Controllers
 
         public ActionResult Index()
         {
+            TempData["from"] = Request.Url;
             return View(FillPostViewMoldel());
         }
 
@@ -59,9 +56,9 @@ namespace Confidami.Web.Controllers
         private PostViewModel FillPostViewMoldel()
         {
             var res = _postManager.GetAllPost();
-            var posts = res.Select(x => new PostViewModel() { Body = x.Body, Title = x.Title }).ToList();
+            var posts = res.Select(x => new PostViewModelBase(){ Body = x.Body, Title = x.Title, CategoryPost =x.Category.Description,IdPost = x.IdPost}).ToList();
             var categories = _postManager.GetAllCategories();
-            return new PostViewModel() {Posts = posts, Categories = categories};
+            return new PostViewModel() { Posts = posts, Categories = categories, IsAdmin = IsAdmin,ReturnUrl = Request.RawUrl};
         }
 
     }

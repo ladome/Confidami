@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mapper\PostMapper.cs" />
     <Compile Include="PostManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -51,6 +52,10 @@
     <ProjectReference Include="..\Confidami.Data\Confidami.Data.csproj">
       <Project>{549E99E6-7519-4B40-8D37-3A0B38222151}</Project>
       <Name>Confidami.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Confidami.Model\Confidami.Model.csproj">
+      <Project>{1C73A697-339E-4067-A0C5-67EE5354EA21}</Project>
+      <Name>Confidami.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

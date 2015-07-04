@@ -6,8 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Confidami.Common;
+using Confidami.BL.Mapper;
 using Confidami.Data;
+using Confidami.Model;
 
 namespace Confidami.BL
 {
@@ -27,8 +28,38 @@ namespace Confidami.BL
 
         public BaseResponse AddPost(Post post)
         {
-            _postRepository.InserPost(post);
-            return new BaseResponse();
+            var res = _postRepository.InserPost(post);
+            return new BaseResponse() {Success = res, Message = res ? "Post inserito" : "Post non inserito"};
+        }
+
+        public BaseResponse ApprovePost(long idPost)
+        {
+            var res = _postRepository.ChangePostStatus(idPost, PostStatus.Approved);
+            return new BaseResponse()
+            {
+                Success = res,
+                Message = res ? "Post status cambiato" : "Post status non cambiato"
+            };
+        }
+
+        public BaseResponse RejectPost(long idPost)
+        {
+            var res = _postRepository.ChangePostStatus(idPost, PostStatus.Rejected);
+            return new BaseResponse()
+            {
+                Success = res,
+                Message = res ? "Post status cambiato" : "Post status non cambiato"
+            };
+        }
+
+        public BaseResponse OnApprovationPost(long idPost)
+        {
+            var res = _postRepository.ChangePostStatus(idPost, PostStatus.OnApprovation);
+            return new BaseResponse()
+            {
+                Success = res,
+                Message = res ? "Post status cambiato" : "Post status non cambiato"
+            };
         }
 
         public BaseResponse DeletePost(long idPost)
@@ -56,9 +87,14 @@ namespace Confidami.BL
             return new List<Post>();            
         }
 
+        public IEnumerable<Post> GetPostByStatus(PostStatus status)
+        {
+           return PostMapper.Map( _postRepository.GetPostByStatus((int)status));
+        }
+
         public IEnumerable<Post> GetAllPost()
         {
-            return _postRepository.GetAllPosts();
+            return PostMapper.Map(_postRepository.GetAllPosts());
         }
 
         public IEnumerable<Category> GetAllCategories()
@@ -68,4 +104,5 @@ namespace Confidami.BL
 
 
     }
+
 }

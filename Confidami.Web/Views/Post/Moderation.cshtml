@@ -1,0 +1,34 @@
+﻿@using Confidami.Common
+@model Confidami.Web.ViewModel.ModerationViewModel
+
+
+
+<h2>Lista</h2>
+@if (Model != null)
+{
+    foreach (var post in Model.Posts)
+    {
+        <form role="form" action="@Url.Action(ActionsStore.Approve, ControllerStore.Post)" method="POST">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <label>Titolo: @post.Title</label>
+                            <br />
+                            <label>Categoria: @post.CategoryPost</label>
+                        </div>
+                        <div class="panel-body">
+                            <textarea>@post.Body</textarea>
+                        </div>
+                        <div class="panel-footer">
+                            <input type="hidden" value="@post.IdPost" name="idpost" />
+                            <input type="submit" class="btn btn-primary" value="Approve" name="action:Approve">
+                            <input type="submit" class="btn btn-primary" value="Reject" name="action:Reject">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    }
+}

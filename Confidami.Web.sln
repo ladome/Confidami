@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Confidami.Data", "Confidami
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Confidami.Common", "Confidami.Common\Confidami.Common.csproj", "{886A0AA8-1C5F-4E8D-8B75-B9148A243786}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Confidami.Model", "Confidami.Model\Confidami.Model.csproj", "{1C73A697-339E-4067-A0C5-67EE5354EA21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{886A0AA8-1C5F-4E8D-8B75-B9148A243786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{886A0AA8-1C5F-4E8D-8B75-B9148A243786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{886A0AA8-1C5F-4E8D-8B75-B9148A243786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C73A697-339E-4067-A0C5-67EE5354EA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C73A697-339E-4067-A0C5-67EE5354EA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C73A697-339E-4067-A0C5-67EE5354EA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C73A697-339E-4067-A0C5-67EE5354EA21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

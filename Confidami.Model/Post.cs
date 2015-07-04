@@ -1,6 +1,6 @@
 using System;
 
-namespace Confidami.Common
+namespace Confidami.Model
 {
     public class Post
     {
@@ -11,7 +11,7 @@ namespace Confidami.Common
         public Category Category { get; set; }
         public string SlugUrl { get; set; }
         public PostStatus Status { get; set; }
-        public string StatusDescriprion { get; set; }
+        public string StatusDescription { get; set; }
         public DateTime TimeStamp { get; set; }
         public DateTime TimeStampApprovation { get; set; }
     }

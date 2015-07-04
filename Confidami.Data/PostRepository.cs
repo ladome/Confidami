@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Confidami.Common;
+using Confidami.Data.Entities;
+using Confidami.Model;
 using Dapper;
 
 namespace Confidami.Data
@@ -20,16 +21,39 @@ namespace Confidami.Data
                         idCategory = post.Category.IdCategory,
                         title = post.Title,
                         body = post.Body,
-                        slugUrl = post.SlugUrl
+                        slugUrl = post.SlugUrl,
+                        timestamp = DateTime.Now
                     }) > 0;
             }
         }
 
-        public IEnumerable<Post> GetAllPosts()
+        public IEnumerable<PostDb> GetAllPosts()
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<Post>(QueryStore.AllPosts);
+                return conn.Query<PostDb>(QueryStore.PostByStatus, new { idStatus = PostStatus.Approved });
+            }
+        }
+
+        public IEnumerable<PostDb> GetPostByStatus(int status)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<PostDb>(QueryStore.PostByStatus, new { idStatus = status});
+            }
+        }
+
+        public bool ChangePostStatus(long idPost, PostStatus status)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Execute(QueryStore.SetPostStatus,
+                    new
+                    {
+                        idPost = idPost,
+                        idStatus = (int) status,
+                        timeStamp = DateTime.Now
+                    }) > 0;
             }
         }
     }

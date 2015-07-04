@@ -1,4 +1,4 @@
-namespace Confidami.Common
+namespace Confidami.Model
 {
     public class Category
     {
