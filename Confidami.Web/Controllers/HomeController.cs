@@ -67,7 +67,7 @@ namespace Confidami.Web.Controllers
             //    ModelState.AddModelError("files", "File not loaded correctly");
             //    return View("Index", FillPostViewMoldel());
             //}
-            return Redirect("Index");
+            return RedirectToAction("Index");
         }
 
 

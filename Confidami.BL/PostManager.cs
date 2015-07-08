@@ -29,16 +29,18 @@ namespace Confidami.BL
 
         public BaseResponse AddPost(Post post)
         {
-            bool res = true;
+            int res = 0;
 
             if (!post.HasAttachments)
                 res = _postRepository.InserPost(post);
             else
             {
-                post.Attachments.ForEach(x=> _fileManager.UploadFileInDefaultFolder(x.InputStream,x.FileName,x.ContentType,x.ContentLenght));
+                res = _postRepository.InserPostWithAttachment(post);
+                if(res > 0) post.Attachments.ForEach(x=> _fileManager.UploadFileInDefaultFolder(x.InputStream,x.FileName,x.ContentType,x.ContentLenght));
             }
 
-            return new BaseResponse {Success = res, Message = res ? "Post inserito" : "Post non inserito"};
+            bool success = res > 0;
+            return new BaseResponse { Success = success, Message = success ? "Post inserito" : "Post non inserito" };
         }
 
         public BaseResponse ApprovePost(long idPost)
@@ -120,7 +122,7 @@ namespace Confidami.BL
             file.CannotBeNull("stream");
             fileName.CannotBeNull("fileName");
             string defaultFolfer = Config.UploadsFolder;
-            var path = Path.IsPathRooted(defaultFolfer)? defaultFolfer: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer);
+            var path = Path.IsPathRooted(defaultFolfer)? defaultFolfer: Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer));
 
             if (!Directory.Exists(path))
             {

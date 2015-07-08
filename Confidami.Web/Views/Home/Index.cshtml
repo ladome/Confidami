@@ -8,23 +8,13 @@
 }
 
 
-<style>
-    #dropZone {
-        background: gray;
-        border: black dashed 3px;
-        width: 200px;
-        padding: 50px;
-        text-align: center;
-        color: white;
-    }
-</style>
-@Html.ValidationSummary(false)
 <h2>Inserisci abuso</h2>
 <div class="row">
     <div class="col-md-12">
         <div class="panel-body">
 
-            <form role="form" action="@Url.Action("AddPost", "Home")" class="dropzone" id="formUpload" method="POST" enctype="multipart/form-data">
+            <form role="form" action="@Url.Action("AddPost", "Home")" class="dropzone" id="formUpload" method="POST" >
+                @Html.ValidationSummary(false)
                 <div class="form-group has-feedback" id="title">
                     <label class="control-label" for="title">Titolo</label>
                     <input class="form-control" id="title" name="title" placeholder="Titolo"
@@ -112,27 +102,30 @@
 
             //prevents Dropzone from uploading dropped files immediately
             autoProcessQueue: false,
-            maxFilesize: 3,
-            addRemoveLinks: true,
-            autoDiscover: false,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 4,
+            maxFilesize : 2, 
+            autoDiscover:false,
+
 
             init: function () {
                 var submitButton = document.querySelector("#submit-all");
                 var myDropzone = this; //closure
 
-                submitButton.addEventListener("click", function () {
-
+                submitButton.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     if (myDropzone.getQueuedFiles().length > 0) {
+                        // queue processing
                         myDropzone.processQueue();
                     } else {
-                        $("#formUpload").submit();
+                        // $("#formUpload").submit();
                     }
                     //tell Dropzone to process all queued files
-                    myDropzone.processQueue();
 
 
                 });
-
             }
         };
 

@@ -15,7 +15,7 @@ namespace Confidami.Data
            ,[Body]
            ,[SlugUrl]
            ,[Timestamp])
-            VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp)";
+            VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp);";
 
         public const string AllPosts =
            @"SELECT [IdPost]
@@ -37,6 +37,15 @@ namespace Confidami.Data
         public const string AllCategory =
             @"SELECT [IdCategory],[Description]
             FROM [tblCategory]";
+
+        public const string LastInsertedId =
+            "SELECT cast(SCOPE_IDENTITY() as int) as id;";
+
+        public const string InsertPostAttachment =
+            @"INSERT INTO [tblPostsAttachments]
+           ([IdPost]
+           ,[FileName])
+            VALUES (@idPost,@fileName)";
 
         public const string PostByStatus =
            @"SELECT [IdPost]
