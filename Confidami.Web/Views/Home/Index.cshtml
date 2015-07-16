@@ -13,7 +13,7 @@
     <div class="col-md-12">
         <div class="panel-body">
 
-            <form role="form" action="@Url.Action("AddPost", "Home")" class="dropzone" id="formUpload" method="POST" >
+            <form role="form" action="@Url.Action("AddPost", "Home")" method="POST">
                 @Html.ValidationSummary(false)
                 <div class="form-group has-feedback" id="title">
                     <label class="control-label" for="title">Titolo</label>
@@ -40,9 +40,16 @@
                         }
                     </select>
                 </div>
-            </form>
-            <button type="submit" class="btn btn-primary" id="submit-all">Aggiungi</button>
+                <input type="submit" value="Salva" class="btn-default" action=@Url.Action(ActionsStore.AddPost,ControllerStore.Home)>
 
+            </form>
+            <form action=@Url.Action(ActionsStore.Upload,ControllerStore.Home) method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm">
+                <div class="fallback">
+                    <input name="file" type="file" multiple />
+                    <input type="submit" value="Upload" />
+                </div>
+            </form>
+            <br/>
         </div>
     </div>
 </div>
@@ -96,38 +103,73 @@
     }
 }
 @section scripts {
-    <script type="text/javascript">
+    <script type="text/javascript">        
 
-        Dropzone.options.formUpload = {
+        Dropzone.options.dropzoneForm = {
+            maxFiles: 3,
+            init: function() {
 
-            //prevents Dropzone from uploading dropped files immediately
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            parallelUploads: 100,
-            maxFiles: 4,
-            maxFilesize : 2, 
-            autoDiscover:false,
+                var thisDropzone = this;
+                $.getJSON('/Home/GetTempAttachMents', function(data) { // get the json response
 
+                    $.each(data, function(key, value) { //loop through it
 
-            init: function () {
-                var submitButton = document.querySelector("#submit-all");
-                var myDropzone = this; //closure
+                        @{
+                            var path = @Url.Content("~/Uploads/Temp/" + ViewBag.CurrentUserId + "/");
+                        }
+                        var mockFile = { name: value.Name, size: value.Size }; // here we get the file name and size as response 
 
-                submitButton.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (myDropzone.getQueuedFiles().length > 0) {
-                        // queue processing
-                        myDropzone.processQueue();
-                    } else {
-                        // $("#formUpload").submit();
-                    }
-                    //tell Dropzone to process all queued files
+                        thisDropzone.options.addedfile.call(thisDropzone, mockFile);
 
+                        var extension = value.Name.substr((value.Name.lastIndexOf('.') + 1));
+                        if (extension == 'jpg' ||
+                            extension == 'jpeg' ||
+                            extension == 'png' ||
+                            extension == 'gif') {
+                            thisDropzone.options.thumbnail.call(thisDropzone, mockFile, '@(path)' + value.Name); //uploadsfolder is the folder where you have all those uploaded files
+                        }
+                        
+                        thisDropzone.options.maxFiles = thisDropzone.options.maxFiles - 1;
 
+                    });
+
+                });
+
+                this.on("complete", function(data) {
+                    //var res = eval('(' + data.xhr.responseText + ')');
+                    var res = JSON.parse(data.xhr.responseText);
                 });
             }
         };
+
+    //Dropzone.options.formUpload = {
+
+        //    //prevents Dropzone from uploading dropped files immediately
+        //    autoProcessQueue: false,
+        //    uploadMultiple: true,
+        //    parallelUploads: 100,
+        //    maxFiles: 4,
+        //    maxFilesize : 2, 
+
+        //    init: function () {
+        //        var submitButton = document.querySelector("#submit-all");
+        //        var myDropzone = this; //closure
+
+        //        submitButton.addEventListener("click", function(e) {
+        //            e.preventDefault();
+        //            e.stopPropagation();
+        //            if (myDropzone.getQueuedFiles().length > 0) {
+        //                // queue processing
+        //                myDropzone.processQueue();
+        //            } else {
+        //                // $("#formUpload").submit();
+        //            }
+        //            //tell Dropzone to process all queued files
+
+
+        //        });
+        //    }
+        //};
 
     </script>
 }

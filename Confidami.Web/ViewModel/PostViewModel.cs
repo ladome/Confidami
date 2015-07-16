@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Confidami.Model;
+using Newtonsoft.Json;
 
 namespace Confidami.Web.ViewModel
 {
@@ -40,6 +41,13 @@ namespace Confidami.Web.ViewModel
 
         public bool IsAdmin { get; set; }
         public string ReturnUrl { get; set; }
+        //public string CurrentUser { get; set; }
 
+    }
+
+    public class TempAttachMentViewModel
+    {
+        public string Name { get; set; }
+        public long Size { get; set; }
     }
 }

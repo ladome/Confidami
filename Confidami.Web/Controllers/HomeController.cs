@@ -3,9 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Confidami.BL;
+using Confidami.Common.Utility;
 using Confidami.Model;
 using Confidami.Web.ViewModel;
+using Microsoft.Ajax.Utilities;
 
 namespace Confidami.Web.Controllers
 {
@@ -21,6 +24,7 @@ namespace Confidami.Web.Controllers
         public ActionResult Index()
         {
             TempData["from"] = Request.Url;
+            ViewBag.CurrentUser = CurrentUserId;
             return View(FillPostViewMoldel());
         }
 
@@ -43,25 +47,17 @@ namespace Confidami.Web.Controllers
             if (!ModelState.IsValid)
                 return View("Index",FillPostViewMoldel());
 
-            var post = new Post();
-            post.Body = postVm.Body;
-            post.Category = new Category() {IdCategory = postVm.IdCategory};
-            post.Title = postVm.Title;
-            post.SlugUrl = "";
-
-            if (Request.Files.Count > 0)
+            var post = new Post
             {
-                foreach (string file in Request.Files)
-                {
-                    var httpFile = Request.Files[file];
-                    if (httpFile != null)
-                    {
-                        post.Attachments.Add(new PostAttachments() {FileName = httpFile.FileName,InputStream = httpFile.InputStream,ContentType = httpFile.ContentType,ContentLenght =httpFile.ContentLength});
-                    }
-                }
-            }
-            PostManager.AddPost(post);
+                Body = postVm.Body,
+                Category = new Category {IdCategory = postVm.IdCategory},
+                Title = postVm.Title,
+                SlugUrl = "",
+                UserId = CurrentUserId
+            };
 
+            PostManager.AddPost(post);
+            
             //if (!HandleFileUpload(Request.Files))
             //{
             //    ModelState.AddModelError("files", "File not loaded correctly");
@@ -71,46 +67,18 @@ namespace Confidami.Web.Controllers
         }
 
 
-        private bool HandleFileUpload(HttpFileCollectionBase files)
+        public ActionResult Upload(HttpPostedFileWrapper file)
         {
-            var isSavedSuccessfully = true;
-            string fName = "";
-            try
-            {
-                foreach (string fileName in files)
-                {
-                    HttpPostedFileBase file = Request.Files[fileName];
-                    //Save file content goes here
-                    fName = file.FileName;
-                    if (file != null && file.ContentLength > 0)
-                    {
-
-                        var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\WallImages", Server.MapPath(@"\")));
-
-                        string pathString = System.IO.Path.Combine(originalDirectory.ToString(), "imagepath");
-
-                        var fileName1 = Path.GetFileName(file.FileName);
-
-                        bool isExists = System.IO.Directory.Exists(pathString);
-
-                        if (!isExists)
-                            System.IO.Directory.CreateDirectory(pathString);
-
-                        var path = string.Format("{0}\\{1}", pathString, file.FileName);
-                        file.SaveAs(path);
-
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                isSavedSuccessfully = false;
-            }
-
-            return isSavedSuccessfully;
+            file.CannotBeNull("file");
+            FileManager.UploadFileInTempFolder(file.InputStream, file.FileName,file.ContentType,file.ContentLength, CurrentUserId);
+            return Json(false);
         }
+
+        public JsonResult GetTempAttachMents()
+        {
+            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x=> new TempAttachMentViewModel(){Name = x.FileName,Size = x.Size}), JsonRequestBehavior.AllowGet);
+        }
+
 
         private PostViewModel FillPostViewMoldel()
         {

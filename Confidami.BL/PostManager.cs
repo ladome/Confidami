@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Confidami.BL.Mapper;
 using Confidami.Common;
+using Confidami.Common.Model;
 using Confidami.Common.Utility;
 using Confidami.Data;
 using Confidami.Model;
@@ -29,18 +32,30 @@ namespace Confidami.BL
 
         public BaseResponse AddPost(Post post)
         {
-            int res = 0;
+            post.CannotBeNull("post");
+
+            BuildAttachAttachments(post);
+            int res;
 
             if (!post.HasAttachments)
                 res = _postRepository.InserPost(post);
             else
             {
                 res = _postRepository.InserPostWithAttachment(post);
-                if(res > 0) post.Attachments.ForEach(x=> _fileManager.UploadFileInDefaultFolder(x.InputStream,x.FileName,x.ContentType,x.ContentLenght));
+                //if(res > 0) post.Attachments.ForEach(x=> _fileManager.UploadFileInDefaultFolder(x.InputStream,x.FileName,x.ContentType,x.ContentLenght));
             }
 
             bool success = res > 0;
             return new BaseResponse { Success = success, Message = success ? "Post inserito" : "Post non inserito" };
+        }
+
+        private void BuildAttachAttachments(Post post)
+        {
+            post.CannotBeNull("post");
+            var res =_fileManager.GetTempAttachMentsByUserId(post.UserId);
+            post.Attachments =
+                res.Select(x => new PostAttachments() {FileName = x.FileName, ContentType = x.ContentType, Size = x.Size}).ToList();
+
         }
 
         public BaseResponse ApprovePost(long idPost)
@@ -117,16 +132,59 @@ namespace Confidami.BL
 
     public class FileManager
     {
-        public void UploadFileInDefaultFolder(Stream file, string fileName, string contentType, int contentLenght)
+        private readonly FileRepository _fileRepository;
+
+        public FileManager()
+            : this(new FileRepository())
         {
-            file.CannotBeNull("stream");
+        }
+
+        private FileManager(FileRepository fileRepository)
+        {
+            _fileRepository = fileRepository;
+        }
+
+
+        public void UploadFileInTempFolder(Stream file, string fileName, string contentType, int contentLenght,string userId)
+        {
+            userId.CannotBeNull("userId");
+            fileName.CannotBeNull("filename");
+            file.CannotBeNull("file");
+
+            _fileRepository.InsertTempUpload(userId.ToString(), fileName,contentType,contentLenght);
+            UploadFileInFolder(file, fileName, contentType, contentLenght,true,userId);
+        }
+
+        public void MoveTempInFinalFolder(string source,string destination)
+        {
+            source.CannotBeNull("source");
+            source.CannotBeNull("destination");
+
+            //TODO
+            //MoveFileInFolder(source,destination);
+            //_fileRepository.DeleteInTempFile(folder);
+        }
+
+
+
+        public void UploadFileInFolder(Stream file, string fileName, string contentType, int contentLenght,bool isTmpFolder = false,string parentFolder =null)
+        {
+            file.CannotBeNull("file");
             fileName.CannotBeNull("fileName");
-            string defaultFolfer = Config.UploadsFolder;
+
+            string defaultFolfer = isTmpFolder ? Config.UploadsTempFolder : Config.UploadsFolder;
             var path = Path.IsPathRooted(defaultFolfer)? defaultFolfer: Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer));
 
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
+            }
+
+            var dir = new DirectoryInfo(path);
+
+            if (!string.IsNullOrEmpty(parentFolder))
+            {
+                path= dir.CreateSubdirectory(parentFolder).FullName;
             }
 
             var buffer = new byte[contentLenght];
@@ -135,6 +193,19 @@ namespace Confidami.BL
             {
               fileStream.Write(buffer,0,contentLenght);
             }
-            }
+         }
+
+
+        //public void MoveFileInFolder(string folder)
+        //{
+        //    string defaultFolfer = isTmpFolder ? Config.UploadsTempFolder : Config.UploadsFolder;
+        //    var path = Path.IsPathRooted(defaultFolfer) ? defaultFolfer : Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer));
+            
+        //}
+
+        public List<TempAttachMent> GetTempAttachMentsByUserId(string userId)
+        {
+            return _fileRepository.GetTempAttachmentsByUserId(userId).ToList();
+        }
     }
 }

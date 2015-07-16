@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Confidami.Data
 {
-    public class QueryStore
+    public class QueryPostStore
     {
         public const string InserPost = 
             @"INSERT INTO [dbo].[tblPosts]
@@ -68,5 +68,20 @@ namespace Confidami.Data
         public const string SetPostStatus =
            @"UPDATE tblPosts SET idStatus=@idStatus,timestampApprovation=@timestamp" +
            " WHERE idpost = @idPost";
+    }
+
+
+    public class QueryFileStore
+    {
+        public const string InsertUploadTemp =
+            "INSERT INTO [tblTempAttachments]" +
+            "([UserId] ,[FileName],[ContentType],[Size])" +
+            "VALUES (@userId,@filename,@contenttype,@size)";
+
+        public const string SelectUploadTempByUserId =
+            "select userid,filename,contenttype,size from tblTempAttachments where userid = @userid";
+
+        public const string DeleteInTempFolder =
+            "update tblTempAttachments set deleted=1 where userid=@userid;";
     }
 }

@@ -15,11 +15,14 @@ namespace Confidami.Common
     public class ControllerStore
     {
         public const string Post = "Post";
+        public const string Home = "Home";
     }
 
     public class ActionsStore
     {
+        public const string AddPost = "AddPost";
         public const string Moderation = "Modera";
         public const string Approve = "Approve";
+        public const string Upload = "Upload";
     }
 }

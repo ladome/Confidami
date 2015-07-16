@@ -12,6 +12,7 @@ namespace Confidami.Model
             Attachments = new List<PostAttachments>();
         }
 
+        public string UserId { get; set; }
         public int IdPost { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
@@ -28,9 +29,9 @@ namespace Confidami.Model
 
     public class PostAttachments
     {
-        public Stream InputStream { get; set; }
-        public string ContentType { get; set; }
-        public int ContentLenght { get; set; }
         public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public long Size { get; set; }
     }
+
 }

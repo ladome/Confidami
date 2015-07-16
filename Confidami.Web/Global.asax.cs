@@ -17,5 +17,25 @@ namespace Confidami.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            var a = 2;
+        }
+
+        protected void Session_End(object sender, EventArgs e)
+        {
+            var c = 3;
+        }
+        //void Session_End(object sender, EventArgs e)
+        //{
+        //    const string cookieName = "currentId";
+        //    var cookieItem = Request.Cookies[cookieName];
+
+        //    if (cookieItem == null) return;
+
+        //    cookieItem.Expires = DateTime.Now.AddDays(-1);
+        //    Response.SetCookie(cookieItem);
+        //}
     }
 }

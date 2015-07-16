@@ -8,5 +8,12 @@ namespace Confidami.Common
         {
             get { return ConfigurationManager.AppSettings["UploadsFolder"];}
         }
+
+        public static string UploadsTempFolder
+        {
+            get { return ConfigurationManager.AppSettings["UploadsTempFolder"]; }
+        }
+
+        
     }
 }

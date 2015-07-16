@@ -276,6 +276,10 @@
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Shared\Sidebar.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Uploads\Temp\6da5ad1b-2695-4a4e-a127-31ca156910a4\DotNet.Highcharts.Samples.zip" />
+    <Content Include="Uploads\Temp\6da5ad1b-2695-4a4e-a127-31ca156910a4\twbs-bootstrap-v3.3.2-86-g9e1e73f.zip" />
+    <Content Include="Uploads\Temp\f7c71993-0e5a-49b3-8939-fbf359091d06\SAC_n_5_28_01_2015.pdf" />
+    <Content Include="Uploads\Temp\f7c71993-0e5a-49b3-8939-fbf359091d06\tutorial scelta data.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
