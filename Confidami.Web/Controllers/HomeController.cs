@@ -14,79 +14,28 @@ namespace Confidami.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly PostManager _postManager;
-
-        public HomeController()
-        {
-            _postManager = new PostManager();
-        }
-
+      
         public ActionResult Index()
-        {
-            TempData["from"] = Request.Url;
-            ViewBag.CurrentUser = CurrentUserId;
-            return View(FillPostViewMoldel());
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
+        {            
             return View();
         }
 
+        [Route("chi-siamo")]
+        public ActionResult About()
+        {            
+            ViewBag.Title = "Chi siamo.....";
+            return View();
+        }
+
+        [Route("contatti")]
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Title = "Contatti....";
 
             return View();
         }
 
-        public ActionResult AddPost(PostViewModel postVm)
-        {
-            if (!ModelState.IsValid)
-                return View("Index",FillPostViewMoldel());
-
-            var post = new Post
-            {
-                Body = postVm.Body,
-                Category = new Category {IdCategory = postVm.IdCategory},
-                Title = postVm.Title,
-                SlugUrl = "",
-                UserId = CurrentUserId
-            };
-
-            PostManager.AddPost(post);
-            
-            //if (!HandleFileUpload(Request.Files))
-            //{
-            //    ModelState.AddModelError("files", "File not loaded correctly");
-            //    return View("Index", FillPostViewMoldel());
-            //}
-            return RedirectToAction("Index");
-        }
-
-
-        public ActionResult Upload(HttpPostedFileWrapper file)
-        {
-            file.CannotBeNull("file");
-            FileManager.UploadFileInTempFolder(file.InputStream, file.FileName,file.ContentType,file.ContentLength, CurrentUserId);
-            return Json(false);
-        }
-
-        public JsonResult GetTempAttachMents()
-        {
-            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x=> new TempAttachMentViewModel(){Name = x.FileName,Size = x.Size}), JsonRequestBehavior.AllowGet);
-        }
-
-
-        private PostViewModel FillPostViewMoldel()
-        {
-            var res = _postManager.GetAllPost();
-            var posts = res.Select(x => new PostViewModelBase(){ Body = x.Body, Title = x.Title, CategoryPost =x.Category.Description,IdPost = x.IdPost}).ToList();
-            var categories = _postManager.GetAllCategories();
-            return new PostViewModel() { Posts = posts, Categories = categories, IsAdmin = IsAdmin,ReturnUrl = Request.RawUrl};
-        }
+   
 
     }
 }

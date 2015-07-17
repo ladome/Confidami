@@ -178,6 +178,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\NewsletterController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Controllers\SegnalazioniController.cs" />
     <Compile Include="FiltersAttribute\MultipleButtonAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -280,6 +283,10 @@
     <Content Include="Uploads\Temp\6da5ad1b-2695-4a4e-a127-31ca156910a4\twbs-bootstrap-v3.3.2-86-g9e1e73f.zip" />
     <Content Include="Uploads\Temp\f7c71993-0e5a-49b3-8939-fbf359091d06\SAC_n_5_28_01_2015.pdf" />
     <Content Include="Uploads\Temp\f7c71993-0e5a-49b3-8939-fbf359091d06\tutorial scelta data.pdf" />
+    <Content Include="Views\Segnalazioni\Index.cshtml" />
+    <Content Include="Views\Segnalazioni\Insert.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Newsletter\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

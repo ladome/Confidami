@@ -1,0 +1,178 @@
+﻿@using System.Web.UI.WebControls
+@using Confidami.Common
+@using Confidami.Web.ViewModel
+@model Confidami.Web.ViewModel.PostViewModel
+
+@{
+    ViewBag.Title = "Segnalazioni - Inserisci";
+}
+
+
+<h2>Inserisci Segnalazione</h2>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel-body">
+
+            <form role="form" action="@Url.Action("AddPost", "Home")" method="POST">
+                @Html.ValidationSummary(false)
+                <div class="form-group has-feedback" id="title">
+                    <label class="control-label" for="title">Titolo</label>
+                    <input class="form-control" id="title" name="title" placeholder="Titolo"
+                           type="text">
+                </div>
+                <div class="form-group" id="body">
+                    <label class="control-label" for="body">
+                        Messaggio
+                        <br>
+                    </label>
+                    <input class="form-control" id="body" name="body" placeholder="Messaggio"
+                           type="text">
+                </div>
+                <div class="form-group" id="category">
+                    <label class="control-label" for="body">
+                        Categoria
+                        <br>
+                    </label>
+                    <select name="idcategory" class="form-control">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.IdCategory">@cat.Description</option>
+                        }
+                    </select>
+                </div>
+                <input type="submit" value="Salva" class="btn-default" action=@Url.Action(ActionsStore.AddPost,ControllerStore.Home)>
+
+            </form>
+            <form action=@Url.Action(ActionsStore.Upload,ControllerStore.Home) method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm">
+                <div class="fallback">
+                    <input name="file" type="file" multiple />
+                    <input type="submit" value="Upload" />
+                </div>
+            </form>
+            <br />
+        </div>
+    </div>
+</div>
+<h2>Lista</h2>
+@if (Model != null)
+{
+    foreach (var post in Model.Posts)
+    {
+        if (Model.IsAdmin)
+        {
+            <form role="form" action="@Url.Action(ActionsStore.Approve, ControllerStore.Post)" method="POST">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <label>Titolo: @post.Title</label>
+                                <br />
+                                <label>Categoria: @post.CategoryPost</label>
+                            </div>
+                            <div class="panel-body">
+                                <textarea>@post.Body</textarea>
+                            </div>
+                            <div class="panel-footer">
+                                <input type="hidden" value="@post.IdPost" name="idpost" />
+                                <input type="hidden" value="@Model.ReturnUrl" name="returnUrl" />
+                                <input type="submit" class="btn btn-primary" value="OnApprovation" name="action:OnApprovation">
+                                <input type="submit" class="btn btn-primary" value="Reject" name="action:Reject">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <label>Titolo: @post.Title</label>
+                            <br />
+                            <label>Categoria: @post.CategoryPost</label>
+                        </div>
+                        <div class="panel-body">
+                            <textarea>@post.Body</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+@section scripts {
+    <script type="text/javascript">
+
+
+        Dropzone.options.dropzoneForm = {
+            maxFiles: 3,
+            init: function() {
+
+                var thisDropzone = this;
+                $.getJSON('/Home/GetTempAttachMents', function(data) { // get the json response
+
+                    $.each(data, function(key, value) { //loop through it
+
+                        @{
+                            var path = @Url.Content("~/Uploads/Temp/" + ViewBag.CurrentUserId + "/");
+                        }
+                        var mockFile = { name: value.Name, size: value.Size }; // here we get the file name and size as response
+
+                        thisDropzone.options.addedfile.call(thisDropzone, mockFile);
+
+                        var extension = value.Name.substr((value.Name.lastIndexOf('.') + 1));
+                        if (extension == 'jpg' ||
+                            extension == 'jpeg' ||
+                            extension == 'png' ||
+                            extension == 'gif') {
+                            thisDropzone.options.thumbnail.call(thisDropzone, mockFile, '@(path)' + value.Name); //uploadsfolder is the folder where you have all those uploaded files
+                        }
+
+                        thisDropzone.options.maxFiles = thisDropzone.options.maxFiles - 1;
+
+                    });
+
+                });
+
+                this.on("complete", function(data) {
+                    //var res = eval('(' + data.xhr.responseText + ')');
+                    var res = JSON.parse(data.xhr.responseText);
+                });
+            }
+        };
+
+    //Dropzone.options.formUpload = {
+
+        //    //prevents Dropzone from uploading dropped files immediately
+        //    autoProcessQueue: false,
+        //    uploadMultiple: true,
+        //    parallelUploads: 100,
+        //    maxFiles: 4,
+        //    maxFilesize : 2,
+
+        //    init: function () {
+        //        var submitButton = document.querySelector("#submit-all");
+        //        var myDropzone = this; //closure
+
+        //        submitButton.addEventListener("click", function(e) {
+        //            e.preventDefault();
+        //            e.stopPropagation();
+        //            if (myDropzone.getQueuedFiles().length > 0) {
+        //                // queue processing
+        //                myDropzone.processQueue();
+        //            } else {
+        //                // $("#formUpload").submit();
+        //            }
+        //            //tell Dropzone to process all queued files
+
+
+        //        });
+        //    }
+        //};
+
+    </script>
+}
+
+@Styles.Render("~/Content/dropzonescss")
