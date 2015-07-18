@@ -31,7 +31,7 @@ namespace Confidami.Web
             //          "~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/skin/sandstone/bootstrap.min.css",
+                      "~/Content/skin/paper/bootstrap.min.css",
                       "~/Content/site.css"));
 
 

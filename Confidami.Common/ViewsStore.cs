@@ -35,7 +35,9 @@ namespace Confidami.Common
 
         public const string Segnalazioni = "Index";
         public const string SegnalazioniInsert = "Insert";
-        public const string SegnalazioniCategory = "Category";        
+        public const string SegnalazioniCategory = "Category";
+
+        public const string Search = "Index";
 
         public const string About = "About";
         public const string Newsletter = "Index";
