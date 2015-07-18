@@ -11,8 +11,20 @@ namespace Confidami.Web
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+
+            //Parsley validator http://parsleyjs.org/
+            bundles.Add(new ScriptBundle("~/bundles/parsleyvalidator").Include(
+                        "~/Scripts/parsley/parsley.min.js",
+                        "~/Scripts/parsley/it.js"));
+
+            bundles.Add(new StyleBundle("~/Content/parsleycss").Include("~/Content/parsley.css"));
+
+
+
+
+            bundles.Add(new ScriptBundle("~/bundles/mainjs").Include(
+                        "~/Scripts/main.js*"));
+
 
             bundles.Add(new ScriptBundle("~/bundles/dropzonescripts").Include(
                      "~/Scripts/dropzone/dropzone.js"));

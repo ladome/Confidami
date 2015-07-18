@@ -19,8 +19,8 @@ namespace Confidami.Web.Controllers
         [Route("newsletter")]
         public ActionResult Index()
         {
-            ViewBag.Title = "Newsletter";
-            ViewBag.Message = "Pagina iscrizione NL";
+            ViewBag.Title = "Newsletter";            
+            ViewBag.Heding = "Intestazione per tag header newsletter";
             return View();
         }
 

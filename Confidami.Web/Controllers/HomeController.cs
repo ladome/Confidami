@@ -16,7 +16,9 @@ namespace Confidami.Web.Controllers
     {
       
         public ActionResult Index()
-        {            
+        {
+            ViewBag.Title = "HomePage";
+            ViewBag.Heding = "Intestazione per tag header";
             return View();
         }
 
@@ -24,6 +26,7 @@ namespace Confidami.Web.Controllers
         public ActionResult About()
         {            
             ViewBag.Title = "Chi siamo.....";
+            ViewBag.Heding = "Intestazione per tag header chi siamo";
             return View();
         }
 
@@ -31,7 +34,7 @@ namespace Confidami.Web.Controllers
         public ActionResult Contact()
         {
             ViewBag.Title = "Contatti....";
-
+            ViewBag.Heding = "Intestazione per tag header contatti";
             return View();
         }
 

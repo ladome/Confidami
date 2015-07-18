@@ -223,6 +223,7 @@
     <Content Include="Scripts\dropzone\dropzone.js" />
     <Content Include="Scripts\dropzone\dropzone.min.css" />
     <Content Include="Scripts\dropzone\dropzone.min.js" />
+    <Content Include="Scripts\main.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
@@ -233,6 +234,34 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\npm.js" />
+    <Content Include="Scripts\parsley\it.extra.js" />
+    <Content Include="Scripts\parsley\it.js" />
+    <Content Include="Scripts\parsley\parsley.min.js" />
+    <Content Include="Scripts\parsley\parsley.remote.min.js" />
+    <Content Include="Scripts\parsley\src\config.js" />
+    <Content Include="Scripts\parsley\src\extra\plugin\bind.js" />
+    <Content Include="Scripts\parsley\src\extra\plugin\remote.js" />
+    <Content Include="Scripts\parsley\src\extra\validator\comparison.js" />
+    <Content Include="Scripts\parsley\src\extra\validator\dateiso.js" />
+    <Content Include="Scripts\parsley\src\extra\validator\luhn.js" />
+    <Content Include="Scripts\parsley\src\extra\validator\notequalto.js" />
+    <Content Include="Scripts\parsley\src\extra\validator\words.js" />
+    <Content Include="Scripts\parsley\src\main.js" />
+    <Content Include="Scripts\parsley\src\parsley.css" />
+    <Content Include="Scripts\parsley\src\parsley.js" />
+    <Content Include="Scripts\parsley\src\parsley\abstract.js" />
+    <Content Include="Scripts\parsley\src\parsley\defaults.js" />
+    <Content Include="Scripts\parsley\src\parsley\factory.js" />
+    <Content Include="Scripts\parsley\src\parsley\factory\constraint.js" />
+    <Content Include="Scripts\parsley\src\parsley\field.js" />
+    <Content Include="Scripts\parsley\src\parsley\form.js" />
+    <Content Include="Scripts\parsley\src\parsley\multiple.js" />
+    <Content Include="Scripts\parsley\src\parsley\pubsub.js" />
+    <Content Include="Scripts\parsley\src\parsley\ui.js" />
+    <Content Include="Scripts\parsley\src\parsley\utils.js" />
+    <Content Include="Scripts\parsley\src\parsley\validator.js" />
+    <Content Include="Scripts\parsley\src\wrap\append.js" />
+    <Content Include="Scripts\parsley\src\wrap\prepend.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -287,6 +316,8 @@
     <Content Include="Views\Segnalazioni\Insert.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Newsletter\Index.cshtml" />
+    <Content Include="Views\Search\_Form.cshtml" />
+    <Content Include="Views\Search\_SearchResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

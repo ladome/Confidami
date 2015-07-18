@@ -19,8 +19,8 @@ namespace Confidami.Web.Controllers
         [Route("cerca")]
         public ActionResult Index()
         {
-            ViewBag.Title = "Cerca";
-            ViewBag.Message = "Pagina ricerca";
+            ViewBag.Title = "Ricerca segnalazione";
+            ViewBag.Heding = "Intestazione per tag header cerca";
             return View();
         }
 

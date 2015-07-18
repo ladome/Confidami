@@ -26,14 +26,16 @@ namespace Confidami.Web.Controllers
         [Route("segnalazioni")]
         public ActionResult Index()
         {
-            ViewBag.Title = "Segnalazioni  - Tutte";
+            ViewBag.Title = "Segnalazioni";
+            ViewBag.Heding = "Intestazione per tag header index segnalazioni";
             return View();
         }
 
         [Route("segnalazioni/categoria/")]
         public ActionResult Category()
         {
-            ViewBag.Title = "Segnalazioni per categoria X";
+            ViewBag.Title = "Segnalazioni - category name";
+            ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
             return View("Index");
         }
 
@@ -41,6 +43,8 @@ namespace Confidami.Web.Controllers
         [Route("segnalazioni/inserisci")]
         public ActionResult Insert()
         {
+            ViewBag.Title = "Segnalazioni - inserisci";
+            ViewBag.Heding = "Intestazione per tag header segnalazioni inserisci";
             TempData["from"] = Request.Url;
             ViewBag.CurrentUser = CurrentUserId;
             return View(FillPostViewMoldel());
