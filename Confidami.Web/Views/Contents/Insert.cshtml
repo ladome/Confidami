@@ -46,16 +46,80 @@
 <div class="panel panel-default">
     <div class="panel-heading">Allega documenti alla segnalazione</div>
     <div class="panel-body">
-        <form action=@Url.Action(ActionsStore.Upload, ControllerStore.Contents) method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm">
-            <div class="fallback">
-                <input name="file" type="file" multiple />
-                <input type="submit" value="Upload" />
+
+
+        <div id="actions" class="row">
+
+            <div class="col-sm-12">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                <span class="btn btn-xs btn-success fileinput-button dz-clickable">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Add files...</span>
+                </span>
+                <button type="submit" class="btn btn-xs btn-primary start">
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start upload</span>
+                </button>
+                <button type="reset" class="btn btn-xs btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Cancel upload</span>
+                </button>
             </div>
-        </form>
+
+            <br /><hr />
+
+            <div class="col-lg-12">
+                <!-- The global file processing state -->
+                <span class="fileupload-process">
+                    <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress=""></div>
+                    </div>
+                </span>
+            </div>
+
+            
+
+        </div>
+
+
+        <!-- previews container -->
+        <div class="table table-striped files" id="previews">
+            
+            <div id="template" class="file-row" @*style="display:block;"*@>
+                
+                <div>
+                    <span class="preview"><img data-dz-thumbnail /></span>
+                </div>
+                <div>
+                    <p class="name" data-dz-name></p>
+                    <strong class="error text-danger" data-dz-errormessage></strong>
+                </div>
+                <div>
+                    <p class="size" data-dz-size></p>
+                    <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary start">
+                        <i class="glyphicon glyphicon-upload"></i>
+                        <span>Start</span>
+                    </button>
+                    <button data-dz-remove class="btn btn-warning cancel">
+                        <i class="glyphicon glyphicon-ban-circle"></i>
+                        <span>Cancel</span>
+                    </button>
+                    <button data-dz-remove class="btn btn-danger delete">
+                        <i class="glyphicon glyphicon-trash"></i>
+                        <span>Delete</span>
+                    </button>
+                </div>
+            </div>                 
+        </div>
+
     </div>
 </div>
 <!--------------------->
-
 
 <h2>Lista</h2>
 @if (Model != null)
@@ -108,55 +172,122 @@
 }
 
 
+
 <!-- JS -->
 @section scripts {
     <script type="text/javascript">
+    $(function () {
+       
+        var previewNode = document.querySelector("#template");
+        previewNode.id = "";
+        var previewTemplate = previewNode.parentNode.innerHTML;
+        previewNode.parentNode.removeChild(previewNode);
+        
+            var myDropzone = new Dropzone(document.body, {
+                url: "@Url.Action(ActionsStore.Upload, ControllerStore.Contents)",
+                thumbnailWidth: 80,
+                thumbnailHeight: 80,
+                parallelUploads: 20,
+                previewTemplate: previewTemplate,
+                autoQueue: false, // Make sure the files aren't queued until manually added
+                previewsContainer: "#previews", // Define the container to display the previews
+                clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
+            });        
 
-    Dropzone.options.dropzoneForm = {
-        maxFiles: 3,
-        init: function () {
+        myDropzone.on("addedfile", function (file) {
+            //$(".start").on('click', function () { myDropzone.enqueueFile(file); });
+            file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); };
+        });
 
-            var thisDropzone = this;
+        // Update the total progress bar
+        myDropzone.on("totaluploadprogress", function (progress) {
+            document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+            //$("#total-progress .progress-bar").css('width', progress + "%");
+        });
 
-            var jqxhr = $.getJSON("/@ControllerStore.Contents/GetTempAttachMents", function () {
-                    
-                }).done(function (attacchments) {
-                    
-                    $.each(attacchments, function (key, attacchment) {
+        myDropzone.on("sending", function (file) {
+            //document.querySelector("#total-progress").style.opacity = "1";
+            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+            // Show the total progress bar when upload starts
+            $("#total-progress").css('opacity','1');
+            // And disable the start button
+            //$(".start").prop("disabled", "disabled");
+        });
 
-                        console.log('Allegato '+key, attacchment);
+        myDropzone.on("queuecomplete", function (progress) {
+            //document.querySelector("#total-progress").style.opacity = "0";
+            $("#total-progress").css('opacity', '0');
+        });
+
+        $("#actions .start").on('click', function () {
+            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+        });
+
+        $("#actions .cancel").on('click', function () {
+            myDropzone.removeAllFiles(true);
+        });
+
+
+        @*var loadattachements = function (thisDropzone) {
+
+                var jqxhr = $.getJSON("/@ControllerStore.Contents/GetTempAttachMents", function () {
+
+                }).done(function (attachements) {
+
+                    $.each(attachements, function (key, attachement) {
+
+                        console.log('Allegato ' + key, attachement);
 
                         @{
                             var path = @Url.Content("~/Uploads/Temp/" + ViewBag.CurrentUserId + "/");
-                        }
+                         }
 
-                        var objAttachement = {
-                            name: attacchment.Name,
-                            size: attacchment.Size
-                        };
-
+                        var objAttachement = {name: attachement.Name,size: attachement.Size };
                         thisDropzone.options.addedfile.call(thisDropzone, objAttachement);
 
-                        var extension = attacchment.Name.substr((attacchment.Name.lastIndexOf('.') + 1));
+                        var extension = attachement.Name.substr((attachement.Name.lastIndexOf('.') + 1));
                         extensionList = ['jpg', 'jpeg', 'png', 'gif'];
                         if (extensionList.indexOf(extension) != -1) {
-                            thisDropzone.options.thumbnail.call(thisDropzone, objAttachement, '@(path)' + attacchment.Name);
+                            thisDropzone.options.thumbnail.call(thisDropzone, objAttachement, '@(path)' + attachement.Name);
                         }
                         thisDropzone.options.maxFiles = thisDropzone.options.maxFiles - 1;
                     });
                 }).fail(function (jqxhr, textStatus, error) {
                     var err = textStatus + ", " + error;
-                    console.log("Request Failed: " + err);
-                }).always(function () {  });
+                    alert("GetTempAttachMents Failed "+err);
 
-                this.on("complete", function (attacchment) { // called once for file
+                }).always(function () { });
+            };
 
-                                    console.log('onComplete:',attacchment)
+            Dropzone.options.dropzoneForm = {
+                maxFiles: 3,
+                addRemoveLinks: true,
+                maxFilesize: 1,
+                acceptedFiles: 'image/jpeg,image/jpg,image/png,image/gif,application/pdf,application/msword,text/plain',
+                init: function () {
 
-                                    var res = JSON.parse(attacchment.xhr.responseText);
-                                });
-                            }
-                        };
+                    loadattachements(this);
+
+                    this.on("complete", function (attachement) { //Upload complete once for file
+
+                        if (!attachement.accepted) {
+                            console.log('file non accettato')
+                        } else {
+                            console.log('onComplete:', attachement)
+                            //var res = JSON.parse(attachement.xhr.responseText);
+                        }
+
+
+
+                    });
+                    this.on('removedfile', function (attachement) {
+                        console.log('rimosso:', attachement)
+                    });
+
+                }
+            }; // DROPZONE*@
+
+
 
         //Dropzone.options.formUpload = {
 
@@ -187,7 +318,10 @@
         //    }
         //};
 
-    </script>
+        //$('.dz-error-mark').on('click')
+
+    });
+</script>
 }
 
 @Styles.Render("~/Content/dropzonescss")
