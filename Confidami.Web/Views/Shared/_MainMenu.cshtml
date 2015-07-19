@@ -19,8 +19,8 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Segnalazioni<span class="caret"></span></a>
                 <ul class="dropdown-menu" aria-labelledby="themes">
-                    <li>@Html.ActionLink("Tutte", ActionsStore.Segnalazioni, ControllerStore.Segnalazioni)</li>
-                    <li>@Html.ActionLink("Inserisci", ActionsStore.SegnalazioniInsert, ControllerStore.Segnalazioni)</li>
+                    <li>@Html.ActionLink("Tutte", ActionsStore.Contents, ControllerStore.Contents)</li>
+                    <li>@Html.ActionLink("Inserisci", ActionsStore.ContentsInsert, ControllerStore.Contents)</li>
                     <li>@Html.ActionLink("Cerca", ActionsStore.Search, ControllerStore.Search)</li>
                 </ul>
             </li>
@@ -28,9 +28,9 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Categorie<span class="caret"></span></a>
                 <ul class="dropdown-menu" aria-labelledby="themes">
-                    <li>@Html.ActionLink("Cat 1", ActionsStore.SegnalazioniCategory, ControllerStore.Segnalazioni)</li>
-                    <li>@Html.ActionLink("Cat 2", ActionsStore.SegnalazioniCategory, ControllerStore.Segnalazioni)</li>
-                    <li>@Html.ActionLink("Cat 3", ActionsStore.SegnalazioniCategory, ControllerStore.Segnalazioni)</li>
+                    <li>@Html.ActionLink("Cat 1", ActionsStore.ContentsCategory, ControllerStore.Contents)</li>
+                    <li>@Html.ActionLink("Cat 2", ActionsStore.ContentsCategory, ControllerStore.Contents)</li>
+                    <li>@Html.ActionLink("Cat 3", ActionsStore.ContentsCategory, ControllerStore.Contents)</li>
                 </ul>
             </li>
 
@@ -53,7 +53,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Cerca" name="k">
             </div>
-            <button type="submit" class="btn btn-success btn-sm">Cerca</button>
+            <button type="submit" class="btn btn-primary btn-sm">Cerca</button>
         </form>        
 
         @*@Html.Partial("_LoginPartial")*@

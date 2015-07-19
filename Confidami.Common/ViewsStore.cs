@@ -17,8 +17,8 @@ namespace Confidami.Common
     {
         public const string Account = "Account";
         public const string Post = "Post";
-        public const string Home = "Home";        
-        public const string Segnalazioni = "Segnalazioni";
+        public const string Home = "Home";
+        public const string Contents = "Contents";
         public const string Search = "Search";
         public const string Newsletter = "Newsletter";
     }
@@ -33,9 +33,9 @@ namespace Confidami.Common
         public const string Approve = "Approve";
         public const string Upload = "Upload";
 
-        public const string Segnalazioni = "Index";
-        public const string SegnalazioniInsert = "Insert";
-        public const string SegnalazioniCategory = "Category";
+        public const string Contents = "Index";
+        public const string ContentsInsert = "Insert";
+        public const string ContentsCategory = "Category";
 
         public const string Search = "Index";
 

@@ -11,14 +11,15 @@ using Confidami.Web.ViewModel;
 using Microsoft.Ajax.Utilities;
 
 
+
 namespace Confidami.Web.Controllers
 {
-    public class SegnalazioniController : BaseController
+    public class ContentsController : BaseController
     {
         
         private readonly PostManager _postManager;
 
-        public SegnalazioniController()
+        public ContentsController()
         {
             _postManager = new PostManager();
         }
@@ -46,7 +47,7 @@ namespace Confidami.Web.Controllers
             ViewBag.Title = "Segnalazioni - inserisci";
             ViewBag.Heding = "Intestazione per tag header segnalazioni inserisci";
             TempData["from"] = Request.Url;
-            ViewBag.CurrentUser = CurrentUserId;
+            ViewBag.CurrentUserId = CurrentUserId;
             return View(FillPostViewMoldel());
             
             //return View("Inserisci");
@@ -55,7 +56,7 @@ namespace Confidami.Web.Controllers
         public ActionResult AddPost(PostViewModel postVm)
         {
             if (!ModelState.IsValid)
-                return View("Index", FillPostViewMoldel());
+                return View("Insert", FillPostViewMoldel());
 
             var post = new Post
             {
@@ -71,9 +72,9 @@ namespace Confidami.Web.Controllers
             //if (!HandleFileUpload(Request.Files))
             //{
             //    ModelState.AddModelError("files", "File not loaded correctly");
-            //    return View("Index", FillPostViewMoldel());
+            //    return View("Insert", FillPostViewMoldel());
             //}
-            return RedirectToAction("Index");
+            return RedirectToAction("Insert");
         }
 
 
