@@ -1,15 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using Confidami.BL;
 using Confidami.Common.Utility;
 using Confidami.Model;
 using Confidami.Web.ViewModel;
-using Microsoft.Ajax.Utilities;
-
 
 
 namespace Confidami.Web.Controllers
@@ -32,12 +27,18 @@ namespace Confidami.Web.Controllers
             return View();
         }
 
-        [Route("segnalazioni/categoria/")]
-        public ActionResult Category()
+        [Route("segnalazioni/categoria/{slug}")]
+        public ActionResult Category(string slug)
         {
-            ViewBag.Title = "Segnalazioni - category name";
+            ViewBag.Title = "Segnalazioni - category name" + slug;
             ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
             return View("Index");
+        }
+
+        [Route("segnalazioni/{id}")]
+        public ActionResult GetSingleContent(long id)
+        {
+            return View("Index"); //segnalazioni/nome-categoria/titolo-segnalazione
         }
 
 
@@ -89,6 +90,11 @@ namespace Confidami.Web.Controllers
         {
             return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() { Name = x.FileName, Size = x.Size }), JsonRequestBehavior.AllowGet);
         }
+
+        //public JsonResult DeleteAttachMent(string idAttachment)
+        //{
+        //    return ""
+        //}
 
 
         private PostViewModel FillPostViewMoldel()
