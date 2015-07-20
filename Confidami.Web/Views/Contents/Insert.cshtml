@@ -199,6 +199,10 @@
             file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); };
         });
 
+        myDropzone.on('init', function () {
+
+        });
+
         // Update the total progress bar
         myDropzone.on("totaluploadprogress", function (progress) {
             document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
