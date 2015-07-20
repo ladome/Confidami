@@ -11,6 +11,7 @@ namespace Confidami.Common
         public const string Index = "Index";
         public const string Moderation = "Moderation";
         public const string Menu = "_MainMenu";
+        public const string Insert = "Insert";
 
     }
 

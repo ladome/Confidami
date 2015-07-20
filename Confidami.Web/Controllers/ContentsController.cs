@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using Confidami.BL;
+using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
 using Confidami.Web.ViewModel;
@@ -11,20 +12,19 @@ namespace Confidami.Web.Controllers
 {
     public class ContentsController : BaseController
     {
-        
-        private readonly PostManager _postManager;
-
-        public ContentsController()
-        {
-            _postManager = new PostManager();
-        }
 
         [Route("segnalazioni")]
         public ActionResult Index()
         {
             ViewBag.Title = "Segnalazioni";
             ViewBag.Heding = "Intestazione per tag header index segnalazioni";
-            return View();
+            //recupero tutti i post
+            //TODO paginazione
+            var res = PostManager.GetAllPost();
+            var vm = new PostViewModel() {IsAdmin = IsAdmin};
+            var posts = res.Select(x => new PostViewModelBase() { Body = x.Body, Title = x.Title, CategoryPost = x.Category.Description, IdPost = x.IdPost }).ToList();
+            vm.Posts = posts;
+            return View(vm);
         }
 
         [Route("segnalazioni/categoria/{slug}")]
@@ -47,17 +47,18 @@ namespace Confidami.Web.Controllers
         {
             ViewBag.Title = "Segnalazioni - inserisci";
             ViewBag.Heding = "Intestazione per tag header segnalazioni inserisci";
-            TempData["from"] = Request.Url;
             ViewBag.CurrentUserId = CurrentUserId;
-            return View(FillPostViewMoldel());
-            
-            //return View("Inserisci");
+
+            var categories = PostManager.GetAllCategories();
+
+            return View(new InsertPostViewModel{Categories = categories});
         }
 
-        public ActionResult AddPost(PostViewModel postVm)
+        [HttpPost]
+        public ActionResult AddPost(InsertPostViewModel postVm)
         {
             if (!ModelState.IsValid)
-                return View("Insert", FillPostViewMoldel());
+                return View(ViewsStore.Insert, postVm);
 
             var post = new Post
             {
@@ -70,12 +71,7 @@ namespace Confidami.Web.Controllers
 
             PostManager.AddPost(post);
 
-            //if (!HandleFileUpload(Request.Files))
-            //{
-            //    ModelState.AddModelError("files", "File not loaded correctly");
-            //    return View("Insert", FillPostViewMoldel());
-            //}
-            return RedirectToAction("Insert");
+            return RedirectToAction(ActionsStore.ContentsInsert);
         }
 
 
@@ -95,15 +91,6 @@ namespace Confidami.Web.Controllers
         //{
         //    return ""
         //}
-
-
-        private PostViewModel FillPostViewMoldel()
-        {
-            var res = _postManager.GetAllPost();
-            var posts = res.Select(x => new PostViewModelBase() { Body = x.Body, Title = x.Title, CategoryPost = x.Category.Description, IdPost = x.IdPost }).ToList();
-            var categories = _postManager.GetAllCategories();
-            return new PostViewModel() { Posts = posts, Categories = categories, IsAdmin = IsAdmin, ReturnUrl = Request.RawUrl };
-        }
 
 
     }
