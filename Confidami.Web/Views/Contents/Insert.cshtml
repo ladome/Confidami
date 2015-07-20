@@ -4,133 +4,188 @@
 @model Confidami.Web.ViewModel.InsertPostViewModel
 
 
+<div>
 
-<form class="form-horizontal" role="form" action="@Url.Action("AddPost", "Contents")" method="post" @*data-parsley-validate*@>
-    @*@Html.ValidationSummary(false)*@
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="title">Titolo</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="title" name="title" placeholder="Titolo">
-        </div>
-    </div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#form-segnalazione" aria-controls="home" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-edit"></i> Compila</a></li>
+        <li role="presentation"><a href="#attaccments-segnalazione" aria-controls="profile" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-paperclip"></i> Aggiungi allegati</a></li>        
+    </ul>
 
-    <div class="form-group" id="body">
-        <label class="col-sm-2 control-label" for="body">Messaggio</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="body" name="body" placeholder="Messaggio">
-        </div>
-    </div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="form-segnalazione">
 
-    <div class="form-group" id="category">
-        <label class="col-sm-2  control-label" for="body">Categoria</label>
-        <div class="col-sm-10">
-            <select name="idcategory" class="form-control">
-                @foreach (var cat in Model.Categories)
-                {
-                    <option value="@cat.IdCategory">@cat.Description</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <input type="submit" value="Salva" class="btn btn-primary btn-sm" action=@Url.Action(ActionsStore.AddPost, ControllerStore.Contents)>
-        </div>
-    </div>
-
-</form>
-
-<!-- drop zone area -->
-
-<div class="panel panel-default">
-    <div class="panel-heading">Allega documenti alla segnalazione</div>
-    <div class="panel-body">
-
-
-        <div id="actions" class="row">
-
-            <div class="col-sm-12">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-xs btn-success fileinput-button dz-clickable">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    <span>Add files...</span>
-                </span>
-                <button type="submit" class="btn btn-xs btn-primary start">
-                    <i class="glyphicon glyphicon-upload"></i>
-                    <span>Start upload</span>
-                </button>
-                <button type="reset" class="btn btn-xs btn-warning cancel">
-                    <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>Cancel upload</span>
-                </button>
-            </div>
-
-            <br /><hr />
-
-            <div class="col-lg-12">
-                <!-- The global file processing state -->
-                <span class="fileupload-process">
-                    <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                        <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress=""></div>
-                    </div>
-                </span>
-            </div>
-
-            
-
-        </div>
-
-
-        <!-- previews container -->
-        <div class="table table-striped files" id="previews">
-            
-            <div id="template" class="file-row" @*style="display:block;"*@>
-                
-                <div>
-                    <span class="preview"><img data-dz-thumbnail /></span>
-                </div>
-                <div>
-                    <p class="name" data-dz-name></p>
-                    <strong class="error text-danger" data-dz-errormessage></strong>
-                </div>
-                <div>
-                    <p class="size" data-dz-size></p>
-                    <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                        <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+            <form class="form-horizontal" role="form" action="@Url.Action("AddPost", "Contents")" method="post" @*data-parsley-validate*@>
+                @*@Html.ValidationSummary(false)*@
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="title">Titolo</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Titolo">
                     </div>
                 </div>
-                <div>
-                    <button class="btn btn-primary start">
+
+                <div class="form-group" id="body">
+                    <label class="col-sm-2 control-label" for="body">Messaggio</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="body" name="body" placeholder="Messaggio">
+                    </div>
+                </div>
+
+                <div class="form-group" id="category">
+                    <label class="col-sm-2  control-label" for="body">Categoria</label>
+                    <div class="col-sm-10">
+                        <select name="idcategory" class="form-control">
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <option value="@cat.IdCategory">@cat.Description</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="submit" value="Salva" class="btn btn-primary btn-sm" action=@Url.Action(ActionsStore.AddPost, ControllerStore.Contents)>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="attaccments-segnalazione"> <!-- allgati -->
+
+            <!-- drop zone area -->
+
+            <div id="dropzone-actions" class="row">
+
+                <div class="col-sm-12">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="btn btn-xs btn-success fileinput-button dz-clickable">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span>Aggiungi</span>
+                    </span>
+                    <button type="submit" class="btn btn-xs btn-primary start">
                         <i class="glyphicon glyphicon-upload"></i>
-                        <span>Start</span>
+                        <span>Upload</span>
                     </button>
-                    <button data-dz-remove class="btn btn-warning cancel">
+                    <button type="reset" class="btn btn-xs btn-warning cancel">
                         <i class="glyphicon glyphicon-ban-circle"></i>
-                        <span>Cancel</span>
-                    </button>
-                    <button data-dz-remove class="btn btn-danger delete">
-                        <i class="glyphicon glyphicon-trash"></i>
-                        <span>Delete</span>
+                        <span>Annulla</span>
                     </button>
                 </div>
-            </div>                 
-        </div>
 
+
+                <div class="col-sm-12" style="margin-top:10px">
+                    <!-- The global file processing state -->
+                    <span class="fileupload-process">
+                        <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress=""></div>
+                        </div>
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- previews container -->
+            <div class="table table-striped files" id="previews">
+                
+                <div id="template" class="file-row">
+
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <strong><i class="glyphicon glyphicon-file"></i>
+                            <span class="" data-dz-name></span></strong>
+                            &nbsp;-&nbsp;
+                            <span data-dz-size></span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="preview">
+                                <img data-dz-thumbnail />
+                            </div>
+
+                            <div>
+                                <strong class="error text-danger" data-dz-errormessage></strong>
+                            </div>
+
+                        </div>
+                        <div class="panel-footer">
+
+                            <button class="btn btn-xs btn-primary start">
+                                <i class="glyphicon glyphicon-upload"></i>
+                                <span>Upload</span>
+                            </button>
+                            <button data-dz-remove class="btn btn-xs btn-warning cancel">
+                                <i class="glyphicon glyphicon-ban-circle"></i>
+                                <span>Annulla</span>
+                            </button>
+                            <button data-dz-remove class="btn btn-xs btn-danger delete">
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </button>
+
+                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div><!-- previews -->
+            @*<div id="template" class="file-row">
+
+            <div>
+                <span class="preview"><img data-dz-thumbnail /></span>
+            </div>
+            <div>
+                <p class="name" data-dz-name></p>
+                <strong class="error text-danger" data-dz-errormessage></strong>
+            </div>
+            <div>
+                <p class="size" data-dz-size></p>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-xs btn-primary start">
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Upload</span>
+                </button>
+                <button data-dz-remove class="btn btn-xs btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Annulla</span>
+                </button>
+                <button data-dz-remove class="btn btn-xs btn-danger delete">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span>Elimina</span>
+                </button>
+            </div>
+        </div>*@
+
+        </div>        
     </div>
-</div>
-<!--------------------->
 
+</div>
+
+
+
+  
+<!--------------------->
 <!-- JS -->
 @section scripts {
     <script type="text/javascript">
-    $(function () {
-       
-        var previewNode = document.querySelector("#template");
-        previewNode.id = "";
-        var previewTemplate = previewNode.parentNode.innerHTML;
-        previewNode.parentNode.removeChild(previewNode);
-        
+        $(function () {
+
+            var previewNode = document.querySelector("#template");
+            previewNode.id = "";
+            var previewTemplate = previewNode.parentNode.innerHTML;
+            previewNode.parentNode.removeChild(previewNode);
+
             var myDropzone = new Dropzone(document.body, {
                 url: "@Url.Action(ActionsStore.Upload, ControllerStore.Contents)",
                 thumbnailWidth: 80,
@@ -140,47 +195,48 @@
                 autoQueue: false, // Make sure the files aren't queued until manually added
                 previewsContainer: "#previews", // Define the container to display the previews
                 clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-            });        
 
-        myDropzone.on("addedfile", function (file) {
-            //$(".start").on('click', function () { myDropzone.enqueueFile(file); });
-            file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); };
-        });
+            });
 
-        myDropzone.on('init', function () {
+            myDropzone.on("addedfile", function (file) {
+                //$(".start").on('click', function () { myDropzone.enqueueFile(file); });
+                file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); };
+            });
 
-        });
+            myDropzone.on('init', function () {
 
-        // Update the total progress bar
-        myDropzone.on("totaluploadprogress", function (progress) {
-            document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
-            //$("#total-progress .progress-bar").css('width', progress + "%");
-        });
+            });
 
-        myDropzone.on("sending", function (file) {
-            //document.querySelector("#total-progress").style.opacity = "1";
-            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
-            // Show the total progress bar when upload starts
-            $("#total-progress").css('opacity','1');
-            // And disable the start button
-            //$(".start").prop("disabled", "disabled");
-        });
+            // Update the total progress bar
+            myDropzone.on("totaluploadprogress", function (progress) {
+                document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+                //$("#total-progress .progress-bar").css('width', progress + "%");
+            });
 
-        myDropzone.on("queuecomplete", function (progress) {
-            //document.querySelector("#total-progress").style.opacity = "0";
-            $("#total-progress").css('opacity', '0');
-        });
+            myDropzone.on("sending", function (file) {
+                //document.querySelector("#total-progress").style.opacity = "1";
+                file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+                // Show the total progress bar when upload starts
+                $("#total-progress").css('opacity', '1');
+                // And disable the start button
+                //$(".start").prop("disabled", "disabled");
+            });
 
-        $("#actions .start").on('click', function () {
-            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
-        });
+            myDropzone.on("queuecomplete", function (progress) {
+                //document.querySelector("#total-progress").style.opacity = "0";
+                $("#total-progress").css('opacity', '0');
+            });
 
-        $("#actions .cancel").on('click', function () {
-            myDropzone.removeAllFiles(true);
-        });
+            $("#dropzone-actions .start").on('click', function () {
+                myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+            });
+
+            $("#dropzone-actions .cancel").on('click', function () {
+                myDropzone.removeAllFiles(true);
+            });
 
 
-        @*var loadattachements = function (thisDropzone) {
+            @*var loadattachements = function (thisDropzone) {
 
                 var jqxhr = $.getJSON("/@ControllerStore.Contents/GetTempAttachMents", function () {
 
@@ -241,39 +297,39 @@
 
 
 
-        //Dropzone.options.formUpload = {
+            //Dropzone.options.formUpload = {
 
-        //    //prevents Dropzone from uploading dropped files immediately
-        //    autoProcessQueue: false,
-        //    uploadMultiple: true,
-        //    parallelUploads: 100,
-        //    maxFiles: 4,
-        //    maxFilesize : 2,
+            //    //prevents Dropzone from uploading dropped files immediately
+            //    autoProcessQueue: false,
+            //    uploadMultiple: true,
+            //    parallelUploads: 100,
+            //    maxFiles: 4,
+            //    maxFilesize : 2,
 
-        //    init: function () {
-        //        var submitButton = document.querySelector("#submit-all");
-        //        var myDropzone = this; //closure
+            //    init: function () {
+            //        var submitButton = document.querySelector("#submit-all");
+            //        var myDropzone = this; //closure
 
-        //        submitButton.addEventListener("click", function(e) {
-        //            e.preventDefault();
-        //            e.stopPropagation();
-        //            if (myDropzone.getQueuedFiles().length > 0) {
-        //                // queue processing
-        //                myDropzone.processQueue();
-        //            } else {
-        //                // $("#formUpload").submit();
-        //            }
-        //            //tell Dropzone to process all queued files
+            //        submitButton.addEventListener("click", function(e) {
+            //            e.preventDefault();
+            //            e.stopPropagation();
+            //            if (myDropzone.getQueuedFiles().length > 0) {
+            //                // queue processing
+            //                myDropzone.processQueue();
+            //            } else {
+            //                // $("#formUpload").submit();
+            //            }
+            //            //tell Dropzone to process all queued files
 
 
-        //        });
-        //    }
-        //};
+            //        });
+            //    }
+            //};
 
-        //$('.dz-error-mark').on('click')
+            //$('.dz-error-mark').on('click')
 
-    });
-</script>
+        });
+    </script>
 }
 
 @Styles.Render("~/Content/dropzonescss")
