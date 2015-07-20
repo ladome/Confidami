@@ -41,7 +41,7 @@ namespace Confidami.BL
             else
             {
                 res = _postRepository.InserPostWithAttachment(post);
-                //if(res > 0) post.Attachments.ForEach(x=> _fileManager.UploadFileInDefaultFolder(x.InputStream,x.FileName,x.ContentType,x.ContentLenght));
+                if (res > 0) _fileManager.MoveTempInFinalFolder(post.UserId,res.ToString());
             }
 
             bool success = res > 0;
@@ -144,14 +144,14 @@ namespace Confidami.BL
         }
 
 
-        public void UploadFileInTempFolder(Stream file, string fileName, string contentType, int contentLenght,string userId)
+        public void UploadFileInTempFolder(Stream file, string fileName, string contentType, int contentLenght,string parentFolder = null)
         {
-            userId.CannotBeNull("userId");
+            parentFolder.CannotBeNull("userId");
             fileName.CannotBeNull("filename");
             file.CannotBeNull("file");
 
-            _fileRepository.InsertTempUpload(userId.ToString(), fileName,contentType,contentLenght);
-            UploadFileInFolder(file, fileName, contentType, contentLenght,true,userId);
+            _fileRepository.InsertTempUpload(parentFolder, fileName,contentType,contentLenght);
+            UploadFileInFolder(file, fileName, contentType, contentLenght,true,parentFolder);
         }
 
         public void MoveTempInFinalFolder(string source,string destination)
@@ -159,9 +159,11 @@ namespace Confidami.BL
             source.CannotBeNull("source");
             source.CannotBeNull("destination");
 
-            //TODO
-            //MoveFileInFolder(source,destination);
-            //_fileRepository.DeleteInTempFile(folder);
+            var pathSource = Path.Combine(FileSystem.GetTempUploadFolder(), source);
+            var pathDestination = Path.Combine(FileSystem.GetFullUploadFolder(), destination);
+            FileSystem.MoveFilesFolder(pathSource,pathDestination,true);
+
+            _fileRepository.DeleteInTempFile(source);
         }
 
 
@@ -193,14 +195,6 @@ namespace Confidami.BL
               fileStream.Write(buffer,0,contentLenght);
             }
          }
-
-
-        //public void MoveFileInFolder(string folder)
-        //{
-        //    string defaultFolfer = isTmpFolder ? Config.UploadsTempFolder : Config.UploadsFolder;
-        //    var path = Path.IsPathRooted(defaultFolfer) ? defaultFolfer : Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer));
-            
-        //}
 
         public List<TempAttachMent> GetTempAttachMentsByUserId(string userId)
         {

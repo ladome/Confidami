@@ -44,8 +44,10 @@ namespace Confidami.Data
         public const string InsertPostAttachment =
             @"INSERT INTO [tblPostsAttachments]
            ([IdPost]
-           ,[FileName])
-            VALUES (@idPost,@fileName)";
+           ,[FileName]
+           ,[ContentType]
+           ,[Size])
+            VALUES (@idPost,@fileName,@contentType,@size)";
 
         public const string PostByStatus =
            @"SELECT [IdPost]
@@ -82,6 +84,6 @@ namespace Confidami.Data
             "select userid,filename,contenttype,size from tblTempAttachments where userid = @userid";
 
         public const string DeleteInTempFolder =
-            "update tblTempAttachments set deleted=1 where userid=@userid;";
+            "update tblTempAttachments set deleted=1 where userid=@userid and deleted=0;";
     }
 }

@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Confidami.Common", "Confida
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Confidami.Model", "Confidami.Model\Confidami.Model.csproj", "{1C73A697-339E-4067-A0C5-67EE5354EA21}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{0EF44DF3-0B85-4C67-95EF-D67AEB20CFAE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{71A4FE7F-6D9C-438F-A792-D273F51B7E3E}"
 	ProjectSection(SolutionItems) = preProject
-		dbScripts.sql = dbScripts.sql
+		DB\dbScripts.sql = DB\dbScripts.sql
 	EndProjectSection
 EndProject
 Global
