@@ -317,6 +317,7 @@
     <Content Include="Views\Newsletter\Index.cshtml" />
     <Content Include="Views\Search\_Form.cshtml" />
     <Content Include="Views\Search\_SearchResult.cshtml" />
+    <Content Include="Views\Contents\SingleContent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

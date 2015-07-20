@@ -36,9 +36,17 @@ namespace Confidami.Web.Controllers
         }
 
         [Route("segnalazioni/{id}")]
-        public ActionResult GetSingleContent(long id)
+        [Route("segnalazioni/{categoryName}/{id}")]
+        public ActionResult SingleContent(string categoryName,long id)
         {
-            return View("Index"); //segnalazioni/nome-categoria/titolo-segnalazione
+            if (string.IsNullOrEmpty(categoryName))
+                ViewBag.Heding = "Intestazione per tag header index singola segnalazione: " +id;
+            else
+            {
+                ViewBag.Heding = "Intestazione per tag header index singola segnalazione: " + id + "  categoria: " + categoryName;
+                
+            }
+            return View(); //segnalazioni/nome-categoria/titolo-segnalazione
         }
 
 
