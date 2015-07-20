@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Confidami.BL;
 using Confidami.Common;
+using Confidami.Model;
 using Microsoft.Owin;
 
 namespace Confidami.Web.Controllers
@@ -28,6 +30,14 @@ namespace Confidami.Web.Controllers
         }
 
         public bool IsAdmin { get { return User.IsInRole(RolesStore.AdminRole); } }
+
+
+
+        public ActionResult Menu()
+        {
+            var cats = PostManager.GetAllCategories();
+            return PartialView(ViewsStore.Menu, new Menu {Categories = cats.ToList()});
+        }
     }
 
     public class HttpCookieFilter : ActionFilterAttribute
@@ -55,4 +65,5 @@ namespace Confidami.Web.Controllers
             }
             base.OnActionExecuting(filterContext);
         }
-    }}
+    }
+}

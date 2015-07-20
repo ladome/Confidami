@@ -1,5 +1,5 @@
 ﻿@using Confidami.Common
-
+@model Confidami.Model.Menu
 <!-- navbar -->
 <nav class="navbar navbar-default">
 
@@ -28,9 +28,10 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Categorie<span class="caret"></span></a>
                 <ul class="dropdown-menu" aria-labelledby="themes">
-                    <li>@Html.ActionLink("Cat 1", ActionsStore.ContentsCategory, ControllerStore.Contents)</li>
-                    <li>@Html.ActionLink("Cat 2", ActionsStore.ContentsCategory, ControllerStore.Contents)</li>
-                    <li>@Html.ActionLink("Cat 3", ActionsStore.ContentsCategory, ControllerStore.Contents)</li>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li>@Html.ActionLink(cat.Description, ActionsStore.ContentsCategory, ControllerStore.Contents, new {cat.Slug},null)</li>
+                    }
                 </ul>
             </li>
 
@@ -42,7 +43,7 @@
             <!-- da spostare solo in area admin dopo login -->
             @if (User.IsInRole(RolesStore.AdminRole))
             {
-                <li>@Html.ActionLink(@ViewsStore.Moderation, ActionsStore.Moderation, ControllerStore.Post)</li>
+                <li>@Html.ActionLink(@ViewsStore.Moderation, ActionsStore.Moderation, ControllerStore.Manager)</li>
             }            
         </ul>
 

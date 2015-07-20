@@ -23,8 +23,15 @@ namespace Confidami.Web.ViewModel
     
     public class PostViewModel
     {
-        public long  IdPost { get; set; }
+        public IEnumerable<PostViewModelBase> Posts { get; set; }
 
+        public bool IsAdmin { get; set; }
+        //public string CurrentUser { get; set; }
+
+    }
+
+    public class InsertPostViewModel
+    {
         [Required(ErrorMessage = "Il titolo è obbligatorio")]
         [MaxLength(50)]
         public string Title { get; set; }
@@ -32,17 +39,10 @@ namespace Confidami.Web.ViewModel
         [Required(ErrorMessage = "Il corpo del messaggio è obbligatorio")]
         public string Body { get; set; }
 
-        [Range(1,100)]
+        [Range(1, 100)]
         public int IdCategory { get; set; }
 
-
-        public IEnumerable<PostViewModelBase> Posts { get; set; }
         public IEnumerable<Category> Categories { get; set; }
-
-        public bool IsAdmin { get; set; }
-        public string ReturnUrl { get; set; }
-        //public string CurrentUser { get; set; }
-
     }
 
     public class TempAttachMentViewModel

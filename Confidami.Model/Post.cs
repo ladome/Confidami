@@ -29,6 +29,8 @@ namespace Confidami.Model
 
     public class PostAttachments
     {
+        public long Id { get; set; }
+        public long IdPost { get; set; }
         public string FileName { get; set; }
         public string ContentType { get; set; }
         public long Size { get; set; }

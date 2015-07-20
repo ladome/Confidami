@@ -12,7 +12,7 @@ using Microsoft.Ajax.Utilities;
 namespace Confidami.Web.Controllers
 {
     [RoutePrefix("Post")]
-    public class PostController : BaseController
+    public class ManagerController : BaseController
     {
         // GET: Post
         [Route("Modera")]

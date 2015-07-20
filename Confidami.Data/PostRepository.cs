@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Confidami.Common.Model;
 using Confidami.Data.Entities;
 using Confidami.Model;
 using Dapper;
@@ -54,13 +53,16 @@ namespace Confidami.Data
                             }, transaction: transaction).SingleOrDefault();
 
 
-                        foreach (var attach in post.Attachments.Select(x => x.FileName))
+                        foreach (var attach in post.Attachments)
                         {
                             conn.Execute(QueryPostStore.InsertPostAttachment,
                               new
                               {
                                   idPost = identity,
-                                  fileName = attach
+                                  fileName = attach.FileName,
+                                  contentType = attach.ContentType,
+                                  size=attach.Size
+                                  
                               },transaction:transaction);
                         }
 

@@ -10,13 +10,15 @@ namespace Confidami.Common
     {
         public const string Index = "Index";
         public const string Moderation = "Moderation";
+        public const string Menu = "_MainMenu";
+        public const string Insert = "Insert";
 
     }
 
     public class ControllerStore
     {
         public const string Account = "Account";
-        public const string Post = "Post";
+        public const string Manager = "Manager";
         public const string Home = "Home";
         public const string Contents = "Contents";
         public const string Search = "Search";
@@ -29,7 +31,7 @@ namespace Confidami.Common
         public const string AddPost = "AddPost";
         public const string Contact = "Contact";
 
-        public const string Moderation = "Modera";
+        public const string Moderation = "Moderation";
         public const string Approve = "Approve";
         public const string Upload = "Upload";
 
