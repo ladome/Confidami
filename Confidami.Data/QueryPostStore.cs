@@ -35,7 +35,7 @@ namespace Confidami.Data
            where deleted = 0 order by Timestamp desc";
 
         public const string AllCategory =
-            @"SELECT [IdCategory],[Description]
+            @"SELECT [IdCategory],[Description],[Slug]
             FROM [tblCategory]";
 
         public const string LastInsertedId =

@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Confidami.Common.Model;
 using Confidami.Data.Entities;
 using Confidami.Model;
 using Dapper;

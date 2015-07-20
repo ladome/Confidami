@@ -13,8 +13,11 @@
 <body>
 
     <div class="container">
+        @{
+            Html.RenderAction("Menu","Base");
+        }
 
-        @Html.Partial("_MainMenu")
+        @*@Html.Partial("_MainMenu")*@
 
         <div class="col-lg-12">
 
@@ -45,7 +48,6 @@
     @Styles.Render("~/Content/parsleycss")
     @Scripts.Render("~/bundles/parsleyvalidator")
     
-
 
     @Scripts.Render("~/bundles/dropzonescripts")
 

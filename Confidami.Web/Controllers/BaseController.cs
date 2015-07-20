@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Confidami.BL;
@@ -33,13 +33,11 @@ namespace Confidami.Web.Controllers
 
 
 
-        //public ActionResult Menu()
-        //{
-        //    var model = new List<Category>()
-        //    {
-        //        new Category(){}
-        //    };
-        //}
+        public ActionResult Menu()
+        {
+            var cats = PostManager.GetAllCategories();
+            return PartialView(ViewsStore.Menu, new Menu {Categories = cats.ToList()});
+        }
     }
 
     public class HttpCookieFilter : ActionFilterAttribute
@@ -68,11 +66,4 @@ namespace Confidami.Web.Controllers
             base.OnActionExecuting(filterContext);
         }
     }
-
-    public class MenuItem
-    {
-        public List<Category> Categories { get; set; } 
-    }
-
-
 }

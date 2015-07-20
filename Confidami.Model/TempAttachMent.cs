@@ -1,4 +1,4 @@
-﻿namespace Confidami.Common.Model
+﻿namespace Confidami.Model
 {
     public class TempAttachMent
     {

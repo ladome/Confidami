@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Confidami.BL.Mapper;
 using Confidami.Common;
-using Confidami.Common.Model;
 using Confidami.Common.Utility;
 using Confidami.Data;
 using Confidami.Model;
