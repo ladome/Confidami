@@ -26,7 +26,7 @@ namespace Confidami.Common.Utility
            destinationFolder = Path.IsPathRooted(destinationFolder)? destinationFolder: Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, destinationFolder));
 
             if(!Directory.Exists(sourceFolder))
-                    throw new Exception("Source folder " + destinationFolder + " not found");
+                throw new Exception("Source folder " + sourceFolder + " not found");
 
             if(!Directory.Exists(destinationFolder))
                 if(!createIfNotExistsDest)
@@ -46,5 +46,15 @@ namespace Confidami.Common.Utility
 
             Directory.Delete(sourceFolder);
           }
+
+
+        public static void RemoveFile(string path)
+        {
+            path.CannotBeNull("path");
+            if(!File.Exists(path))
+                throw new Exception("Impossbile trovare file: " + path);
+
+            File.Delete(path);
+        }
     }
 }

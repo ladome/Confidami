@@ -109,7 +109,7 @@ namespace Confidami.BL
 
         public IEnumerable<Post> GetPostByCategory(int idCategory)
         {
-            return new List<Post>();
+            return PostMapper.Map(_postRepository.GetPostsByCategory((int)idCategory));
         }
 
         public IEnumerable<Post> GetPostByStatus(PostStatus status)
@@ -144,14 +144,15 @@ namespace Confidami.BL
         }
 
 
-        public void UploadFileInTempFolder(Stream file, string fileName, string contentType, int contentLenght,string parentFolder = null)
+        public int UploadFileInTempFolder(Stream file, string fileName, string contentType, int contentLenght,string parentFolder = null)
         {
             parentFolder.CannotBeNull("userId");
             fileName.CannotBeNull("filename");
             file.CannotBeNull("file");
 
-            _fileRepository.InsertTempUpload(parentFolder, fileName,contentType,contentLenght);
+            var newId = _fileRepository.InsertTempUpload(parentFolder, fileName,contentType,contentLenght);
             UploadFileInFolder(file, fileName, contentType, contentLenght,true,parentFolder);
+            return newId;
         }
 
         public void MoveTempInFinalFolder(string source,string destination)
@@ -166,7 +167,34 @@ namespace Confidami.BL
             _fileRepository.DeleteInTempFile(source);
         }
 
+        public void DeleteTempFile(string sourceFolder,string fileName)
+        {
+            sourceFolder.CannotBeNull("sourceFolder");
+            fileName.CannotBeNull("fileName");
 
+            var path = Path.Combine(FileSystem.GetTempUploadFolder(), Path.Combine(sourceFolder,fileName));
+            FileSystem.RemoveFile(path);
+        }
+
+        public void DeleteTempAttachment(int id)
+        {
+            var res = _fileRepository.GetTempAttachmentById(id);
+            if (res != null)
+            {
+                _fileRepository.DeleteTempAttachment(id);
+                DeleteTempFile(res.UserId, res.FileName);
+            }
+        }
+
+        public void DeleteTempAttachment(TempAttachMent tempAttachment)
+        {
+            tempAttachment.CannotBeNull("tempAttachment");
+            tempAttachment.UserId.CannotBeNull("sourceFolder");
+            tempAttachment.FileName.CannotBeNull("fileName");
+
+            _fileRepository.DeleteTempAttachment(tempAttachment.Id);
+            DeleteTempFile(tempAttachment.UserId, tempAttachment.FileName);
+        }
 
         public void UploadFileInFolder(Stream file, string fileName, string contentType, int contentLenght,bool isTmpFolder = false,string parentFolder =null)
         {
@@ -199,6 +227,11 @@ namespace Confidami.BL
         public List<TempAttachMent> GetTempAttachMentsByUserId(string userId)
         {
             return _fileRepository.GetTempAttachmentsByUserId(userId).ToList();
+        }
+
+        public TempAttachMent GetTempAttachMentById(int id)
+        {
+            return _fileRepository.GetTempAttachmentById(id);
         }
     }
 }

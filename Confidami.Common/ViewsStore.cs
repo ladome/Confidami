@@ -21,6 +21,7 @@ namespace Confidami.Common
         public const string Manager = "Manager";
         public const string Home = "Home";
         public const string Contents = "Contents";
+        public const string ContentsRoute = "segnalazioni";
         public const string Search = "Search";
         public const string Newsletter = "Newsletter";
     }
@@ -38,6 +39,7 @@ namespace Confidami.Common
         public const string Contents = "Index";
         public const string ContentsInsert = "Insert";
         public const string ContentsCategory = "Category";
+        public const string ContentsCategoryRoute = "categoria";
 
         public const string Search = "Index";
 

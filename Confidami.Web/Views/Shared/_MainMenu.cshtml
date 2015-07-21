@@ -30,7 +30,7 @@
                 <ul class="dropdown-menu" aria-labelledby="themes">
                     @foreach (var cat in Model.Categories)
                     {
-                        <li>@Html.ActionLink(cat.Description, ActionsStore.ContentsCategory, ControllerStore.Contents, new {cat.Slug},null)</li>
+                        <li>@Html.ActionLink(cat.Description, ActionsStore.ContentsCategory, ControllerStore.Contents, new { id=cat.IdCategory, slug=cat.Slug },null)</li>
                     }
                 </ul>
             </li>

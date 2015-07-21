@@ -10,7 +10,7 @@ namespace Confidami.BL.Mapper
 {
     public class PostMapper
     {
-        public static IEnumerable<Post> Map(IEnumerable<PostDb> post)
+        public static IEnumerable<Post> Map(IEnumerable<PostExtendedDb> post)
         {
             return post.Select(x => new Post()
             {

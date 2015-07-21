@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Confidami.Data
 {
-    public class QueryPostStore
+    public class QueryStore
+    {
+        public const string LastInsertedId =
+            "SELECT cast(SCOPE_IDENTITY() as int) as id;";
+    }
+
+    public class QueryPostStore : QueryStore
     {
         public const string InserPost = 
             @"INSERT INTO [dbo].[tblPosts]
@@ -38,9 +44,6 @@ namespace Confidami.Data
             @"SELECT [IdCategory],[Description],[Slug]
             FROM [tblCategory]";
 
-        public const string LastInsertedId =
-            "SELECT cast(SCOPE_IDENTITY() as int) as id;";
-
         public const string InsertPostAttachment =
             @"INSERT INTO [tblPostsAttachments]
            ([IdPost]
@@ -64,12 +67,29 @@ namespace Confidami.Data
            FROM [tblPosts]  p
            inner join tblpoststatus st on p.idStatus = st.idstatus
            inner join tblCategory cat on cat.idcategory = p.idcategory
-           where deleted = 0 and p.IdStatus=@idStatus order by Timestamp desc";
+           where deleted = 0 and p.IdStatus=@idStatus order by Timestamp desc;";
+
+        public const string PostByStatusAndCategory =
+           @"SELECT [IdPost]
+          ,p.[IdCategory]
+          ,[Title]
+          ,[Body]
+          ,[SlugUrl]
+          ,p.[IdStatus]
+          ,st.[Description] as StatusDescription
+          ,cat.[Description]
+          ,[Deleted]
+          ,[Timestamp]
+          ,[TimestampApprovation]
+           FROM [tblPosts]  p
+           inner join tblpoststatus st on p.idStatus = st.idstatus
+           inner join tblCategory cat on cat.idcategory = p.idcategory
+           where deleted = 0 and p.IdStatus=@idStatus and cat.idcategory = @idcategory order by Timestamp desc;";
 
 
         public const string SetPostStatus =
            @"UPDATE tblPosts SET idStatus=@idStatus,timestampApprovation=@timestamp" +
-           " WHERE idpost = @idPost";
+           " WHERE idpost = @idPost;";
     }
 
 
@@ -78,12 +98,18 @@ namespace Confidami.Data
         public const string InsertUploadTemp =
             "INSERT INTO [tblTempAttachments]" +
             "([UserId] ,[FileName],[ContentType],[Size])" +
-            "VALUES (@userId,@filename,@contenttype,@size)";
+            "VALUES (@userId,@filename,@contenttype,@size);";
 
         public const string SelectUploadTempByUserId =
-            "select userid,filename,contenttype,size from tblTempAttachments where userid = @userid";
+            "select userid,filename,contenttype,size from tblTempAttachments where userid = @userid and deleted=0";
+
+        public const string TempAttachmentById =
+            "select IdTempAttachment as Id,userid,filename,contenttype,size from tblTempAttachments where IdTempAttachment = @id and deleted=0";
 
         public const string DeleteInTempFolder =
             "update tblTempAttachments set deleted=1 where userid=@userid and deleted=0;";
+
+        public const string DeleteTempAttachment =
+            "update tblTempAttachments set deleted=1 where IdTempAttachment=@id and deleted=0;";
     }
 }

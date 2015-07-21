@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Confidami.BL;
 using Confidami.Common;
 using Confidami.Common.Utility;
@@ -10,10 +12,11 @@ using Confidami.Web.ViewModel;
 
 namespace Confidami.Web.Controllers
 {
+    [RoutePrefix("segnalazioni")]
     public class ContentsController : BaseController
     {
 
-        [Route("segnalazioni")]
+        [Route]
         public ActionResult Index()
         {
             ViewBag.Title = "Segnalazioni";
@@ -27,15 +30,16 @@ namespace Confidami.Web.Controllers
             return View(vm);
         }
 
-        [Route("segnalazioni/categoria/{slug}")]
-        public ActionResult Category(string slug)
+        [Route("categoria/{id}/{slug}",Name = "Sluggo")]
+        public ActionResult Category(int id,string slug)
         {
             ViewBag.Title = "Segnalazioni - category name" + slug;
             ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
+            if (slug != "test")
+               return RedirectToRoutePermanent("Sluggo", new {id=id,slug="test"});
             return View("Index");
         }
 
-        [Route("segnalazioni/{id}")]
         [Route("segnalazioni/{categoryName}/{id}")]
         public ActionResult SingleContent(string categoryName,long id)
         {
@@ -50,7 +54,7 @@ namespace Confidami.Web.Controllers
         }
 
 
-        [Route("segnalazioni/inserisci")]
+        [Route("inserisci")]
         public ActionResult Insert()
         {
             ViewBag.Title = "Segnalazioni - inserisci";
@@ -59,14 +63,14 @@ namespace Confidami.Web.Controllers
 
             var categories = PostManager.GetAllCategories();
 
-            return View(new InsertPostViewModel{Categories = categories});
+            return View(FillModel());
         }
 
         [HttpPost]
         public ActionResult AddPost(InsertPostViewModel postVm)
         {
             if (!ModelState.IsValid)
-                return View(ViewsStore.Insert, postVm);
+                return View(ViewsStore.Insert, FillModel());
 
             var post = new Post
             {
@@ -86,19 +90,36 @@ namespace Confidami.Web.Controllers
         public ActionResult Upload(HttpPostedFileWrapper file)
         {
             file.CannotBeNull("file");
-            FileManager.UploadFileInTempFolder(file.InputStream, file.FileName, file.ContentType, file.ContentLength, CurrentUserId);
-            return Json(false);
+            var id = FileManager.UploadFileInTempFolder(file.InputStream, file.FileName, file.ContentType, file.ContentLength, CurrentUserId);
+            return Json(id);
         }
 
         public JsonResult GetTempAttachMents()
         {
-            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() { Name = x.FileName, Size = x.Size }), JsonRequestBehavior.AllowGet);
+            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() { Name = x.FileName, Size = x.Size,Id=x.Id }), JsonRequestBehavior.AllowGet);
         }
 
-        //public JsonResult DeleteAttachMent(string idAttachment)
-        //{
-        //    return ""
-        //}
+        private InsertPostViewModel FillModel()
+        {
+            var categories = PostManager.GetAllCategories();
+            return new InsertPostViewModel {Categories = categories};
+        }
+
+        [Route("~/Contents/DeleteAttachment/{idAttachment}")]
+        public ActionResult DeleteAttachMent(int idAttachment)
+        {
+            var res =FileManager.GetTempAttachMentById(idAttachment);
+            if(res==null)
+                return Json(false, JsonRequestBehavior.AllowGet);
+ 
+            if (!IsAdmin && res.UserId != CurrentUserId)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return Json("Non puoi eliminare file di un altro utente", JsonRequestBehavior.AllowGet);
+            }
+            FileManager.DeleteTempAttachment(res);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
 
 
     }

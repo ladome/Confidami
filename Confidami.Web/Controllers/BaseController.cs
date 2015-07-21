@@ -10,6 +10,7 @@ using Microsoft.Owin;
 namespace Confidami.Web.Controllers
 {
     [HttpCookieFilter]
+    [RoutePrefix("Route")]
     public class BaseController : Controller
     {
         private PostManager _postManager;
@@ -32,7 +33,7 @@ namespace Confidami.Web.Controllers
         public bool IsAdmin { get { return User.IsInRole(RolesStore.AdminRole); } }
 
 
-
+        [Route("Menu")]
         public ActionResult Menu()
         {
             var cats = PostManager.GetAllCategories();

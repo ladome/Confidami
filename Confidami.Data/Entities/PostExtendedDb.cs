@@ -13,6 +13,18 @@ namespace Confidami.Data.Entities
         public string Title { get; set; }
         public string Body { get; set; }
         public int IdCategory { get; set; }
+        public string SlugUrl { get; set; }
+        public PostStatus Status { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public DateTime TimeStampApprovation { get; set; }
+    }
+
+    public class PostExtendedDb
+    {
+        public int IdPost { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set; }
+        public int IdCategory { get; set; }
         public string Description { get; set; }
         public string SlugUrl { get; set; }
         public PostStatus Status { get; set; }

@@ -15,6 +15,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+Upload/
 
 # Roslyn cache directories
 *.ide/
@@ -187,4 +188,5 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-/Uploads
+Uploads/
+

@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbUtilities.cs" />
-    <Compile Include="Entities\PostDb.cs" />
+    <Compile Include="Entities\PostExtendedDb.cs" />
     <Compile Include="PostRepository.cs" />
     <Compile Include="QueryPostStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

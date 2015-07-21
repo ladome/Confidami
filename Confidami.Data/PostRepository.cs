@@ -42,7 +42,7 @@ namespace Confidami.Data
                 {
                     try
                     {
-                        var identity = conn.Query<int>(QueryPostStore.InserPost + " " + QueryPostStore.LastInsertedId,
+                        var identity = conn.Query<int>(QueryPostStore.InserPost + " " + QueryStore.LastInsertedId,
                             new
                             {
                                 idCategory = post.Category.IdCategory,
@@ -81,19 +81,27 @@ namespace Confidami.Data
 
         }
 
-        public IEnumerable<PostDb> GetAllPosts()
+        public IEnumerable<PostExtendedDb> GetAllPosts()
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<PostDb>(QueryPostStore.PostByStatus, new { idStatus = PostStatus.Approved });
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus, new { idStatus = PostStatus.Approved });
             }
         }
 
-        public IEnumerable<PostDb> GetPostByStatus(int status)
+        public IEnumerable<PostExtendedDb> GetPostsByCategory(int idCategory)
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<PostDb>(QueryPostStore.PostByStatus, new { idStatus = status});
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatusAndCategory, new { idStatus = PostStatus.Approved, idCategory = idCategory });
+            }
+        }
+
+        public IEnumerable<PostExtendedDb> GetPostByStatus(int status)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus, new { idStatus = status});
             }
         }
 
@@ -129,8 +137,8 @@ namespace Confidami.Data
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Execute(QueryFileStore.InsertUploadTemp,
-                    new {userid = userId, filename = fileName, contentType = contentType, size = fileSize});
+                return conn.Query<int>(QueryFileStore.InsertUploadTemp + QueryStore.LastInsertedId,
+                    new {userid = userId, filename = fileName, contentType = contentType, size = fileSize}).SingleOrDefault();
             }
         }
 
@@ -143,11 +151,28 @@ namespace Confidami.Data
             }
         }
 
+        public void DeleteTempAttachment(int id)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                conn.Execute(QueryFileStore.DeleteTempAttachment,
+                    new { id = id });
+            }
+        }
+
         public IEnumerable<TempAttachMent> GetTempAttachmentsByUserId(string userId)
         {
             using (var conn = DbUtilities.Connection)
             {
                 return conn.Query<TempAttachMent>(QueryFileStore.SelectUploadTempByUserId,new {userid=userId});
+            }
+        }
+
+        public TempAttachMent GetTempAttachmentById(int id)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<TempAttachMent>(QueryFileStore.TempAttachmentById, new { id = id}).SingleOrDefault();
             }
         }
 
