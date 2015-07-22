@@ -8,6 +8,10 @@
 
 /*** dropzone *****/
 /*.file-row.dz-image-preview{margin-bottom:4px; padding-bottom:4px; border-bottom:1px solid}*/
+#total-progress {
+    opacity: 0;
+}
+
 #dropzone-actions {margin-top:10px}
 .file-row .panel {
     margin-bottom: 5px;
@@ -15,4 +19,5 @@
 .file-row .panel-heading {padding:5px;}
 .file-row .panel-body {padding:5px;}
 .file-row .panel-footer {padding:5px;}
-.file-row .progress {margin:5px 0;}
+.file-row .progress {margin:5px 0;visibility:hidden}
+.file-row .cancel, .file-row .start {display:none}

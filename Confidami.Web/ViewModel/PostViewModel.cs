@@ -48,6 +48,6 @@ namespace Confidami.Web.ViewModel
     public class TempAttachMentViewModel
     {
         public string Name { get; set; }
-        public long Size { get; set; }
+        public long Size { get; set; }        
     }
 }

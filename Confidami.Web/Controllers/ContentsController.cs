@@ -92,7 +92,7 @@ namespace Confidami.Web.Controllers
 
         public JsonResult GetTempAttachMents()
         {
-            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() { Name = x.FileName, Size = x.Size }), JsonRequestBehavior.AllowGet);
+            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() {Name = x.FileName, Size = x.Size }), JsonRequestBehavior.AllowGet);
         }
 
         //public JsonResult DeleteAttachMent(string idAttachment)
