@@ -43,7 +43,9 @@ namespace Confidami.Web.Controllers
                 ViewBag.Heding = "Intestazione per tag header index singola segnalazione: " +id;
             else
             {
-                ViewBag.Heding = "Intestazione per tag header index singola segnalazione: " + id + "  categoria: " + categoryName;
+                ViewBag.isSingleItem = true;
+                ViewBag.Heding = "Qui ci va il titolo della segnalazione id " + id;
+                ViewBag.categoryName = categoryName; 
                 
             }
             return View(); //segnalazioni/nome-categoria/titolo-segnalazione

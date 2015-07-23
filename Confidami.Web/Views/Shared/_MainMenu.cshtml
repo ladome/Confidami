@@ -30,7 +30,7 @@
                 <ul class="dropdown-menu" aria-labelledby="themes">
                     @foreach (var cat in Model.Categories)
                     {
-                        <li>@Html.ActionLink(cat.Description, ActionsStore.ContentsCategory, ControllerStore.Contents, new {cat.Slug},null)</li>
+                        <li>@Html.ActionLink(cat.Description, ActionsStore.ContentsCategory, ControllerStore.Contents+"/"+cat.Slug, new {cat.Slug},null)</li>                         
                     }
                 </ul>
             </li>
@@ -53,8 +53,7 @@
                 <input type="text" class="form-control" placeholder="Cerca" name="k">
             </div>
             <button type="submit" class="btn btn-primary btn-sm">Cerca</button>
-        </form>        
-
+        </form>                
         @*@Html.Partial("_LoginPartial")*@
     </div>
 

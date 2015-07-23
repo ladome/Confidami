@@ -14,7 +14,7 @@
 
     <div class="container">
         @{
-            Html.RenderAction("Menu","Base");
+            Html.RenderAction("Menu", "Base");
         }
 
         @*@Html.Partial("_MainMenu")*@
@@ -22,7 +22,21 @@
         <div class="col-lg-12">
 
             <header>
-                <p class="lead">@ViewBag.Heding</p>
+                <div class="col-lg-8 col-sm-6">
+                    <div class="row">
+                        @if (ViewBag.isSingleItem != null)
+                        {                            
+                         <h4>@ViewBag.Heding</h4>                            
+
+                        }
+                        else
+                        {
+                            <h3 class="text-info">@ViewBag.Heding</h3>                            
+                        }
+                    </div>
+
+                </div>
+
             </header>
 
             <main>
@@ -43,11 +57,11 @@
 
     @Scripts.Render("~/bundles/mainjs")
 
-    @*@Scripts.Render("~/bundles/jqueryval")*@ 
-    
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+
     @Styles.Render("~/Content/parsleycss")
     @Scripts.Render("~/bundles/parsleyvalidator")
-    
+
 
     @Scripts.Render("~/bundles/dropzonescripts")
 
