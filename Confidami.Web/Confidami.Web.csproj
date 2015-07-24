@@ -210,6 +210,7 @@
     <Content Include="Content\img\sand.jpg" />
     <Content Include="Content\img\sedona.jpg" />
     <Content Include="Content\img\stormy-sky.jpg" />
+    <Content Include="Content\parsley.css" />
     <Content Include="Content\skin\darkly\bootstrap.min.css" />
     <Content Include="Content\skin\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\skin\paper\bootstrap.min.css" />
@@ -284,7 +285,6 @@
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Uploads\.gitignore.txt" />
     <Content Include="Uploads\Temp\.gitignore" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -326,10 +326,6 @@
     <Content Include="Views\Shared\_MainMenu.cshtml" />
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
-    <Content Include="Uploads\Temp\6da5ad1b-2695-4a4e-a127-31ca156910a4\DotNet.Highcharts.Samples.zip" />
-    <Content Include="Uploads\Temp\6da5ad1b-2695-4a4e-a127-31ca156910a4\twbs-bootstrap-v3.3.2-86-g9e1e73f.zip" />
-    <Content Include="Uploads\Temp\f7c71993-0e5a-49b3-8939-fbf359091d06\SAC_n_5_28_01_2015.pdf" />
-    <Content Include="Uploads\Temp\f7c71993-0e5a-49b3-8939-fbf359091d06\tutorial scelta data.pdf" />
     <Content Include="Views\Contents\Index.cshtml" />
     <Content Include="Views\Contents\Insert.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
