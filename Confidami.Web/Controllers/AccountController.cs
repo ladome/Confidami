@@ -171,13 +171,13 @@ namespace Confidami.Web.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    var res = await RoleManager.FindByNameAsync(RolesStore.UserRole);
+                    var res = await RoleManager.FindByNameAsync(RolesStore.AdminRole);
                     if (res == null)
                     {
-                        await RoleManager.CreateAsync(new IdentityRole(RolesStore.UserRole));
+                        await RoleManager.CreateAsync(new IdentityRole(RolesStore.AdminRole));
                     }
 
-                    await UserManager.AddToRoleAsync(user.Id, RolesStore.UserRole);
+                    await UserManager.AddToRoleAsync(user.Id, RolesStore.AdminRole);
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771

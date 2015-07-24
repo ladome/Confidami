@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -24,20 +25,26 @@ namespace Confidami.Web.Controllers
             //recupero tutti i post
             //TODO paginazione
             var res = PostManager.GetAllPost();
-            var vm = new PostViewModel() {IsAdmin = IsAdmin};
-            var posts = res.Select(x => new PostViewModelBase() { Body = x.Body, Title = x.Title, CategoryPost = x.Category.Description, IdPost = x.IdPost }).ToList();
-            vm.Posts = posts;
+
+            var vm = FillPostViewModel(res);
             return View(vm);
         }
 
-        [Route("categoria/{id}/{slug}",Name = "Sluggo")]
+        [Route("categoria/{id}/{slug}",Name = "CatRoute")]
         public ActionResult Category(int id,string slug)
         {
             ViewBag.Title = "Segnalazioni - category name" + slug;
             ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
-            if (slug != "test")
-               return RedirectToRoutePermanent("Sluggo", new {id=id,slug="test"});
-            return View("Index");
+
+            var res = PostManager.GetCategory(id);
+            if (res == null)
+                return HttpNotFound();
+
+            if (slug != res.Slug)
+                return RedirectToRoutePermanent("CatRoute", new { id = id, slug = res.Slug });
+            var resFilt = PostManager.GetPostByCategory(id);
+            var vm = FillPostViewModel(resFilt);
+            return View("Index",vm);
         }
 
         [Route("segnalazioni/{categoryName}/{id}")]
@@ -63,14 +70,14 @@ namespace Confidami.Web.Controllers
 
             var categories = PostManager.GetAllCategories();
 
-            return View(FillModel());
+            return View(FillInsertModel());
         }
 
         [HttpPost]
         public ActionResult AddPost(InsertPostViewModel postVm)
         {
             if (!ModelState.IsValid)
-                return View(ViewsStore.Insert, FillModel());
+                return View(ViewsStore.Insert, FillInsertModel());
 
             var post = new Post
             {
@@ -99,10 +106,18 @@ namespace Confidami.Web.Controllers
             return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() { Name = x.FileName, Size = x.Size,Id=x.Id }), JsonRequestBehavior.AllowGet);
         }
 
-        private InsertPostViewModel FillModel()
+        private InsertPostViewModel FillInsertModel()
         {
             var categories = PostManager.GetAllCategories();
             return new InsertPostViewModel {Categories = categories};
+        }
+
+        private PostViewModel FillPostViewModel(IEnumerable<Post> posts)
+        {
+            var vm = new PostViewModel() { IsAdmin = IsAdmin };
+            var pbase = posts.Select(x => new PostViewModelBase() { Body = x.Body, Title = x.Title, CategoryPost = x.Category.Description, IdPost = x.IdPost }).ToList();
+            vm.Posts = pbase;
+            return vm;
         }
 
         [Route("~/Contents/DeleteAttachment/{idAttachment}")]

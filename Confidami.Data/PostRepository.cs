@@ -129,6 +129,14 @@ namespace Confidami.Data
                 return conn.Query<Category>(QueryPostStore.AllCategory);
             }
         }
+
+        public Category GetCategory(int idcategory)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<Category>(QueryPostStore.SingleCategory, new { idcategory }).SingleOrDefault();
+            }
+        }
     }
 
     public class FileRepository : BaseRepository

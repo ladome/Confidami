@@ -44,6 +44,10 @@ namespace Confidami.Data
             @"SELECT [IdCategory],[Description],[Slug]
             FROM [tblCategory]";
 
+        public const string SingleCategory =
+            @"SELECT [IdCategory],[Description],[Slug]
+                    FROM [tblCategory] where idcategory=@idcategory";
+
         public const string InsertPostAttachment =
             @"INSERT INTO [tblPostsAttachments]
            ([IdPost]

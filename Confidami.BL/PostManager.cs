@@ -126,6 +126,11 @@ namespace Confidami.BL
         {
             return _categoryRepository.GetCategories();
         }
+
+        public Category GetCategory(int idCategory)
+        {
+            return _categoryRepository.GetCategory(idCategory);
+        }
     }
 
 
