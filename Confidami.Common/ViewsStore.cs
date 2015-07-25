@@ -49,4 +49,9 @@ namespace Confidami.Common
 
         ///public static string Contact { get; set; }
     }
+
+    public class JsonAction
+    {
+        public string TemAttachMents = "GetTempAttachments";
+    }
 }

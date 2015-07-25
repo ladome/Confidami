@@ -97,7 +97,7 @@
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <strong><i class="glyphicon glyphicon-file"></i>
-                            <span class="" data-dz-name></span></strong>
+                                <span class="" data-dz-name></span></strong>
                             &nbsp;-&nbsp;
                             <span data-dz-size></span>
                         </div>
@@ -137,162 +137,163 @@
     </div>
 
 </div>
+<script>
+    var acceptedfiles = @ViewBag.Acceptedfiles;
+    var imageformats = @ViewBag.ImageFormats;
+</script>
   
 <!--------------------->
 <!-- JS -->
 @section scripts {
     <script type="text/javascript">    
-    $(function () {
+        $(function () {
        
-        var maxFiles = 4;
-        var setMaxFilesLabel = function (uploaded) {
-            $('#maxFiles').text(uploaded + ' di ' + maxFiles);
-        };
-        setMaxFilesLabel('0');
-
-        var thumbnailWidth = 80;
-        var thumbnailHeight = 80;
-        $('.dropzone-thumb-preview').css({ 'width': thumbnailWidth + 'px', 'height': thumbnailHeight + 'px' })
-        var previewNode = document.querySelector("#template");
-        previewNode.id = "";
-        var previewTemplate = previewNode.parentNode.innerHTML;
-        previewNode.parentNode.removeChild(previewNode);
-
-        var myDropzone = new Dropzone(document.body, {
-            url: "@Url.Action(ActionsStore.Upload, ControllerStore.Contents)",
-            maxFiles: maxFiles,
-            maxFilesize: 2,
-            thumbnailWidth: thumbnailWidth,
-            thumbnailHeight: thumbnailHeight,
-            parallelUploads: maxFiles,
-            acceptedFiles: 'image/jpeg,image/jpg,image/png,image/gif,application/pdf,application/msword,text/plain',
-            autoQueue: false, // Make sure the files aren't queued until manually added
-            previewsContainer: "#previews", // Define the container to display the previews
-            previewTemplate: previewTemplate,
-            clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
-            init: function () {
-                loadattacchements();
-            }
-        });
-
-        //Add file for upload
-        myDropzone.on("addedfile", function (file) {
-
-            console.log('Aggiunto in lista', file)
-
-            file.previewElement.querySelector(".start").style.display = 'inline-block';
-            file.previewElement.querySelector(".cancel").style.display = 'inline-block';
-
-            file.previewElement.querySelector(".start").onclick = function () { //click upload file
-                myDropzone.enqueueFile(file);
+            var maxFiles = 4;
+            var setMaxFilesLabel = function (uploaded) {
+                $('#maxFiles').text(uploaded + ' di ' + maxFiles);
             };
-        });
+            setMaxFilesLabel('0');
 
-        //Upload process x single file
-        myDropzone.on("sending", function (file) {
-            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
-            file.previewElement.querySelector(".progress-bar").style.visibility = "visible";
-            $("#total-progress").css('opacity', '1');
-        });
+            var thumbnailWidth = 80;
+            var thumbnailHeight = 80;
+            $('.dropzone-thumb-preview').css({ 'width': thumbnailWidth + 'px', 'height': thumbnailHeight + 'px' })
+            var previewNode = document.querySelector("#template");
+            previewNode.id = "";
+            var previewTemplate = previewNode.parentNode.innerHTML;
+            previewNode.parentNode.removeChild(previewNode);
 
-        //Upload complete
-        myDropzone.on("success", function (file) {
-            console.log('SUCCESS', file.status)
-
-            if (file.status == 'success') {
-                myDropzone.options.maxFiles--;
-                setMaxFilesLabel((maxFiles - myDropzone.options.maxFiles));
-                //file.previewElement.querySelector(".cancel").setAttribute("disabled", "disabled");
-                file.previewElement.querySelector(".cancel").style.display = 'none';
-                file.previewElement.querySelector(".start").style.display = 'none';
-            }
-        });
-
-        // Update the total progress bar
-        myDropzone.on("totaluploadprogress", function (progress) {
-            document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
-            //$("#total-progress .progress-bar").css('width', progress + "%");
-        });
-
-        //Uloda completato per 1 o piu' file
-        myDropzone.on("queuecomplete", function (progress) {
-            $("#total-progress").css('opacity', '0');
-        });
-
-        //Upload all click
-        $("#dropzone-actions .start").on('click', function () {
-            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
-        });
-
-        //Cancel all
-        $("#dropzone-actions .cancel").on('click', function () {
-            myDropzone.removeAllFiles(true);
-            console.log('CANCELLARE TUTTI I FILE AJAX')
-        });
-
-        //Eliminazione singolo file CLICK su ANNULLA o TRASH  single item
-        myDropzone.on("removedfile", function (file) {            
-            
-            if (file.hasOwnProperty('accepted') && !file.accepted) return;
-            
-            if (myDropzone.options.maxFiles < maxFiles) myDropzone.options.maxFiles++;
-
-            setMaxFilesLabel((maxFiles - myDropzone.options.maxFiles));
-
-            console.log('RM MAX ' + myDropzone.options.maxFiles)
-        });
-
-        //Load temp files
-        function loadattacchements() {            
-            @{
-                var path = @Url.Content("~/Uploads/Temp/" + ViewBag.CurrentUserId + "/");
-            }
-
-            var jqxhr = $.getJSON("/@ControllerStore.Contents/GetTempAttachMents", function () {
-
-
-            }).done(function (attacchments) {
-                $.each(attacchments, function (key, attacchement) {
-
-
-
-                    var extension = attacchement.Name.substr((attacchement.Name.lastIndexOf('.') + 1));
-                    extensionList = ['jpg', 'jpeg', 'png', 'gif'];
-                    if (extensionList.indexOf(extension) != -1) {
-
-                        if (myDropzone.options.maxFiles < 1) return true; //limit reach
-
-                        var objAttacchement = { name: attacchement.Name, size: attacchement.Size };
-
-                        myDropzone.options.addedfile.call(myDropzone, objAttacchement);
-
-                        console.log('Allegato ' + key, attacchement);
-                        //Sistemare ulr thumb
-
-                        //thumbUrl = urlFile.replace('.' + extension, '-thumb.' + extension);
-                        var urlFile = '@(path)' + attacchement.Name;
-                        thumbUrl = urlFile;
-                      
-                        myDropzone.options.thumbnail.call(myDropzone, objAttacchement, thumbUrl);
-                      
-                        myDropzone.options.maxFiles--;
-                        console.log('LEFT ' + myDropzone.options.maxFiles)
-                        setMaxFilesLabel((maxFiles - myDropzone.options.maxFiles));                     
-                    }
-                });
-
-                
-
-            }).fail(function (jqxhr, textStatus, error) {
-                var err = textStatus + ", " + error;
-                alert("GetTempAttacchMents Failed " + err);
-
-            }).always(function () {
-                
+            var myDropzone = new Dropzone(document.body, {
+                url: "@Url.Action(ActionsStore.Upload, ControllerStore.Contents)",
+                maxFiles: maxFiles,
+                maxFilesize: 2,
+                thumbnailWidth: thumbnailWidth,
+                thumbnailHeight: thumbnailHeight,
+                parallelUploads: maxFiles,
+                acceptedFiles: 'image/jpeg,image/jpg,image/png,image/gif,application/pdf,application/msword,text/plain',
+                autoQueue: false, // Make sure the files aren't queued until manually added
+                previewsContainer: "#previews", // Define the container to display the previews
+                previewTemplate: previewTemplate,
+                clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
+                init: function () {
+                    loadattacchements();
+                }
             });
-        };
 
-    });
+            //Add file for upload
+            myDropzone.on("addedfile", function (file) {
+
+                console.log('Aggiunto in lista', file)
+
+                file.previewElement.querySelector(".start").style.display = 'inline-block';
+                file.previewElement.querySelector(".cancel").style.display = 'inline-block';
+
+                file.previewElement.querySelector(".start").onclick = function () { //click upload file
+                    myDropzone.enqueueFile(file);
+                };
+            });
+
+            //Upload process x single file
+            myDropzone.on("sending", function (file) {
+                file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+                file.previewElement.querySelector(".progress-bar").style.visibility = "visible";
+                $("#total-progress").css('opacity', '1');
+            });
+
+            //Upload complete
+            myDropzone.on("success", function (file) {
+                console.log('SUCCESS', file.status)
+
+                if (file.status == 'success') {
+                    myDropzone.options.maxFiles--;
+                    setMaxFilesLabel((maxFiles - myDropzone.options.maxFiles));
+                    //file.previewElement.querySelector(".cancel").setAttribute("disabled", "disabled");
+                    file.previewElement.querySelector(".cancel").style.display = 'none';
+                    file.previewElement.querySelector(".start").style.display = 'none';
+                }
+            });
+
+            // Update the total progress bar
+            myDropzone.on("totaluploadprogress", function (progress) {
+                document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+                //$("#total-progress .progress-bar").css('width', progress + "%");
+            });
+
+            //Uloda completato per 1 o piu' file
+            myDropzone.on("queuecomplete", function (progress) {
+                $("#total-progress").css('opacity', '0');
+            });
+
+            //Upload all click
+            $("#dropzone-actions .start").on('click', function () {
+                myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+            });
+
+            //Cancel all
+            $("#dropzone-actions .cancel").on('click', function () {
+                myDropzone.removeAllFiles(true);
+                console.log('CANCELLARE TUTTI I FILE AJAX')
+            });
+
+            //Eliminazione singolo file CLICK su ANNULLA o TRASH  single item
+            myDropzone.on("removedfile", function (file) {            
+            
+                if (file.hasOwnProperty('accepted') && !file.accepted) return;
+            
+                if (myDropzone.options.maxFiles < maxFiles) myDropzone.options.maxFiles++;
+
+                setMaxFilesLabel((maxFiles - myDropzone.options.maxFiles));
+
+                console.log('RM MAX ' + myDropzone.options.maxFiles)
+            });
+
+            //Load temp files
+            function loadattacchements() {            
+
+                var jqxhr = $.getJSON("/Contents/GetTempAttachMents", function () {
+
+
+                }).done(function (attacchments) {
+                    $.each(attacchments, function (key, attacchement) {
+
+
+
+                        var extension = attacchement.Name.substr((attacchement.Name.lastIndexOf('.') + 1));
+                        extensionList = ['jpg', 'jpeg', 'png', 'gif'];
+                        if (extensionList.indexOf(extension) != -1) {
+
+                            if (myDropzone.options.maxFiles < 1) return true; //limit reach
+
+                            var objAttacchement = { name: attacchement.Name, size: attacchement.Size };
+
+                            myDropzone.options.addedfile.call(myDropzone, objAttacchement);
+
+                            console.log('Allegato ' + key, attacchement);
+                            //Sistemare ulr thumb
+
+                            //thumbUrl = urlFile.replace('.' + extension, '-thumb.' + extension);
+                            var urlFile = attacchement.FullPath;
+                            thumbUrl = urlFile;
+                      
+                            myDropzone.options.thumbnail.call(myDropzone, objAttacchement, thumbUrl);
+                      
+                            myDropzone.options.maxFiles--;
+                            console.log('LEFT ' + myDropzone.options.maxFiles)
+                            setMaxFilesLabel((maxFiles - myDropzone.options.maxFiles));                     
+                        }
+                    });
+
+                
+
+                }).fail(function (jqxhr, textStatus, error) {
+                    var err = textStatus + ", " + error;
+                    alert("GetTempAttacchMents Failed " + err);
+
+                }).always(function () {
+                
+                });
+            };
+
+        });
     </script>
 }
 

@@ -9,6 +9,7 @@ using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
 using Confidami.Web.ViewModel;
+using Newtonsoft.Json;
 
 
 namespace Confidami.Web.Controllers
@@ -66,6 +67,12 @@ namespace Confidami.Web.Controllers
         {
             ViewBag.Title = "Segnalazioni - inserisci";
             ViewBag.Heding = "Intestazione per tag header segnalazioni inserisci";
+
+            #region dropzone
+
+            ViewBag.Acceptedfiles = Config.UploadAcceptedFile;
+            ViewBag.ImageFormats = new MvcHtmlString(JsonConvert.SerializeObject(Config.UploadImageExtensions));
+            #endregion
             ViewBag.CurrentUserId = CurrentUserId;
 
             var categories = PostManager.GetAllCategories();
@@ -103,7 +110,7 @@ namespace Confidami.Web.Controllers
 
         public JsonResult GetTempAttachMents()
         {
-            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel() { Name = x.FileName, Size = x.Size,Id=x.Id }), JsonRequestBehavior.AllowGet);
+            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel(CurrentUserId) { Name = x.FileName, Size = x.Size, Id = x.Id }), JsonRequestBehavior.AllowGet);
         }
 
         private InsertPostViewModel FillInsertModel()

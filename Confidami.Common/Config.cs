@@ -34,7 +34,7 @@ namespace Confidami.Common
 
                 if(string.IsNullOrEmpty(settings))
                     throw new Exception("unable to read settings upload formats");
-                var split = settings.CleanFromSpaceAndNewLine().Replace("{format}", UploadThumbFormatExtension).Split('|');
+                var split = settings.CleanFromSpaceAndNewLine().Split('|');
                 foreach (var s in split)
                 {
                     var idx = s.IndexOf(':');
@@ -46,6 +46,22 @@ namespace Confidami.Common
                 }
 
                 return res;
+            }
+        }
+
+
+        public static string UploadAcceptedFile
+        {
+            get { return ConfigurationManager.AppSettings["UploadAcceptedFile"]; }
+        }
+
+        public static string[] UploadImageExtensions
+        {
+            get
+            {
+                var conf = ConfigurationManager.AppSettings["UploadImageExtensions"];
+                conf.CannotBeNull("extensions file format");
+                return conf.Split(',');
             }
         }
 

@@ -15,7 +15,7 @@ namespace Confidami.Common.Utility
             string defaultFolfer = Config.UploadsTempFolder;
             return Path.IsPathRooted(defaultFolfer) ? defaultFolfer : Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer));
         }
-        public static string GetFullUploadFolder()
+        public static string GetFullUploadFolder()  
         {
             string defaultFolfer = Config.UploadsFolder;
             return Path.IsPathRooted(defaultFolfer) ? defaultFolfer : Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultFolfer));
@@ -62,8 +62,12 @@ namespace Confidami.Common.Utility
             versions.CannotBeNull("versions of thumbnail");
             filenameSource.FileExistsOrThrowException();
             var extension = Path.GetExtension(filenameSource);
-            foreach (string suffix in versions.Keys) 
-            { 
+
+            var parameters = versions.Keys.ToDictionary(key => key, key => versions[key].Replace("{format}", extension));
+
+            foreach (var suffix in parameters.Keys)
+            {
+              versions[suffix]=versions[suffix].Replace("{format}", extension);
               var fileName = Path.Combine(destinationFolder, filenameSource.RemoveExtensionsFilename() + suffix);
               var dest = ImageBuilder.Current.Build(new ImageJob(filenameSource,fileName,new Instructions(versions[suffix]),true,true));
             }
