@@ -8,7 +8,7 @@ using Confidami.Model;
 
 namespace Confidami.BL
 {
-    public class PostManager
+    public class PostManager 
     {
         private readonly PostRepository _postRepository;
         private readonly CategoryRepository _categoryRepository;

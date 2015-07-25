@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -104,8 +105,19 @@ namespace Confidami.Web.Controllers
         public ActionResult Upload(HttpPostedFileWrapper file)
         {
             file.CannotBeNull("file");
-            var id = FileManager.UploadFileInTempFolder(file.InputStream, file.FileName, file.ContentType, file.ContentLength, CurrentUserId);
-            return Json(id);
+             
+            try
+            {
+                var id = FileManager.UploadFileInTempFolder(file.InputStream, file.FileName, file.ContentType, file.ContentLength, CurrentUserId);
+                return Json(new BaseResponse() { Message = id.ToString(), Success = true }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new BaseResponse() { Message = ex.ToString(), Success = false }, JsonRequestBehavior.AllowGet);
+            }
+
         }
 
         public JsonResult GetTempAttachMents()
