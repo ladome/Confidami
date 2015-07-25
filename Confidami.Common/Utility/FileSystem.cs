@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ImageResizer;
 
 namespace Confidami.Common.Utility
 {
@@ -51,10 +52,23 @@ namespace Confidami.Common.Utility
         public static void RemoveFile(string path)
         {
             path.CannotBeNull("path");
-            if(!File.Exists(path))
-                throw new Exception("Impossbile trovare file: " + path);
+            path.FileExistsOrThrowException();
 
             File.Delete(path);
         }
+
+        public static void ResizeImage(string filenameSource,string destinationFolder, Dictionary<string, string> versions)
+        {
+            versions.CannotBeNull("versions of thumbnail");
+            filenameSource.FileExistsOrThrowException();
+            var extension = Path.GetExtension(filenameSource);
+            foreach (string suffix in versions.Keys) 
+            { 
+              var fileName = Path.Combine(destinationFolder, filenameSource.RemoveExtensionsFilename() + suffix);
+              var dest = ImageBuilder.Current.Build(new ImageJob(filenameSource,fileName,new Instructions(versions[suffix]),true,true));
+            }
+        }
+
+
     }
 }

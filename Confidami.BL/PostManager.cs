@@ -155,8 +155,8 @@ namespace Confidami.BL
             fileName.CannotBeNull("filename");
             file.CannotBeNull("file");
 
+            UploadFileInFolder(file, fileName, contentType, contentLenght, true, parentFolder);
             var newId = _fileRepository.InsertTempUpload(parentFolder, fileName,contentType,contentLenght);
-            UploadFileInFolder(file, fileName, contentType, contentLenght,true,parentFolder);
             return newId;
         }
 
@@ -168,7 +168,6 @@ namespace Confidami.BL
             var pathSource = Path.Combine(FileSystem.GetTempUploadFolder(), source);
             var pathDestination = Path.Combine(FileSystem.GetFullUploadFolder(), destination);
             FileSystem.MoveFilesFolder(pathSource,pathDestination,true);
-
             _fileRepository.DeleteInTempFile(source);
         }
 
@@ -186,8 +185,8 @@ namespace Confidami.BL
             var res = _fileRepository.GetTempAttachmentById(id);
             if (res != null)
             {
-                _fileRepository.DeleteTempAttachment(id);
                 DeleteTempFile(res.UserId, res.FileName);
+                _fileRepository.DeleteTempAttachment(id);
             }
         }
 
@@ -197,8 +196,8 @@ namespace Confidami.BL
             tempAttachment.UserId.CannotBeNull("sourceFolder");
             tempAttachment.FileName.CannotBeNull("fileName");
 
-            _fileRepository.DeleteTempAttachment(tempAttachment.Id);
             DeleteTempFile(tempAttachment.UserId, tempAttachment.FileName);
+            _fileRepository.DeleteTempAttachment(tempAttachment.Id);
         }
 
         public void UploadFileInFolder(Stream file, string fileName, string contentType, int contentLenght,bool isTmpFolder = false,string parentFolder =null)
@@ -223,10 +222,15 @@ namespace Confidami.BL
 
             var buffer = new byte[contentLenght];
             file.Read(buffer,0,contentLenght);
-            using (var fileStream = new FileStream(Path.Combine(path,fileName),FileMode.Create))
+            var fileNameFull = Path.Combine(path, fileName);
+            using (var fileStream = new FileStream(fileNameFull, FileMode.Create))
             {
               fileStream.Write(buffer,0,contentLenght);
             }
+
+            var versions = Config.UploadThumbSettings;
+
+            FileSystem.ResizeImage(fileNameFull, path, versions);
          }
 
         public List<TempAttachMent> GetTempAttachMentsByUserId(string userId)
