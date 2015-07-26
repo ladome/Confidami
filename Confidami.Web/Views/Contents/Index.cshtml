@@ -2,7 +2,16 @@
 @model Confidami.Web.ViewModel.PostViewModel
 
 
-<h2>Lista</h2>
+<div class="col-lg-12">
+    <div class="row">
+        <header>
+            <h4>@ViewBag.Heding</h4>
+        </header>
+    </div>
+</div>
+
+
+
 @if (Model != null)
 {
     foreach (var post in Model.Posts)

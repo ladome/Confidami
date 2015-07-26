@@ -3,6 +3,13 @@
 @using Confidami.Web.ViewModel
 @model Confidami.Web.ViewModel.InsertPostViewModel
 
+<div class="col-lg-12">
+    <div class="row">
+        <header>
+            <h4>@ViewBag.Heding</h4>
+        </header>
+    </div>
+</div>
 
 <div>
 
@@ -138,7 +145,7 @@
 
 </div>
 <script>
-    var acceptedfiles = @ViewBag.Acceptedfiles;
+    var acceptedfiles = "@ViewBag.Acceptedfiles";
     var imageformats = @ViewBag.ImageFormats;
 </script>
   
@@ -251,11 +258,8 @@
 
                 var jqxhr = $.getJSON("/Contents/GetTempAttachMents", function () {
 
-
                 }).done(function (attacchments) {
                     $.each(attacchments, function (key, attacchement) {
-
-
 
                         var extension = attacchement.Name.substr((attacchement.Name.lastIndexOf('.') + 1));
                         extensionList = ['jpg', 'jpeg', 'png', 'gif'];
@@ -288,9 +292,7 @@
                     var err = textStatus + ", " + error;
                     alert("GetTempAttacchMents Failed " + err);
 
-                }).always(function () {
-                
-                });
+                }).always(function () {} );
             };
 
         });
