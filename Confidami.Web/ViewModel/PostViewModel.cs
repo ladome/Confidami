@@ -50,10 +50,10 @@ namespace Confidami.Web.ViewModel
 
     public class TempAttachMentViewModel
     {
-        private string _userid;
-        public TempAttachMentViewModel(string userId)
+        private string _folder;
+        public TempAttachMentViewModel(string folder)
         {
-            _userid = userId;
+            _folder = folder;
         }
 
         public int Id { get; set; }
@@ -64,9 +64,15 @@ namespace Confidami.Web.ViewModel
         {
             get
             {
-                var fileNameThumb = String.Format("{0}{1}.{2}", Path.GetFileNameWithoutExtension(Name), "_thumb",
+                var fileNameThumb = String.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(Name), "_thumb",
                     Path.GetExtension(Name));
-                return Path.Combine(Path.Combine(Path.IsPathRooted(Config.UploadsTempFolder) ? Config.UploadsTempFolder : "/"+Config.UploadsTempFolder, _userid), fileNameThumb);
+                if (Path.IsPathRooted(Config.UploadsTempFolder))
+                    return Path.Combine(Config.UploadsTempFolder, _folder);
+                var virtualRoot = "~/" + Config.UploadsTempFolder;
+                var abosoluteUrl = VirtualPathUtility.ToAbsolute(virtualRoot);
+                var a = VirtualPathUtility.Combine(VirtualPathUtility.AppendTrailingSlash(abosoluteUrl), _folder);
+                var b =VirtualPathUtility.AppendTrailingSlash(a);
+                return VirtualPathUtility.Combine(b, fileNameThumb);
             }
         }
     }

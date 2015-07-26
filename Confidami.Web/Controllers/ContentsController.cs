@@ -105,17 +105,23 @@ namespace Confidami.Web.Controllers
         public ActionResult Upload(HttpPostedFileWrapper file)
         {
             file.CannotBeNull("file");
-             
+
+            if (ValidationManager.FileAlreadyExists(CurrentUserId, file.FileName))
+            {
+                return
+                    CreateJsonResponse(new BaseResponseExtended() { Success = false, Message = ValidationManager.ErrorCodes[ErrorCode.FilePresent]}, HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var id = FileManager.UploadFileInTempFolder(file.InputStream, file.FileName, file.ContentType, file.ContentLength, CurrentUserId);
-                return Json(new BaseResponse() { Message = id.ToString(), Success = true }, JsonRequestBehavior.AllowGet);
+                return CreateJsonResponse(new BaseResponseExtended() { Message = id.ToString(), Success = true });
 
             }
             catch (Exception ex)
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new BaseResponse() { Message = ex.ToString(), Success = false }, JsonRequestBehavior.AllowGet);
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return CreateJsonResponse(new BaseResponseExtended() { Message = ex.ToString(), Success = false });
             }
 
         }

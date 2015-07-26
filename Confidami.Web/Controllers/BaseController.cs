@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Confidami.BL;
@@ -15,6 +16,7 @@ namespace Confidami.Web.Controllers
     {
         private PostManager _postManager;
         private FileManager _fileManager;
+        private Validation _validation;
 
         public string CurrentUserId { get; set; }
 
@@ -30,6 +32,12 @@ namespace Confidami.Web.Controllers
             set { _fileManager = value; }
         }
 
+        public Validation ValidationManager
+        {
+            get { return new Validation(); }
+            set { _validation = value; }
+        }
+
         public bool IsAdmin { get { return User.IsInRole(RolesStore.AdminRole); } }
 
 
@@ -38,6 +46,12 @@ namespace Confidami.Web.Controllers
         {
             var cats = PostManager.GetAllCategories();
             return PartialView(ViewsStore.Menu, new Menu {Categories = cats.ToList()});
+        }
+
+        protected JsonResult CreateJsonResponse<T>(T Object, HttpStatusCode statusCode = HttpStatusCode.OK)
+        {
+            Response.StatusCode = (int)statusCode;
+            return Json(Object, JsonRequestBehavior.AllowGet);
         }
     }
 
