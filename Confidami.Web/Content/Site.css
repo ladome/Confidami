@@ -21,3 +21,13 @@
 .file-row .panel-footer {padding:5px;}
 .file-row .progress {margin:5px 0;visibility:hidden}
 .file-row .cancel, .file-row .start {display:none}
+
+
+
+.img-test {
+    height:100px;
+    background: url('http://media-cdn.tripadvisor.com/media/photo-s/01/50/50/8c/washington-park-where.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.actions {padding:5px}
