@@ -23,9 +23,7 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <label>Titolo: @post.Title</label>
-                                <br />
-                                <label>Categoria: @post.CategoryPost</label>
+                                <label>@Html.RouteLink("Titolo:" + post.Title, "SingleContentRoute", new { categoryName = post.CategoryPost, id = post.IdPost },null)</label>
                             </div>
                             <div class="panel-body">
                                 <textarea>@post.Body</textarea>

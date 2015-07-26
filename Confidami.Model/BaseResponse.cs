@@ -11,4 +11,9 @@ namespace Confidami.Model
         public bool Success { get; set; }
         public string Message { get; set; }
     }
+
+    public class BaseResponseExtended : BaseResponse
+    {
+        public int ErrorCode { get; set; }
+    }
 }

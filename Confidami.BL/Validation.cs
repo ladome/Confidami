@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Confidami.Common;
 using Confidami.Common.Utility;
 
 namespace Confidami.BL
@@ -17,7 +18,12 @@ namespace Confidami.BL
             _fileManager = fileManager;
         }
 
-        public FileManager FileManager
+        public Validation() : this(new FileManager())
+        {
+            
+        }
+
+        private FileManager FileManager
         {
             get
             {
@@ -36,6 +42,38 @@ namespace Confidami.BL
             return res.Any(x=> String.Equals(x.FileName, filename, StringComparison.CurrentCultureIgnoreCase));
         }
 
+        public bool IsAdmittedExtension(string extension)
+        {
+            extension.CannotBeNullEmptyOrWithespace("extension");
+            extension = extension.ToLower();
+            if (extension.StartsWith("."))
+            {
+                extension = extension.Remove(0);
+            }
 
+            return ValidationHelper.AdmittedExtensions.Any(x=> x.Contains(extension)) ;
+        }
+
+        public ErrorCodeStore ErrorCodes
+        {
+            get { return new ErrorCodeStore();}
+        }
+
+
+
+
+    }
+
+
+    public class ValidationHelper
+    {
+        public static string[] AdmittedExtensions
+        {
+            get
+            {
+                Config.AcceptedExtensions.CannotBeNullEmptyOrWithespace("AcceptedExtensions");
+                return Config.AcceptedExtensions.Split(',');
+            }
+        }
     }
 }

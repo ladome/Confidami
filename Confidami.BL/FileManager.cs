@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Data;

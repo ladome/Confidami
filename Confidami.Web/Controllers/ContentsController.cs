@@ -49,7 +49,7 @@ namespace Confidami.Web.Controllers
             return View("Index",vm);
         }
 
-        [Route("segnalazioni/{categoryName}/{id}")]
+        [Route("{categoryName}/{id}", Name = "SingleContentRoute")]
         public ActionResult SingleContent(string categoryName,long id)
         {
             if (string.IsNullOrEmpty(categoryName))
@@ -109,7 +109,13 @@ namespace Confidami.Web.Controllers
             if (ValidationManager.FileAlreadyExists(CurrentUserId, file.FileName))
             {
                 return
-                    CreateJsonResponse(new BaseResponseExtended() { Success = false, Message = ValidationManager.ErrorCodes[ErrorCode.FilePresent]}, HttpStatusCode.BadRequest);
+                    CreateJsonResponse(new BaseResponseExtended() { Success = false, Message = ValidationManager.ErrorCodes[ErrorCode.FilePresent], ErrorCode = (int)ErrorCode.FilePresent }, HttpStatusCode.BadRequest);
+            }
+
+            if (!ValidationManager.IsAdmittedExtension(file.FileName))
+            {
+                return
+                    CreateJsonResponse(new BaseResponseExtended() { Success = false, Message = ValidationManager.ErrorCodes[ErrorCode.NotAdmittedExtension], ErrorCode = (int)ErrorCode.NotAdmittedExtension }, HttpStatusCode.BadRequest);
             }
 
             try
@@ -120,8 +126,7 @@ namespace Confidami.Web.Controllers
             }
             catch (Exception ex)
             {
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return CreateJsonResponse(new BaseResponseExtended() { Message = ex.ToString(), Success = false });
+                return CreateJsonResponse(new BaseResponseExtended() { Message = ex.ToString(), Success = false },HttpStatusCode.InternalServerError);
             }
 
         }

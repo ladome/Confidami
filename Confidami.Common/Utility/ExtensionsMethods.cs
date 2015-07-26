@@ -16,6 +16,12 @@ namespace Confidami.Common.Utility
                 throw new ArgumentException("Cannot be null", parameter);
         }
 
+        public static void CannotBeNullEmptyOrWithespace(this string obj, string parameter)
+        {
+            if (string.IsNullOrEmpty(obj.Trim()))
+                throw new ArgumentException("Cannot be null or empty", parameter);
+        }
+
         public static void FileExistsOrThrowException(this string filename )
         {
             if (!File.Exists(filename))
@@ -37,6 +43,11 @@ namespace Confidami.Common.Utility
             text = text.Replace("\n", "");
             return Regex.Replace(text, @"\s+", "");
 
+        }
+
+        public static string ComposeUri(this string baseUrl, string relativePath)
+        {
+            return new Uri(new Uri(baseUrl, UriKind.Absolute), relativePath).ToString();
         }
     }
 }
