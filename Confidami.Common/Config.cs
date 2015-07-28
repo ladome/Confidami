@@ -65,9 +65,14 @@ namespace Confidami.Common
             }
         }
 
-        public static string AcceptedExtensions
+        public static string[] AcceptedExtensions
         {
-            get { return ConfigurationManager.AppSettings["AcceptedExtensions"]; }
+            get
+            {
+                var conf = ConfigurationManager.AppSettings["AcceptedExtensions"];
+                conf.CannotBeNull("extensions file format");
+                return conf.Split(',');
+            }
         }
         
 

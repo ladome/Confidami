@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Confidami.BL.Mapper;
+using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Data;
 using Confidami.Model;
@@ -50,7 +51,12 @@ namespace Confidami.BL
             post.CannotBeNull("post");
             var res =_fileManager.GetTempAttachMentsByUserId(post.UserId);
             post.Attachments =
-                res.Select(x => new PostAttachments() {FileName = x.FileName, ContentType = x.ContentType, Size = x.Size}).ToList();
+                res.Select(x => new PostAttachments()
+                {
+                    FileName = x.FileName,
+                    ContentType = x.ContentType,
+                    Size = x.Size,
+                }).ToList();
 
         }
 
@@ -91,30 +97,27 @@ namespace Confidami.BL
 
         public Post GetPost(long idpost)
         {
-            return new Post();
+            return PostMapper.Map(_postRepository.GetPostById(idpost));
         }
 
-        public Post GetPost(string slug)
-        {
-            return new Post();
-        }
 
         public IEnumerable<Post> GetPostsByDescription(string description)
         {
             return new List<Post>();
         }
 
-        public IEnumerable<Post> GetPostByCategory(int idCategory)
+        public IEnumerable<PostLight> GetPostByCategory(int idCategory)
         {
             return PostMapper.Map(_postRepository.GetPostsByCategory((int)idCategory));
         }
 
-        public IEnumerable<Post> GetPostByStatus(PostStatus status)
+        public IEnumerable<PostLight> GetPostByStatus(PostStatus status)
         {
             return PostMapper.Map(_postRepository.GetPostByStatus((int) status));
         }
 
-        public IEnumerable<Post> GetAllPost()
+
+        public IEnumerable<PostLight> GetAllPost()
         {
             return PostMapper.Map(_postRepository.GetAllPosts());
         }

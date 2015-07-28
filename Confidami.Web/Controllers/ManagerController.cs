@@ -14,6 +14,10 @@ namespace Confidami.Web.Controllers
     [RoutePrefix("Post")]
     public class ManagerController : BaseController
     {
+
+
+
+
         // GET: Post
         [Route("Modera")]
         public ActionResult Moderation()
@@ -49,7 +53,7 @@ namespace Confidami.Web.Controllers
             return View(ViewsStore.Moderation);
         }
 
-        private static ModerationViewModel FillModel(IEnumerable<Post> posts)
+        private static ModerationViewModel FillModel(IEnumerable<PostLight> posts)
         {
             return new ModerationViewModel()
             {

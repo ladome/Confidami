@@ -45,13 +45,9 @@ namespace Confidami.BL
         public bool IsAdmittedExtension(string extension)
         {
             extension.CannotBeNullEmptyOrWithespace("extension");
-            extension = extension.ToLower();
-            if (extension.StartsWith("."))
-            {
-                extension = extension.Remove(0);
-            }
+            extension = extension.RemoveExtensionPoint();
 
-            return ValidationHelper.AdmittedExtensions.Any(x=> x.Contains(extension)) ;
+            return Config.AcceptedExtensions.Any(x => x.Contains(extension));
         }
 
         public ErrorCodeStore ErrorCodes
@@ -67,13 +63,6 @@ namespace Confidami.BL
 
     public class ValidationHelper
     {
-        public static string[] AdmittedExtensions
-        {
-            get
-            {
-                Config.AcceptedExtensions.CannotBeNullEmptyOrWithespace("AcceptedExtensions");
-                return Config.AcceptedExtensions.Split(',');
-            }
-        }
+
     }
 }

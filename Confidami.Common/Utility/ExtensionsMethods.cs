@@ -36,6 +36,14 @@ namespace Confidami.Common.Utility
             return filename;
         }
 
+        public static string GetExtension(this string filename)
+        {
+            var extension = Path.GetExtension(filename);
+            if (!string.IsNullOrEmpty(extension))
+                return extension;
+            return filename;
+        }
+
         public static string CleanFromSpaceAndNewLine(this string text)
         {
             text = text.Replace("\r", "");
@@ -48,6 +56,17 @@ namespace Confidami.Common.Utility
         public static string ComposeUri(this string baseUrl, string relativePath)
         {
             return new Uri(new Uri(baseUrl, UriKind.Absolute), relativePath).ToString();
+        }
+
+        public static string RemoveExtensionPoint(this string extension)
+        {
+            extension.CannotBeNull("extension");
+            extension = Path.GetExtension(extension.ToLower());
+            if (!string.IsNullOrEmpty(extension) && extension.StartsWith("."))
+            {
+                extension = extension.Substring(1);
+            }
+            return extension;
         }
     }
 }

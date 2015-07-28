@@ -61,7 +61,8 @@ namespace Confidami.Data
                                   idPost = identity,
                                   fileName = attach.FileName,
                                   contentType = attach.ContentType,
-                                  size=attach.Size
+                                  size=attach.Size,
+                                  timestamp=DateTime.Now
                                   
                               },transaction:transaction);
                         }
@@ -85,7 +86,34 @@ namespace Confidami.Data
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus, new { idStatus = PostStatus.Approved });
+                var lookup = new Dictionary<int, PostExtendedDb>();
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus,new {idStatus = PostStatus.Approved});
+            }
+        }
+
+
+        public PostExtendedDbWithAttachments GetPostById(long idPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                var lookup = new Dictionary<int, PostExtendedDbWithAttachments>();
+                return conn.Query<PostExtendedDbWithAttachments, PostAttachments, PostExtendedDbWithAttachments>(QueryPostStore.PostById,
+                    (a, s) =>
+                    {
+                        PostExtendedDbWithAttachments attach;
+                        if (!lookup.TryGetValue(a.IdPost, out attach))
+                        {
+                            // If the lookup doesn't contain the current category, add
+                            // it and store it in `category` as well.
+                            lookup.Add(a.IdPost, a);
+
+                            attach = a;
+                        }
+                        if (s != null)
+                            attach.Attachments.Add(s);
+                        return attach;
+                    },
+                    new {idPost = idPost}, splitOn: "IdPost").Distinct().SingleOrDefault();
             }
         }
 
@@ -93,7 +121,7 @@ namespace Confidami.Data
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatusAndCategory, new { idStatus = PostStatus.Approved, idCategory = idCategory });
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatusAndCategory,new { idStatus = PostStatus.Approved, idCategory = idCategory });
             }
         }
 
@@ -101,7 +129,7 @@ namespace Confidami.Data
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus, new { idStatus = status});
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus,new {idStatus = status});
             }
         }
 
@@ -146,7 +174,7 @@ namespace Confidami.Data
             using (var conn = DbUtilities.Connection)
             {
                 return conn.Query<int>(QueryFileStore.InsertUploadTemp + QueryStore.LastInsertedId,
-                    new {userid = userId, filename = fileName, contentType = contentType, size = fileSize}).SingleOrDefault();
+                    new {userid = userId, filename = fileName, contentType = contentType, size = fileSize,@timestamp=DateTime.Now}).SingleOrDefault();
             }
         }
 

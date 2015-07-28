@@ -15,6 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Confidami.Model", "Confidam
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{71A4FE7F-6D9C-438F-A792-D273F51B7E3E}"
 	ProjectSection(SolutionItems) = preProject
+		DB\change_27072015.sql = DB\change_27072015.sql
 		DB\dbScripts.sql = DB\dbScripts.sql
 	EndProjectSection
 EndProject

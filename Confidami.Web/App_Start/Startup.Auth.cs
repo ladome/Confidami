@@ -40,7 +40,8 @@ namespace Confidami.Web
                         {
                             ctx.Response.Redirect(ctx.RedirectUri);
                         }
-                    }
+                    },
+                    
                 }
             });            
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);

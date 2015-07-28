@@ -22,6 +22,32 @@ namespace Confidami.Web.ViewModel
         public int IdCategory { get; set; }
 
         public string CategoryPost { get; set; }
+
+        public string CategorySlug { get; set; }
+
+        public virtual bool HasAttachMents { get; set; }
+    }
+
+    public class PostViewModelSingleContent : PostViewModelBase
+    {
+        public PostViewModelSingleContent()
+        {
+            AttachMenents = new List<PostAttachMentViewModel>();
+        }
+        public List<PostAttachMentViewModel> AttachMenents { get; set; }
+        public override bool HasAttachMents { get { return AttachMenents!= null && AttachMenents.Any(); } }
+        public DateTime CreationDate { get; set; }
+
+        public List<PostAttachMentViewModel> ImageFile
+        {
+            get { return AttachMenents.Where(x => x.IsImage).ToList(); }
+        }
+
+        public List<PostAttachMentViewModel> OtherFile
+        {
+            get { return AttachMenents.Where(x => !x.IsImage).ToList(); }
+        }
+
     }
     
     public class PostViewModel
@@ -32,6 +58,8 @@ namespace Confidami.Web.ViewModel
         //public string CurrentUser { get; set; }
 
     }
+
+
 
     public class InsertPostViewModel
     {
@@ -50,7 +78,7 @@ namespace Confidami.Web.ViewModel
 
     public class TempAttachMentViewModel
     {
-        private string _folder;
+        private readonly string _folder;
         public TempAttachMentViewModel(string folder)
         {
             _folder = folder;
@@ -64,15 +92,56 @@ namespace Confidami.Web.ViewModel
         {
             get
             {
+                var baseFolder = Config.UploadsTempFolder;
                 var fileNameThumb = String.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(Name), "_thumb",
                     Path.GetExtension(Name));
-                if (Path.IsPathRooted(Config.UploadsTempFolder))
-                    return Path.Combine(Config.UploadsTempFolder, _folder);
-                var virtualRoot = "~/" + Config.UploadsTempFolder;
+                if (Path.IsPathRooted(baseFolder))
+                    return Path.Combine(baseFolder, _folder);
+                var virtualRoot = "~/" + baseFolder;
                 var abosoluteUrl = VirtualPathUtility.ToAbsolute(virtualRoot);
                 var a = VirtualPathUtility.Combine(VirtualPathUtility.AppendTrailingSlash(abosoluteUrl), _folder);
                 var b =VirtualPathUtility.AppendTrailingSlash(a);
                 return VirtualPathUtility.Combine(b, fileNameThumb);
+            }
+        }
+    }
+
+    public class PostAttachMentViewModel
+    {
+        private readonly string _folder;
+        public PostAttachMentViewModel(string folder)
+        {
+            _folder = folder;
+        }
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public long Size { get; set; }
+
+        public string FullPath
+        {
+            get
+            {
+                var baseFolder = Config.UploadsFolder;
+                var fileNameThumb = String.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(Name), "",
+                    Path.GetExtension(Name));
+                if (Path.IsPathRooted(baseFolder))
+                    return Path.Combine(baseFolder, _folder);
+                var virtualRoot = "~/" + baseFolder;
+                var abosoluteUrl = VirtualPathUtility.ToAbsolute(virtualRoot);
+                var a = VirtualPathUtility.Combine(VirtualPathUtility.AppendTrailingSlash(abosoluteUrl), _folder);
+                var b =VirtualPathUtility.AppendTrailingSlash(a);
+                return VirtualPathUtility.Combine(b, fileNameThumb);
+            }
+        }
+
+        public bool IsImage
+        {
+            get
+            {
+                return
+                    Config.UploadImageExtensions.Any(
+                        y => y.Contains(Name.GetExtension().RemoveExtensionPoint()));
             }
         }
     }

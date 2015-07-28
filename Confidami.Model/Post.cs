@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Confidami.Common;
+using Confidami.Common.Utility;
 
 namespace Confidami.Model
 {
-    public class Post
+    public class PostLight
     {
-        public Post()
-        {
-            Attachments = new List<PostAttachments>();
-        }
-
         public string UserId { get; set; }
         public int IdPost { get; set; }
         public string Title { get; set; }
@@ -22,14 +19,22 @@ namespace Confidami.Model
         public string StatusDescription { get; set; }
         public DateTime TimeStamp { get; set; }
         public DateTime TimeStampApprovation { get; set; }
+        public virtual bool HasAttachments { get; set; }
+    }
+    public class Post : PostLight
+    {
+        public Post()
+        {
+            Attachments = new List<PostAttachments>();
+        }
 
         public List<PostAttachments> Attachments { get; set; }
-        public bool HasAttachments { get { return Attachments.Any(); } }
+        public new bool HasAttachments { get { return Attachments.Any(); } }
     }
 
     public class PostAttachments
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public long IdPost { get; set; }
         public string FileName { get; set; }
         public string ContentType { get; set; }

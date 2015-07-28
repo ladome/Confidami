@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
-using Confidami.BL;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
@@ -52,14 +51,15 @@ namespace Confidami.Web.Controllers
         [Route("{categoryName}/{id}", Name = "SingleContentRoute")]
         public ActionResult SingleContent(string categoryName,long id)
         {
-            if (string.IsNullOrEmpty(categoryName))
-                ViewBag.Heding = "Intestazione per tag header index singola segnalazione: " +id;
-            else
+            var res = PostManager.GetPost(id);
+            var vm = FillinglePostViewModel(res);
+            if (!string.IsNullOrEmpty(categoryName))
             {
-                ViewBag.Heding = "Intestazione per tag header index singola segnalazione: " + id + "  categoria: " + categoryName;
-                ViewBag.CategoryName = categoryName;
+                ViewBag.Heding = String.Format("{0}", vm.Title);
+                ViewBag.CategoryName = vm.CategoryPost;
+
             }
-            return View(); //segnalazioni/nome-categoria/titolo-segnalazione
+            return View(vm); //segnalazioni/nome-categoria/titolo-segnalazione
         }
 
 
@@ -133,7 +133,7 @@ namespace Confidami.Web.Controllers
 
         public JsonResult GetTempAttachMents()
         {
-            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel(CurrentUserId) { Name = x.FileName, Size = x.Size, Id = x.Id }), JsonRequestBehavior.AllowGet);
+            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel(CurrentUserId) { Name = x.FileName, Size = x.Size, Id = x.IdPostAttachment }), JsonRequestBehavior.AllowGet);
         }
 
         private InsertPostViewModel FillInsertModel()
@@ -142,12 +142,38 @@ namespace Confidami.Web.Controllers
             return new InsertPostViewModel {Categories = categories};
         }
 
-        private PostViewModel FillPostViewModel(IEnumerable<Post> posts)
+        private PostViewModel FillPostViewModel(IEnumerable<PostLight> posts)
         {
             var vm = new PostViewModel() { IsAdmin = IsAdmin };
-            var pbase = posts.Select(x => new PostViewModelBase() { Body = x.Body, Title = x.Title, CategoryPost = x.Category.Description, IdPost = x.IdPost }).ToList();
+            var pbase = posts.Select(x => new PostViewModelBase()
+            {
+                Body = x.Body,
+                Title = x.Title,
+                CategoryPost = x.Category.Description,
+                IdPost = x.IdPost,
+                HasAttachMents = x.HasAttachments,
+                CategorySlug = x.Category.Slug
+            }).ToList();
             vm.Posts = pbase;
             return vm;
+        }
+
+        private PostViewModelSingleContent FillinglePostViewModel(Post post)
+        {
+            return new PostViewModelSingleContent()
+            {
+                Body = post.Body,
+                Title = post.Title,
+                CategoryPost = post.Category.Description,
+                IdPost = post.IdPost,
+                AttachMenents = post.Attachments.Select(x=> new PostAttachMentViewModel(post.IdPost.ToString(CultureInfo.InvariantCulture)){
+                    Id = x.Id,
+                    Name = x.FileName,
+                    Size = x.Size
+                    
+                }).ToList(),
+                CreationDate = post.TimeStamp
+            };
         }
 
         [Route("~/Contents/DeleteAttachment/{idAttachment}")]

@@ -1,4 +1,10 @@
-﻿<div class="col-lg-12">
+﻿@model Confidami.Web.ViewModel.PostViewModelSingleContent
+
+@{
+    ViewBag.Title = "Dettaglio Post";
+}
+
+<div class="col-lg-12">
     <div class="row">
         <header>
             <h4>@ViewBag.Heding</h4>
@@ -11,93 +17,74 @@
         <div class="row">
 
             <div class="col-lg-12">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+            @Model.Body
             </div>
-
+            @foreach (var attach in Model.AttachMenents)
+            {
+            <label>Allegato: <a href="@attach.FullPath">Link</a> </label>
+            }
             <div class="col-lg-6 text-muted text-left text-info">Categoria: <a href="#" class="text-capitalize">@ViewBag.CategoryName</a></div>
-            <div class="col-lg-6 text-muted text-right">Pubblicato il <span class="text-info">xx-xx-xxxx</span></div>
-
+            <div class="col-lg-6 text-muted text-right">Pubblicato il <span class="text-info">@Model.CreationDate.ToString("dd/MM/yyyy")</span></div>
+            
             <p class="divider"></p>
 
-            <!-- ALLEGATI -->
-            <div class="col-lg-12 row">
-
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="img-test">
-                        <div class="actions">
-                            <button class="btn btn-xs btn-info" role="button">Viuslizza</button>
-                            <button class="btn btn-xs btn-primary" role="button">Download</button>
+            <!-- ALLEGATI IMMAGINI -->
+            @if(@Model.ImageFile.Any())
+            { 
+                <h3>Immagini</h3>
+                <div class="col-lg-12 row">
+                    @foreach (var img in @Model.ImageFile)
+                    {
+                        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                            <label>@img.Name</label>
+                            <div class="img-test">
+                                <div class="actions">
+                                    <button class="btn btn-xs btn-info" role="button">Visualizza</button>
+                                    <button class="btn btn-xs btn-primary" role="button">Download</button>
+                                </div>
+                            </div>
                         </div>
+                    }
+                    </div>
+               }
+                   
+                <!-- ALLEGATI NON IMMAGINI-->
+                @if (@Model.OtherFile.Any())
+                {
+                    <h3>Altri File</h3>
+                    <div class="col-lg-12 row">
+                        @foreach (var img in @Model.OtherFile)
+                        {
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                <label>@img.Name</label>
+                                <div class="img-test">
+                                    <div class="actions">
+                                        <button class="btn btn-xs btn-primary" role="button">Download</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+
+        @*<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                <div class="thumbnail">
+                    <img src="http://www.larionews.com/wp-content/uploads/2015/03/News-680x300.jpg" alt="..." class="img-thumbnail">
+                    <div class="caption">
+                        <p>
+                            <button class="btn btn-xs btn-info" role="button">
+                                Viuslizza
+                            </button>
+                            <button class="btn btn-xs btn-primary" role="button">
+                                Download
+                            </button>
+                        </p>
                     </div>
                 </div>
+            </div>*@
 
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="img-test">
-                        <div class="actions">
-                            <button class="btn btn-xs btn-info" role="button">Viuslizza</button>
-                            <button class="btn btn-xs btn-primary" role="button">Download</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="img-test">
-                        <div class="actions">
-                            <button class="btn btn-xs btn-info" role="button">Viuslizza</button>
-                            <button class="btn btn-xs btn-primary" role="button">Download</button>
-                        </div>
-                    </div>
-                </div>
-
-                @*<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="thumbnail">
-                        <img src="http://www.larionews.com/wp-content/uploads/2015/03/News-680x300.jpg" alt="..." class="img-thumbnail">
-                        <div class="caption">
-                            <p>
-                                <button class="btn btn-xs btn-info" role="button">
-                                    Viuslizza
-                                </button>
-                                <button class="btn btn-xs btn-primary" role="button">
-                                    Download
-                                </button>
-                            </p>
-                        </div>
-                    </div>
-                </div>*@
-
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="img-test">
-                        <div class="actions">
-                            <button class="btn btn-xs btn-info" role="button">Viuslizza</button>
-                            <button class="btn btn-xs btn-primary" role="button">Download</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="img-test">
-                        <div class="actions">
-                            <button class="btn btn-xs btn-info" role="button">Viuslizza</button>
-                            <button class="btn btn-xs btn-primary" role="button">Download</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <div class="img-test">
-                        <div class="actions">
-                            <button class="btn btn-xs btn-info" role="button">Viuslizza</button>
-                            <button class="btn btn-xs btn-primary" role="button">Download</button>
-                        </div>
-                    </div>
-                </div>
-            
-            </div>
+    </div>
             <!--------------->
 
 
@@ -117,7 +104,7 @@
 
                 <div class="panel-heading">
                     <span class="text-info">Categoria: @ViewBag.categoryName</span>
-                    <span class="text-primary">Pubblicato il xx-xx-xxxx</span>
+                    <span class="text-primary">Pubblicato il @Model.</span>
                 </div>
 
             </div>

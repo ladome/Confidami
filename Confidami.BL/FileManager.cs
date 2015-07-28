@@ -24,6 +24,14 @@ namespace Confidami.BL
             _fileRepository = fileRepository;
         }
 
+        public static bool IsFileImage(string filename)
+        {
+            filename.CannotBeNullEmptyOrWithespace("filename");
+
+            filename = filename.GetExtension();
+
+            return Config.UploadImageExtensions.Any(x => x.Contains(filename.RemoveExtensionPoint()));
+        }
 
         public int UploadFileInTempFolder(Stream file, string fileName, string contentType, int contentLenght,string parentFolder = null)
         {
@@ -31,7 +39,8 @@ namespace Confidami.BL
             fileName.CannotBeNull("filename");
             file.CannotBeNull("file");
 
-            UploadFileInFolder(file, fileName, contentType, contentLenght, true, parentFolder);
+
+             UploadFileInFolder(file, fileName, contentType, contentLenght, true, parentFolder);
             var newId = _fileRepository.InsertTempUpload(parentFolder, fileName,contentType,contentLenght);
             return newId;
         }
@@ -73,7 +82,7 @@ namespace Confidami.BL
             tempAttachment.FileName.CannotBeNull("fileName");
 
             DeleteTempFile(tempAttachment.UserId, tempAttachment.FileName);
-            _fileRepository.DeleteTempAttachment(tempAttachment.Id);
+            _fileRepository.DeleteTempAttachment(tempAttachment.IdPostAttachment);
         }
 
         public void UploadFileInFolder(Stream file, string fileName, string contentType, int contentLenght,bool isTmpFolder = false,string parentFolder =null)
@@ -106,7 +115,8 @@ namespace Confidami.BL
 
             var versions = Config.UploadThumbSettings;
 
-            FileSystem.ResizeImage(fileNameFull, path, versions);
+            if (IsFileImage(fileName))
+                FileSystem.ResizeImage(fileNameFull, path, versions);
         }
 
         public List<TempAttachMent> GetTempAttachMentsByUserId(string userId)
