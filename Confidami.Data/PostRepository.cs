@@ -28,7 +28,8 @@ namespace Confidami.Data
                         title = post.Title,
                         body = post.Body,
                         slugUrl = post.SlugUrl,
-                        timestamp = DateTime.Now
+                        timestamp = DateTime.Now,
+                        userid = post.UserId
                     });
             }
         }
@@ -49,7 +50,8 @@ namespace Confidami.Data
                                 title = post.Title,
                                 body = post.Body,
                                 slugUrl = post.SlugUrl,
-                                timestamp = DateTime.Now
+                                timestamp = DateTime.Now,
+                                 userid = post.UserId
                             }, transaction: transaction).SingleOrDefault();
 
 

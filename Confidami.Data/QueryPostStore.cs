@@ -20,8 +20,9 @@ namespace Confidami.Data
            ,[Title]
            ,[Body]
            ,[SlugUrl]
-           ,[Timestamp])
-            VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp);";
+           ,[Timestamp]
+           ,[UserId])
+            VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp,@userid);";
 
         public const string AllPosts =
            @"SELECT [IdPost]
