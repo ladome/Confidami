@@ -21,8 +21,10 @@ namespace Confidami.Data
            ,[Body]
            ,[SlugUrl]
            ,[Timestamp]
-           ,[UserId])
-            VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp,@userid);";
+           ,[UserId]
+           ,[EditCode])
+            VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp,@userid,@editcode);";
+
 
         public const string AllPosts =
            @"SELECT [IdPost]
@@ -102,6 +104,31 @@ namespace Confidami.Data
            inner join tblCategory cat on cat.idcategory = p.idcategory
 		   left outer join tblPostsAttachments pa on pa.IdPost = p.IdPost
            where p.deleted = 0 and isnull(pa.deleted,0) = 0 and p.IdPost = @idPost;";
+
+        public const string PostByEditCode =
+          @"SELECT p.[IdPost]
+          ,p.[IdCategory]
+          ,p.[userid]
+          ,[Title]
+          ,[Body]
+          ,[SlugUrl]
+          ,p.[IdStatus]
+          ,st.[Description] as StatusDescription
+          ,cat.[Description]
+          ,cat.Slug as CatSlug
+          ,p.[Deleted]
+          ,p.[Timestamp]
+          ,p.[TimestampApprovation],
+          pa.IdPost,
+		  pa.IdPostAttachment,
+		  pa.FileName,
+		  pa.ContentType,
+		  pa.Size
+           FROM [tblPosts]  p
+           inner join tblpoststatus st on p.idStatus = st.idstatus
+           inner join tblCategory cat on cat.idcategory = p.idcategory
+		   left outer join tblPostsAttachments pa on pa.IdPost = p.IdPost
+           where p.deleted = 0 and isnull(pa.deleted,0) = 0 and p.EditCode = @editCode;";
 
         public const string PostByStatusAndCategory =
            @"SELECT p.[IdPost]

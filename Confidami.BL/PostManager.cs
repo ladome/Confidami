@@ -9,7 +9,7 @@ using Confidami.Model;
 
 namespace Confidami.BL
 {
-    public class PostManager 
+    public class PostManager : BaseManager
     {
         private readonly PostRepository _postRepository;
         private readonly CategoryRepository _categoryRepository;
@@ -34,8 +34,23 @@ namespace Confidami.BL
             BuildAttachAttachments(post);
             int res;
 
-            var slug = Slug.CreateSlug(true,post.Title);
-            post.SlugUrl = slug;
+            var editCode = GetRandomString();
+            var founded = false;
+
+            if (_postRepository.GetPostEditCode(editCode) != null)
+            {
+                while (!founded)
+                {
+                    editCode = GetRandomString();
+                    if (_postRepository.GetPostEditCode(editCode) == null)
+                        founded = true;
+                }
+            }
+
+            post.EditCode = editCode;
+            post.SlugUrl = Slug.CreateSlug(true, post.Title);
+
+
             if (!post.HasAttachments)
                 res = _postRepository.InserPost(post);
             else

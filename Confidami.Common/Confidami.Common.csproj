@@ -50,6 +50,7 @@
     <Compile Include="RolesStore.cs" />
     <Compile Include="Utility\ExtensionsMethods.cs" />
     <Compile Include="Utility\FileSystem.cs" />
+    <Compile Include="Utility\Helper.cs" />
     <Compile Include="Utility\Slug.cs" />
     <Compile Include="ViewsStore.cs" />
   </ItemGroup>

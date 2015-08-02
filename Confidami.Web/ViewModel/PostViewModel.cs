@@ -67,9 +67,11 @@ namespace Confidami.Web.ViewModel
     {
         [Required(ErrorMessage = "Il titolo è obbligatorio")]
         [MaxLength(100)]
+        [MinLength(5)]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Il corpo del messaggio è obbligatorio")]
+        [MaxLength(400)]
         public string Body { get; set; }
 
         [Range(1, 100)]

@@ -20,6 +20,8 @@ namespace Confidami.Model
         public DateTime TimeStamp { get; set; }
         public DateTime TimeStampApprovation { get; set; }
         public virtual bool HasAttachments { get; set; }
+        public string EditCode { get; set; }
+
     }
     public class Post : PostLight
     {

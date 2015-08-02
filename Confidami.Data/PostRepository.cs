@@ -29,7 +29,8 @@ namespace Confidami.Data
                         body = post.Body,
                         slugUrl = post.SlugUrl,
                         timestamp = DateTime.Now,
-                        userid = post.UserId
+                        userid = post.UserId,
+                        editCode = post.EditCode
                     });
             }
         }
@@ -51,7 +52,8 @@ namespace Confidami.Data
                                 body = post.Body,
                                 slugUrl = post.SlugUrl,
                                 timestamp = DateTime.Now,
-                                 userid = post.UserId
+                                userid = post.UserId,
+                                editCode = post.EditCode
                             }, transaction: transaction).SingleOrDefault();
 
 
@@ -116,6 +118,31 @@ namespace Confidami.Data
                         return attach;
                     },
                     new {idPost = idPost}, splitOn: "IdPost").Distinct().SingleOrDefault();
+            }
+        }
+
+        public PostExtendedDbWithAttachments GetPostEditCode(string editCode)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                var lookup = new Dictionary<int, PostExtendedDbWithAttachments>();
+                return conn.Query<PostExtendedDbWithAttachments, PostAttachments, PostExtendedDbWithAttachments>(QueryPostStore.PostByEditCode,
+                    (a, s) =>
+                    {
+                        PostExtendedDbWithAttachments attach;
+                        if (!lookup.TryGetValue(a.IdPost, out attach))
+                        {
+                            // If the lookup doesn't contain the current category, add
+                            // it and store it in `category` as well.
+                            lookup.Add(a.IdPost, a);
+
+                            attach = a;
+                        }
+                        if (s != null)
+                            attach.Attachments.Add(s);
+                        return attach;
+                    },
+                    new { editCode = editCode }, splitOn: "IdPost").Distinct().SingleOrDefault();
             }
         }
 

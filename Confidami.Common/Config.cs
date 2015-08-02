@@ -74,6 +74,16 @@ namespace Confidami.Common
                 return conf.Split(',');
             }
         }
+
+        public static string RandomStringChars
+        {
+            get { return ConfigurationManager.AppSettings["RandomStringChars"]; }
+        }
+
+        public static int RandomStringLenght
+        {
+            get { return Convert.ToInt16(ConfigurationManager.AppSettings["RandomStringLenght"]); }
+        }
         
 
         
