@@ -41,11 +41,15 @@ namespace Confidami.Web.Controllers
         public bool IsAdmin { get { return User.IsInRole(RolesStore.AdminRole); } }
 
 
-        [Route("Menu")]
         public ActionResult Menu()
         {
             var cats = PostManager.GetAllCategories();
             return PartialView(ViewsStore.Menu, new Menu {Categories = cats.ToList()});
+        }
+
+        public ActionResult AdminMenu()
+        {
+            return PartialView(ViewsStore.MenuAdmin);
         }
 
         protected JsonResult CreateJsonResponse<T>(T Object, HttpStatusCode statusCode = HttpStatusCode.OK)

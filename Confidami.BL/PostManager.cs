@@ -34,6 +34,8 @@ namespace Confidami.BL
             BuildAttachAttachments(post);
             int res;
 
+            var slug = Slug.CreateSlug(true,post.Title);
+            post.SlugUrl = slug;
             if (!post.HasAttachments)
                 res = _postRepository.InserPost(post);
             else

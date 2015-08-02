@@ -11,12 +11,10 @@ using Microsoft.Ajax.Utilities;
 
 namespace Confidami.Web.Controllers
 {
-    [RoutePrefix("Post")]
+    [RoutePrefix("PannelloAdmin")]
+    [Authorize(Roles = RolesStore.AdminRole)]
     public class ManagerController : BaseController
     {
-
-
-
 
         // GET: Post
         [Route("Modera")]

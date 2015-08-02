@@ -25,6 +25,8 @@ namespace Confidami.Web.ViewModel
 
         public string CategorySlug { get; set; }
 
+        public string TitleSlug { get; set; }
+
         public virtual bool HasAttachMents { get; set; }
     }
 
@@ -64,7 +66,7 @@ namespace Confidami.Web.ViewModel
     public class InsertPostViewModel
     {
         [Required(ErrorMessage = "Il titolo è obbligatorio")]
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Il corpo del messaggio è obbligatorio")]

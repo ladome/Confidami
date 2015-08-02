@@ -11,8 +11,10 @@ namespace Confidami.Common
         public const string Index = "Index";
         public const string Moderation = "Moderation";
         public const string Menu = "_MainMenu";
+        public const string MenuAdmin = "_MainMenuAdmin";
         public const string Insert = "Insert";
-
+        public const string AdminLayout = "~/Views/Shared/_LayoutAdmin.cshtml";
+        public const string Login = "Login";
     }
 
     public class ControllerStore

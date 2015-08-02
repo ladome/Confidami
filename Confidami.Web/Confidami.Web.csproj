@@ -333,6 +333,8 @@
     <Content Include="Views\Search\_Form.cshtml" />
     <Content Include="Views\Search\_SearchResult.cshtml" />
     <Content Include="Views\Contents\SingleContent.cshtml" />
+    <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
+    <Content Include="Views\Shared\_MainMenuAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -38,13 +38,7 @@
             <li>@Html.ActionLink("Chi siamo", ActionsStore.About, ControllerStore.Home)</li>
             <li>@Html.ActionLink("Contatti", ActionsStore.Contact, ControllerStore.Home)</li>
             <li>@Html.ActionLink("Newsletter", ActionsStore.Newsletter, ControllerStore.Newsletter)</li>
-
-
-            <!-- da spostare solo in area admin dopo login -->
-            @if (User.IsInRole(RolesStore.AdminRole))
-            {
-                <li>@Html.ActionLink(@ViewsStore.Moderation, ActionsStore.Moderation, ControllerStore.Manager)</li>
-            }            
+         
         </ul>
 
         <!-- search box -->

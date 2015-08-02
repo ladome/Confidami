@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -15,6 +12,8 @@ using Confidami.Web.Models;
 namespace Confidami.Web.Controllers
 {
     [Authorize]
+    [RoutePrefix("PannelloAdmin/Account")]
+    [Route("{action=Login}")]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -415,7 +414,7 @@ namespace Confidami.Web.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(ViewsStore.Login, ControllerStore.Account);
         }
 
         //
@@ -472,7 +471,7 @@ namespace Confidami.Web.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(ViewsStore.Moderation, ControllerStore.Manager);
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

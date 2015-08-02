@@ -48,10 +48,20 @@ namespace Confidami.Web.Controllers
             return View("Index",vm);
         }
 
-        [Route("{categoryName}/{id}", Name = "SingleContentRoute")]
-        public ActionResult SingleContent(string categoryName,long id)
+        [Route("{categoryName}/{id}/{slugTitle?}", Name = "SingleContentRoute")]
+        public ActionResult SingleContent(string categoryName,long id,string slugTitle)
         {
             var res = PostManager.GetPost(id);
+            if (res == null)
+                return HttpNotFound();
+
+            if (slugTitle != null)
+            {
+                if (slugTitle != res.SlugUrl)
+                    return RedirectToRoutePermanent("SingleContentRoute",
+                        new {categoryName = categoryName, id = id, slugTitle = res.SlugUrl});
+            }
+
             var vm = FillinglePostViewModel(res);
             if (!string.IsNullOrEmpty(categoryName))
             {
@@ -92,7 +102,6 @@ namespace Confidami.Web.Controllers
                 Body = postVm.Body,
                 Category = new Category { IdCategory = postVm.IdCategory },
                 Title = postVm.Title,
-                SlugUrl = "",
                 UserId = CurrentUserId
             };
 
@@ -152,7 +161,8 @@ namespace Confidami.Web.Controllers
                 CategoryPost = x.Category.Description,
                 IdPost = x.IdPost,
                 HasAttachMents = x.HasAttachments,
-                CategorySlug = x.Category.Slug
+                CategorySlug = x.Category.Slug,
+                TitleSlug = x.SlugUrl
             }).ToList();
             vm.Posts = pbase;
             return vm;
