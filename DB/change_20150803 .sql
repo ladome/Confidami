@@ -1,0 +1,1 @@
+alter table [dbo].[tblPosts] add EditCode varchar(20) not null  default '', LastUserEdit datetime null
