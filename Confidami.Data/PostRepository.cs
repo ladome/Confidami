@@ -21,7 +21,7 @@ namespace Confidami.Data
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Execute(QueryPostStore.InserPost,
+                return conn.Query<int>(QueryPostStore.InserPost + " " + QueryStore.LastInsertedId,
                     new
                     {
                         idCategory = post.Category.IdCategory,
@@ -31,7 +31,7 @@ namespace Confidami.Data
                         timestamp = DateTime.Now,
                         userid = post.UserId,
                         editCode = post.EditCode
-                    });
+                    }).SingleOrDefault();
             }
         }
 
@@ -95,6 +95,45 @@ namespace Confidami.Data
             }
         }
 
+        public PostExtendedDb GetPostLightById(long idPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByIdLight, new { idPost = idPost }).SingleOrDefault();
+            }
+        }
+
+        public PostExtendedDb GetPostLightByEditCode(string editCode)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<PostExtendedDb>(QueryPostStore.PostByEditCodeLight, new { editCode = editCode }).SingleOrDefault();
+            }
+        }
+
+        public EditPostInfoDb GetEditInfoByIdPost(long idPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<EditPostInfoDb>(QueryPostStore.EditCodeInfo, new { idPost = idPost }).SingleOrDefault();
+            }
+        }
+
+        public EditPostInfoDb GetEditInfoWhitEditCodeByIdPost(long idPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<EditPostInfoDb>(QueryPostStore.EditCodeInfoWithEditCode, new { idPost = idPost }).SingleOrDefault();
+            }
+        }
+
+        public EditPostInfoDb GetEditInfoByEditCode(string editCode)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<EditPostInfoDb>(QueryPostStore.EditCodeInfoByEditCode, new { editCode = editCode }).SingleOrDefault();
+            }
+        }
 
         public PostExtendedDbWithAttachments GetPostById(long idPost)
         {
@@ -121,7 +160,7 @@ namespace Confidami.Data
             }
         }
 
-        public PostExtendedDbWithAttachments GetPostEditCode(string editCode)
+        public PostExtendedDbWithAttachments GetPostByEditCode(string editCode)
         {
             using (var conn = DbUtilities.Connection)
             {
@@ -175,6 +214,15 @@ namespace Confidami.Data
                     }) > 0;
             }
         }
+
+        public int InserEditInfo(long idPostEdit, string email, string secretkey)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Execute(QueryPostStore.InserEditInfo,
+                    new { idPost = idPostEdit, email = email, secretkey = secretkey });
+            }
+        }
     }
 
     public class CategoryRepository : BaseRepository
@@ -194,6 +242,7 @@ namespace Confidami.Data
                 return conn.Query<Category>(QueryPostStore.SingleCategory, new { idcategory }).SingleOrDefault();
             }
         }
+
     }
 
     public class FileRepository : BaseRepository
@@ -225,6 +274,16 @@ namespace Confidami.Data
             }
         }
 
+
+        public void DeleteAttachment(int id)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                conn.Execute(QueryFileStore.DeleteAttachment,
+                    new { id = id });
+            }
+        }
+
         public IEnumerable<TempAttachMent> GetTempAttachmentsByUserId(string userId)
         {
             using (var conn = DbUtilities.Connection)
@@ -241,5 +300,12 @@ namespace Confidami.Data
             }
         }
 
+        public IEnumerable<AttachMent> GetAttachmentsByIdPost(long idPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<AttachMent>(QueryFileStore.AttachmentsByIdPost, new { idPost = idPost });
+            }
+        }
     }
 }

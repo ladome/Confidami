@@ -185,11 +185,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MvcHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\InsertEditPostCodeViewModel.cs" />
     <Compile Include="ViewModel\ModerationViewModel.cs" />
     <Compile Include="ViewModel\PostViewModel.cs" />
   </ItemGroup>
@@ -335,6 +337,8 @@
     <Content Include="Views\Contents\SingleContent.cshtml" />
     <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
     <Content Include="Views\Shared\_MainMenuAdmin.cshtml" />
+    <Content Include="Views\Contents\EditPostCode.cshtml" />
+    <Content Include="Views\Contents\FindEditCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

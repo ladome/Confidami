@@ -43,4 +43,14 @@ namespace Confidami.Model
         public long Size { get; set; }
     }
 
+    public class PostEdit
+    {
+        public long IdPost { get; set; }
+        public DateTime? LastUserEdit { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string UserId { get; set; }
+    }
+
+
 }

@@ -51,6 +51,39 @@ namespace Confidami.Data
             @"SELECT [IdCategory],[Description],[Slug]
                     FROM [tblCategory] where idcategory=@idcategory";
 
+        public const string InserEditInfo =
+            @"INSERT INTO [tblPostsEdit]
+           ([IdPostEdit]
+           ,[Email]
+           ,[SecretKey])
+            VALUES
+           (@idPost,@email,@secretkey);";
+
+        public const string EditCodeInfo =
+            @"SELECT [IdPostEdit] as idPost
+              ,[LastUserEdit]
+              ,[Email]
+              ,[SecretKey]
+              FROM [tblPostsEdit] where idPostEdit = @idPost";
+
+        public const string EditCodeInfoWithEditCode =
+            @"SELECT [IdPostEdit]
+                    ,p.idPost
+                    ,[LastUserEdit]
+                    ,[Email]
+                    ,[SecretKey]
+	                ,[EditCode]
+                    FROM [tblPostsEdit] pe inner join tblPosts p on pe.idpost = p.idpost where idPostEdit = @idPost";
+
+                public const string EditCodeInfoByEditCode =
+            @"SELECT [IdPostEdit]
+                    ,p.IdPost
+                    ,[LastUserEdit]
+                    ,[Email]
+                    ,[SecretKey]
+	                ,[EditCode]
+                    FROM [tblPostsEdit] pe inner join tblPosts p on pe.IdPostEdit = p.idpost where editCode = @editCode";
+
         public const string InsertPostAttachment =
             @"INSERT INTO [tblPostsAttachments]
            ([IdPost]
@@ -81,54 +114,96 @@ namespace Confidami.Data
            where p.deleted = 0 and p.IdStatus=@idStatus order by Timestamp desc;";
 
         public const string PostById =
-        @"SELECT p.[IdPost]
-          ,p.[IdCategory]
-          ,p.[userid]
-          ,[Title]
-          ,[Body]
-          ,[SlugUrl]
-          ,p.[IdStatus]
-          ,st.[Description] as StatusDescription
-          ,cat.[Description]
-          ,cat.Slug as CatSlug
-          ,p.[Deleted]
-          ,p.[Timestamp]
-          ,p.[TimestampApprovation],
-          pa.IdPost,
-		  pa.IdPostAttachment,
-		  pa.FileName,
-		  pa.ContentType,
-		  pa.Size
-           FROM [tblPosts]  p
-           inner join tblpoststatus st on p.idStatus = st.idstatus
-           inner join tblCategory cat on cat.idcategory = p.idcategory
-		   left outer join tblPostsAttachments pa on pa.IdPost = p.IdPost
-           where p.deleted = 0 and isnull(pa.deleted,0) = 0 and p.IdPost = @idPost;";
+                @"SELECT p.[IdPost]
+                  ,p.[IdCategory]
+                  ,p.[userid]
+                  ,[Title]
+                  ,[Body]
+                  ,[SlugUrl]
+                  ,p.[IdStatus]
+                  ,st.[Description] as StatusDescription
+                  ,cat.[Description]
+                  ,cat.Slug as CatSlug
+                  ,p.[Deleted]
+                  ,p.[Timestamp]
+                  ,p.[TimestampApprovation]
+                  ,p.EditCode,
+                  pa.IdPost,
+		          pa.IdPostAttachment,
+		          pa.FileName,
+		          pa.ContentType,
+		          pa.Size
+                   FROM [tblPosts]  p
+                   inner join tblpoststatus st on p.idStatus = st.idstatus
+                   inner join tblCategory cat on cat.idcategory = p.idcategory
+		           left outer join tblPostsAttachments pa on pa.IdPost = p.IdPost
+                   where p.deleted = 0 and isnull(pa.deleted,0) = 0 and p.IdPost = @idPost;";
+
+        public const string PostByIdLight =
+                   @"SELECT p.[IdPost]
+                  ,p.[IdCategory]
+                  ,p.[userid]
+                  ,[Title]
+                  ,[Body]
+                  ,[SlugUrl]
+                  ,p.[IdStatus]
+                  ,st.[Description] as StatusDescription
+                  ,cat.[Description]
+                  ,cat.Slug as CatSlug
+                  ,p.[Deleted]
+                  ,p.[Timestamp]
+                  ,p.[TimestampApprovation]
+                  ,p.EditCode
+                   FROM [tblPosts]  p
+                   inner join tblpoststatus st on p.idStatus = st.idstatus
+                   inner join tblCategory cat on cat.idcategory = p.idcategory
+                   where p.deleted = 0 and p.IdPost = @idPost;";
+
+        public const string PostByEditCodeLight =
+                   @"SELECT p.[IdPost]
+                  ,p.[IdCategory]
+                  ,p.[userid]
+                  ,[Title]
+                  ,[Body]
+                  ,[SlugUrl]
+                  ,p.[IdStatus]
+                  ,st.[Description] as StatusDescription
+                  ,cat.[Description]
+                  ,cat.Slug as CatSlug
+                  ,p.[Deleted]
+                  ,p.[Timestamp]
+                  ,p.[TimestampApprovation]
+                  ,p.EditCode
+                   FROM [tblPosts]  p
+                   inner join tblpoststatus st on p.idStatus = st.idstatus
+                   inner join tblCategory cat on cat.idcategory = p.idcategory
+                   where p.deleted = 0 and p.editCode = @editCode;";
 
         public const string PostByEditCode =
-          @"SELECT p.[IdPost]
-          ,p.[IdCategory]
-          ,p.[userid]
-          ,[Title]
-          ,[Body]
-          ,[SlugUrl]
-          ,p.[IdStatus]
-          ,st.[Description] as StatusDescription
-          ,cat.[Description]
-          ,cat.Slug as CatSlug
-          ,p.[Deleted]
-          ,p.[Timestamp]
-          ,p.[TimestampApprovation],
-          pa.IdPost,
-		  pa.IdPostAttachment,
-		  pa.FileName,
-		  pa.ContentType,
-		  pa.Size
-           FROM [tblPosts]  p
-           inner join tblpoststatus st on p.idStatus = st.idstatus
-           inner join tblCategory cat on cat.idcategory = p.idcategory
-		   left outer join tblPostsAttachments pa on pa.IdPost = p.IdPost
-           where p.deleted = 0 and isnull(pa.deleted,0) = 0 and p.EditCode = @editCode;";
+              @"SELECT p.[IdPost]
+              ,p.[IdCategory]
+              ,p.[userid]
+              ,[Title]
+              ,[Body]
+              ,[SlugUrl]
+              ,p.[IdStatus]
+              ,st.[Description] as StatusDescription
+              ,cat.[Description]
+              ,cat.Slug as CatSlug
+              ,p.[Deleted]
+              ,p.[Timestamp]
+              ,p.[TimestampApprovation]
+              ,p.EditCode
+              ,pa.IdPost,
+		      pa.IdPostAttachment,
+		      pa.FileName,
+		      pa.ContentType,
+		      pa.Size
+               FROM [tblPosts]  p
+               inner join tblpoststatus st on p.idStatus = st.idstatus
+               inner join tblCategory cat on cat.idcategory = p.idcategory
+		       left outer join tblPostsAttachments pa on pa.IdPost = p.IdPost
+               where p.deleted = 0 and isnull(pa.deleted,0) = 0 and p.EditCode = @editCode;";
 
         public const string PostByStatusAndCategory =
            @"SELECT p.[IdPost]
@@ -144,6 +219,7 @@ namespace Confidami.Data
           ,p.[Deleted]
           ,p.[Timestamp]
           ,p.[TimestampApprovation]
+          ,p.EditCode
           ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
            FROM [tblPosts]  p
            inner join tblpoststatus st on p.idStatus = st.idstatus
@@ -165,15 +241,21 @@ namespace Confidami.Data
             "VALUES (@userId,@filename,@contenttype,@size,@timestamp);";
 
         public const string SelectUploadTempByUserId =
-            "select userid,filename,contenttype,size,timestamp from tblTempAttachments where userid = @userid and deleted=0";
+            "select IdTempAttachment as IdPostAttachment,userid,filename,contenttype,size,timestamp from tblTempAttachments where userid = @userid and deleted=0";
 
         public const string TempAttachmentById =
-            "select IdTempAttachment as Id,userid,filename,contenttype,size,timestamp from tblTempAttachments where IdTempAttachment = @id and deleted=0";
+            "select IdTempAttachment as IdPostAttachment,userid,filename,contenttype,size,timestamp from tblTempAttachments where IdTempAttachment = @id and deleted=0";
 
         public const string DeleteInTempFolder =
             "update tblTempAttachments set deleted=1 where userid=@userid and deleted=0;";
 
         public const string DeleteTempAttachment =
             "update tblTempAttachments set deleted=1 where IdTempAttachment=@id and deleted=0;";
+
+        public const string DeleteAttachment =
+            "update tblPostsAttachments set deleted=1 where IdPostAttachment=@id and deleted=0;";
+
+        public const string AttachmentsByIdPost =
+            "select IdPostAttachment,idPost,filename,contenttype,size,timestamp from tblTempAttachments where idPost = @idPost and deleted=0";
     }
 }

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
+using Confidami.Web.Helpers;
 using Confidami.Web.ViewModel;
 using Newtonsoft.Json;
 
@@ -48,7 +49,7 @@ namespace Confidami.Web.Controllers
             return View("Index",vm);
         }
 
-        [Route("{categoryName}/{id}/{slugTitle?}", Name = "SingleContentRoute")]
+        [Route("{categoryName}/{id:long}/{slugTitle?}", Name = "SingleContentRoute")]
         public ActionResult SingleContent(string categoryName,long id,string slugTitle)
         {
             var res = PostManager.GetPost(id);
@@ -91,6 +92,37 @@ namespace Confidami.Web.Controllers
             return View(FillInsertModel());
         }
 
+        [Route("codici-di-modifica",Name = "FindEditPostView")]
+        public ActionResult FindEditCode()
+        {
+            return View(new EditPostCodeViewModel());
+        }
+
+        [Route("codici-di-modifica", Name = "FindEditPostSubmit")]
+        [HttpPost]
+        public ActionResult FindEditCode(EditPostCodeViewModel model)
+        {
+            model.CannotBeNull("EditPostCodeViewModel");
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var res = PostManager.CheckEditCode(model.EditCode,model.Password);
+            if (!res.Success)
+            {
+                ModelState.AddModelError("",res.Message);
+                 return View(model);
+            }
+
+            return RedirectToAction(ActionsStore.EditPost, new { id = res.PostLigh.IdPost, slugUrl = res.PostLigh.SlugUrl });
+        }
+
+        [Route("{id:long}/{slugUrl}/modifica", Name = "EditPost")]
+        public ActionResult Edit(long id)
+        {
+            //todo resirigere a modifica
+            return RedirectToAction(ActionsStore.ContentsInsert);
+        }
+
         [HttpPost]
         public ActionResult AddPost(InsertPostViewModel postVm)
         {
@@ -105,9 +137,45 @@ namespace Confidami.Web.Controllers
                 UserId = CurrentUserId
             };
 
-            PostManager.AddPost(post);
+            var res = PostManager.AddPost(post);
 
-            return RedirectToAction(ActionsStore.ContentsInsert);
+            //return RedirectToAction(ActionsStore.EditCode, );
+            return RedirectToRoute(RouteStore.EditPostView, new {idPost = res.Message});
+
+        }
+
+
+        [Route("{idPost}/codice-modifica", Name = "EditPostView")]
+        public ActionResult EditPostCode(long idPost)
+        {
+            var res = PostManager.GetpostLight(idPost);
+            if (res == null || res.UserId != CurrentUserId)
+            {
+                return HttpNotFound();
+            }
+            return View(model: new InsertEditPostCodeViewModel() { IdPost = res.IdPost, EditCode = res.EditCode });
+        }
+
+        [HttpPost]
+        [Route("{idPost}/codice-modifica", Name = "EditPostInsert")]
+        public ActionResult EditPostCode(InsertEditPostCodeViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var res = PostManager.InserEditInfo(
+                new PostEdit()
+                {
+                    Email = model.Email,
+                    IdPost = model.IdPost,
+                    Password = model.Password,
+                    UserId = CurrentUserId
+                }
+                );
+
+            if (!res.Success)
+                ModelState.AddModelError("", res.Message);
+            return View(model);
         }
 
 
@@ -142,13 +210,29 @@ namespace Confidami.Web.Controllers
 
         public JsonResult GetTempAttachMents()
         {
-            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel(CurrentUserId) { Name = x.FileName, Size = x.Size, Id = x.IdPostAttachment }), JsonRequestBehavior.AllowGet);
+            return Json(FileManager.GetTempAttachMentsByUserId(CurrentUserId).Select(x => new TempAttachMentViewModel(CurrentUserId)
+            {
+                Name = x.FileName, Size = x.Size, Id = x.IdPostAttachment
+            }), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetAttachMentsByIdPost(long idPost)
+        {
+            return Json(FileManager.GetAttachMentsByIdPost(idPost).Select(x => new PostAttachMentViewModel(idPost.ToString(CultureInfo.InvariantCulture))
+            {
+                Name = x.FileName, Size = x.Size, Id = x.IdPostAttachment
+            }), JsonRequestBehavior.AllowGet);
         }
 
         private InsertPostViewModel FillInsertModel()
         {
             var categories = PostManager.GetAllCategories();
             return new InsertPostViewModel {Categories = categories};
+        }
+
+        private InsertEditPostCodeViewModel FillInsertEditCodeModel(long idPost, string editCode)
+        {
+            return new InsertEditPostCodeViewModel {};
         }
 
         private PostViewModel FillPostViewModel(IEnumerable<PostLight> posts)

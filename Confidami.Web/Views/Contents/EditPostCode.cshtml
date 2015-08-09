@@ -1,0 +1,26 @@
+﻿@using Confidami.Common
+@model Confidami.Web.ViewModel.InsertEditPostCodeViewModel
+
+@{
+    ViewBag.Title = "Denuncia - Codice Modifica";
+    ViewBag.Heding = "Codice Modifica";
+}
+
+@Html.ValidationSummary(false);
+
+    <h2>Edit code: <b>@Model.EditCode</b></h2>
+    
+@*<form action="@Url.Action(ActionsStore.InserisciExtra, ControllerStore.Segnalazioni, null)" method="POST">*@
+    <form action="@Url.RouteUrl(RouteStore.EditPostInsert,new {idPost=@Model.IdPost})" method="POST">
+        <div class="form-group">
+            <label for="email">Email (facoltativa - riceverai un email quando il post verrà approvato)</label>
+            <input type="email" id="email" name="email" class="form-control" value="@Model.Email" />
+        </div>
+        <div class="form-group">
+            <label for="email">Password(chiave segreta associata all'edit code per modificare il post prima dell'approvazione)</label>
+            <input type="password" id="password" name="password" class="form-control" value="@Model.Password" />
+        </div>
+        <input type="hidden" name="idPost" id="idPost" value="@Model.IdPost" />
+        <input type="hidden" name="editCode" id="editCode" value="@Model.EditCode" />
+        <button type="submit" value="submit" class="btn btn-default">Salva</button>
+    </form>

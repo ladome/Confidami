@@ -28,6 +28,25 @@ namespace Confidami.BL.Mapper
             }).ToList();
         }
 
+        public static PostLight Map(PostExtendedDb x)
+        {
+            return new PostLight()
+            {
+                Body = x.Body,
+                Title = x.Title,
+                Category = new Category() { Description = x.Description, IdCategory = x.IdCategory, Slug = x.CatSlug },
+                SlugUrl = x.SlugUrl,
+                IdPost = x.IdPost,
+                Status = x.Status,
+                StatusDescription = x.StatusDescription,
+                TimeStamp = x.TimeStamp,
+                TimeStampApprovation = x.TimeStampApprovation,
+                UserId = x.UserId,
+                HasAttachments = x.NumberOfAttachment > 0,
+                EditCode = x.EditCode
+            };
+        }
+
         public static Post Map(PostExtendedDbWithAttachments post)
         {
             return new Post()

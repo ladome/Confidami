@@ -5,6 +5,7 @@ using Confidami.BL.Mapper;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Data;
+using Confidami.Data.Entities;
 using Confidami.Model;
 
 namespace Confidami.BL
@@ -37,12 +38,12 @@ namespace Confidami.BL
             var editCode = GetRandomString();
             var founded = false;
 
-            if (_postRepository.GetPostEditCode(editCode) != null)
+            if (_postRepository.GetPostByEditCode(editCode) != null)
             {
                 while (!founded)
                 {
                     editCode = GetRandomString();
-                    if (_postRepository.GetPostEditCode(editCode) == null)
+                    if (_postRepository.GetPostByEditCode(editCode) == null)
                         founded = true;
                 }
             }
@@ -60,9 +61,32 @@ namespace Confidami.BL
             }
 
             bool success = res > 0;
-            return new BaseResponse { Success = success, Message = success ? "Post inserito" : "Post non inserito" };
+            return new BaseResponse { Success = success, Message = res.ToString() };
         }
 
+
+        public BaseResponse InserEditInfo(PostEdit model)
+        {
+            model.CannotBeNull("editPost");
+
+
+            if (_postRepository.GetEditInfoByIdPost(model.IdPost) != null)
+                return new BaseResponse() { Message = "Info già caricate", Success = false };
+
+            var post = _postRepository.GetPostLightById(model.IdPost);
+
+            if (post.UserId != model.UserId)
+                return new BaseResponse() {Message = "Operazione non permessa", Success = false};
+
+            var res = _postRepository.InserEditInfo(model.IdPost, model.Email, model.Password);
+
+            var resb = res > 0;
+            return new BaseResponse
+            {
+                Success = resb,
+                Message = resb ? "Edit info salvate" : "Edit info non salvate"
+            };
+        }
         private void BuildAttachAttachments(Post post)
         {
             post.CannotBeNull("post");
@@ -114,7 +138,10 @@ namespace Confidami.BL
 
         public Post GetPost(long idpost)
         {
-            return PostMapper.Map(_postRepository.GetPostById(idpost));
+            var res = _postRepository.GetPostById(idpost);
+            if (res == null)
+                return null;
+            return PostMapper.Map(res);
         }
 
 
@@ -126,6 +153,49 @@ namespace Confidami.BL
         public IEnumerable<PostLight> GetPostByCategory(int idCategory)
         {
             return PostMapper.Map(_postRepository.GetPostsByCategory((int)idCategory));
+        }
+
+        public PostLight GetpostLight(long idPost)
+        {
+            var res = _postRepository.GetPostLightById(idPost);
+            if (res == null)
+                return null;
+            return PostMapper.Map(res);
+        }
+
+        public PostLight GetpostLight(string editCode)
+        {
+            var res = _postRepository.GetPostLightByEditCode(editCode);
+            if (res == null)
+                return null;
+            return PostMapper.Map(res);
+        }
+
+        public CheckEditCodeResponse CheckEditCode(string editCode, string password)
+        {
+            editCode.CannotBeNull("editCode");
+            password.CannotBeNull("password");
+
+            var res = _postRepository.GetEditInfoByEditCode(editCode);
+            if (res == null)
+            {
+                return new CheckEditCodeResponse()
+                {
+                    Success = false,
+                    Message = "Nessuna denuncia associata all'edit code fornito"
+                };
+            }
+
+            if (res.SecretKey != password)
+            {
+                return new CheckEditCodeResponse()
+                {
+                    Success = false,
+                    Message = "Il codice segreto non corrisponde con l'editcode fornito"
+                };
+            }
+
+            return new CheckEditCodeResponse() {Success = true, PostLigh = GetpostLight(editCode)};
         }
 
         public IEnumerable<PostLight> GetPostByStatus(PostStatus status)

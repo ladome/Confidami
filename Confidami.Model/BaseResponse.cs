@@ -16,4 +16,9 @@ namespace Confidami.Model
     {
         public int ErrorCode { get; set; }
     }
+
+    public class CheckEditCodeResponse : BaseResponse
+    {
+        public PostLight PostLigh { get; set; }
+    }
 }

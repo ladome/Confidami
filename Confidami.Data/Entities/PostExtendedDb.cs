@@ -34,6 +34,7 @@ namespace Confidami.Data.Entities
         public DateTime TimeStamp { get; set; }
         public DateTime TimeStampApprovation { get; set; }
         public int NumberOfAttachment { get; set; }
+        public string EditCode { get; set; }
 
     }
 
@@ -44,5 +45,18 @@ namespace Confidami.Data.Entities
             Attachments = new List<PostAttachments>();
         }
         public List<PostAttachments> Attachments { get; set; }
+    }
+
+    public class EditPostInfoDb
+    {
+        public long IdPost { get; set; }
+        public DateTime? LastUserEdit { get; set; }
+        public string Email { get; set; }
+        public string SecretKey { get; set; }
+    }
+
+    public class EditPostInfoWithCodeDb : EditPostInfoDb
+    {
+        public string EditCode { get; set; }
     }
 }
