@@ -93,6 +93,28 @@ namespace Confidami.Web.Controllers
             return View(FillInsertModel());
         }
 
+        [HttpPost]
+        [Route("inserisci")]
+        public ActionResult Insert(InsertPostViewModel postVm)
+        {
+            if (!ModelState.IsValid)
+                return View(ViewsStore.Insert, FillInsertModel());
+
+            var post = new Post
+            {
+                Body = postVm.Body,
+                Category = new Category { IdCategory = postVm.IdCategory },
+                Title = postVm.Title,
+                UserId = CurrentUserId
+            };
+
+            var res = PostManager.AddPost(post);
+
+            //return RedirectToAction(ActionsStore.EditCode, );
+            return RedirectToRoute(RouteStore.EditPostView, new { idPost = res.Message });
+
+        }
+
         [Route("codici-di-modifica",Name = "FindEditPostView")]
         public ActionResult FindEditCode()
         {
@@ -157,27 +179,6 @@ namespace Confidami.Web.Controllers
                 }
                 );
             return View();
-        }
-
-        [HttpPost]
-        public ActionResult AddPost(InsertPostViewModel postVm)
-        {
-            if (!ModelState.IsValid)
-                return View(ViewsStore.Insert, FillInsertModel());
-
-            var post = new Post
-            {
-                Body = postVm.Body,
-                Category = new Category { IdCategory = postVm.IdCategory },
-                Title = postVm.Title,
-                UserId = CurrentUserId
-            };
-
-            var res = PostManager.AddPost(post);
-
-            //return RedirectToAction(ActionsStore.EditCode, );
-            return RedirectToRoute(RouteStore.EditPostView, new {idPost = res.Message});
-
         }
 
 

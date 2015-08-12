@@ -181,7 +181,7 @@ namespace Confidami.BL
         public PostLight GetpostLight(string editCode)
         {
             var res = _postRepository.GetPostLightByEditCode(editCode);
-            if (res == null)
+            if (res == null || res.Status != PostStatus.Approved)
                 return null;
             return PostMapper.Map(res);
         }

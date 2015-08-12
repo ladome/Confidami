@@ -28,7 +28,7 @@
             
             @if (!Model.IsModifica)
             {
-                <form class="form-horizontal" role="form" action="@Url.Action("AddPost", "Contents")" method="post" @*data-parsley-validate*@>
+                <form class="form-horizontal" role="form" action="@Url.Action("Insert", "Contents")" method="post" @*data-parsley-validate*@>
                     @*@Html.ValidationSummary(false)*@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="title">Titolo</label>
