@@ -49,7 +49,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <label>@Html.RouteLink("Titolo:" + post.Title, "SingleContentRoute", new { categoryName = post.CategorySlug, id = post.IdPost }, null)</label>
+                            <label>@Html.RouteLink("Titolo:" + post.Title, "SingleContentRoute", new { categoryName = post.CategorySlug, id = post.IdPost, slugTitle = post.TitleSlug }, null)</label>
 
                             <br />
                             <label>Categoria: @post.CategoryPost</label>

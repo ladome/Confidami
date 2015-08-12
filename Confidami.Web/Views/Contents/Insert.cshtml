@@ -11,6 +11,7 @@
     </div>
 </div>
 
+@Html.ValidationSummary(false);
 <div>
 
     <!-- Nav tabs -->
@@ -24,42 +25,93 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="form-segnalazione">
-
-            <form class="form-horizontal" role="form" action="@Url.Action("AddPost", "Contents")" method="post" @*data-parsley-validate*@>
-                @*@Html.ValidationSummary(false)*@
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="title">Titolo</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="title" name="title" placeholder="Titolo">
+            
+            @if (!Model.IsModifica)
+            {
+                <form class="form-horizontal" role="form" action="@Url.Action("AddPost", "Contents")" method="post" @*data-parsley-validate*@>
+                    @*@Html.ValidationSummary(false)*@
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="title">Titolo</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Titolo">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group" id="body">
-                    <label class="col-sm-2 control-label" for="body">Messaggio</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="body" name="body" placeholder="Messaggio">
+                    <div class="form-group" id="body">
+                        <label class="col-sm-2 control-label" for="body">Messaggio</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="body" name="body" placeholder="Messaggio">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group" id="category">
-                    <label class="col-sm-2  control-label" for="body">Categoria</label>
-                    <div class="col-sm-10">
-                        <select name="idcategory" class="form-control">
-                            @foreach (var cat in Model.Categories)
-                            {
-                                <option value="@cat.IdCategory">@cat.Description</option>
-                            }
-                        </select>
+                    <div class="form-group" id="category">
+                        <label class="col-sm-2  control-label" for="body">Categoria</label>
+                        <div class="col-sm-10">
+                            <select name="idcategory" class="form-control">
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.IdCategory">@cat.Description</option>
+                                }
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <input type="submit" value="Salva" class="btn btn-primary btn-sm" action=@Url.Action(ActionsStore.AddPost, ControllerStore.Contents)>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <input type="submit" value="Salva" class="btn btn-primary btn-sm">
+                        </div>
                     </div>
-                </div>
 
-            </form>
+                </form>
+            }
+            else
+            {
+                <form class="form-horizontal" role="form" action="@Url.RouteUrl("EditPostSave")" method="post" @*data-parsley-validate*@>
+                    @*@Html.ValidationSummary(false)*@
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="title">Titolo</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Titolo" value="@Model.Title">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="body">
+                        <label class="col-sm-2 control-label" for="body">Messaggio</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="body" name="body" placeholder="Messaggio" value="@Model.Body">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="category">
+                        <label class="col-sm-2  control-label" for="body">Categoria</label>
+                        <div class="col-sm-10">
+                            <select name="idcategory" class="form-control">
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    if (cat.IdCategory == Model.IdCategory)
+                                    {
+                                        <option value="@cat.IdCategory" selected="selected">@cat.Description</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@cat.IdCategory">@cat.Description</option>
+                                    }
+
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" value="@ViewBag.IdPost" name="idPost"/>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <input type="submit" value="Salva" class="btn btn-primary btn-sm">
+                        </div>
+                    </div>
+
+                </form>
+            }
 
         </div>
         <div role="tabpanel" class="tab-pane" id="attaccments-segnalazione"> <!-- allgati -->
@@ -145,8 +197,15 @@
 
 </div>
 <script>
-    var acceptedfiles = "@ViewBag.Acceptedfiles";
+    var acceptedfiles = @ViewBag.Acceptedfiles;
     var imageformats = @ViewBag.ImageFormats;
+    @if (Model.IsModifica)
+    {
+        <text>
+        var isedit = true;
+        var idPost = @ViewBag.IdPost;
+        </text>
+    }
 </script>
   
 <!--------------------->
@@ -254,15 +313,19 @@
             });
 
             //Load temp files
-            function loadattacchements() {            
+            function loadattacchements() {
 
-                var jqxhr = $.getJSON("/Contents/GetTempAttachMents", function () {
+                var urlWs = "/Contents/GetTempAttachMents";
+                if (window.isedit)
+                    urlWs = "/Contents/GetAttachMentsByIdPost?idpost=" + window.idPost;
+                var jqxhr = $.getJSON(urlWs, function () {
 
                 }).done(function (attacchments) {
                     $.each(attacchments, function (key, attacchement) {
 
                         var extension = attacchement.Name.substr((attacchement.Name.lastIndexOf('.') + 1));
-                        extensionList = ['jpg', 'jpeg', 'png', 'gif'];
+                        //extensionList = ['jpg', 'jpeg', 'png', 'gif'];
+                        extensionList = acceptedfiles;
                         if (extensionList.indexOf(extension) != -1) {
 
                             if (myDropzone.options.maxFiles < 1) return true; //limit reach

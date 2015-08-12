@@ -25,6 +25,23 @@ namespace Confidami.Data
            ,[EditCode])
             VALUES (@idCategory,@title,@body,@slugUrl,@timeStamp,@userid,@editcode);";
 
+        public const string UpdatePost =
+            @"UPDATE [tblPosts]
+           SET [IdCategory] = @idCategory
+              ,[Title] = @title
+              ,[Body] = @body
+              ,[SlugUrl] = @slugUrl
+              ,[IdStatus] = @idStatus
+              ,[Timestamp] = @timeStamp
+              ,[TimestampApprovation] = @timestampApprovation
+              ,[Userid] = @userId
+              ,[EditCode] = @editCode
+              WHERE idPost = @idPost;";
+
+        public const string UpdateLastUserEdit =
+            "UPDATE tblPostsEdit set lastuseredit=@lastedit where idpostedit=@idpost;";
+
+
 
         public const string AllPosts =
            @"SELECT [IdPost]
@@ -256,6 +273,6 @@ namespace Confidami.Data
             "update tblPostsAttachments set deleted=1 where IdPostAttachment=@id and deleted=0;";
 
         public const string AttachmentsByIdPost =
-            "select IdPostAttachment,idPost,filename,contenttype,size,timestamp from tblTempAttachments where idPost = @idPost and deleted=0";
+            "select IdPostAttachment,idPost,filename,contenttype,size,timestamp from tblPostsAttachments where idPost = @idPost and deleted=0";
     }
 }

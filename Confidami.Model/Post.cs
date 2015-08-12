@@ -18,7 +18,7 @@ namespace Confidami.Model
         public PostStatus Status { get; set; }
         public string StatusDescription { get; set; }
         public DateTime TimeStamp { get; set; }
-        public DateTime TimeStampApprovation { get; set; }
+        public DateTime? TimeStampApprovation { get; set; }
         public virtual bool HasAttachments { get; set; }
         public string EditCode { get; set; }
 

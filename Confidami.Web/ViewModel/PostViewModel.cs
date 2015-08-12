@@ -78,6 +78,13 @@ namespace Confidami.Web.ViewModel
         public int IdCategory { get; set; }
 
         public IEnumerable<Category> Categories { get; set; }
+
+        public bool IsModifica { get; set; }
+    }
+
+    public class EditPostViewModel : InsertPostViewModel
+    {
+        public long IdPost { get; set; }
     }
 
     public class TempAttachMentViewModel

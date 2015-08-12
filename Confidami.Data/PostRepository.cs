@@ -35,6 +35,48 @@ namespace Confidami.Data
             }
         }
 
+        public int UpdatePost(Post post)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                conn.Open();
+                using (var transaction = conn.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    int? res;
+                    try
+                    {
+                        res = conn.Query<int>(QueryPostStore.UpdatePost,
+                        new
+                        {
+                            idCategory = post.Category.IdCategory,
+                            title = post.Title,
+                            body = post.Body,
+                            idStatus = post.Status,
+                            timeStamp = post.TimeStamp,
+                            timestampApprovation = post.TimeStampApprovation,
+                            userId = post.UserId,
+                            slugUrl = post.SlugUrl,
+                            editCode = post.EditCode,
+                            idPost = post.IdPost
+                        }, transaction: transaction).SingleOrDefault();
+
+                        res = res +
+                              conn.Query<int>(QueryPostStore.UpdateLastUserEdit,
+                                  new { lastedit = DateTime.Now, idPost = post.IdPost }, transaction: transaction).SingleOrDefault();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+
+                    transaction.Commit();
+                    return res.GetValueOrDefault();
+
+                }
+            }
+        }
+
         public int InserPostWithAttachment(Post post)
         {
             using (var conn = DbUtilities.Connection)
@@ -74,6 +116,62 @@ namespace Confidami.Data
                         transaction.Commit();
 
                         return identity;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+
+                }
+            }
+
+        }
+
+
+        public void UpdatePostWithAttachment(Post post)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                conn.Open();
+                using (var transaction = conn.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    try
+                    {
+
+                       conn.Execute(QueryPostStore.UpdatePost,
+                        new
+                        {
+                            idCategory = post.Category.IdCategory,
+                            title = post.Title,
+                            body = post.Body,
+                            idStatus = post.Status,
+                            timeStamp = post.TimeStamp,
+                            timestampApprovation = post.TimeStampApprovation,
+                            userId = post.UserId,
+                            slugUrl = post.SlugUrl,
+                            editCode = post.EditCode,
+                            idPost = post.IdPost
+                        },transaction: transaction);
+
+                        conn.Execute(QueryPostStore.UpdateLastUserEdit,
+                            new { lastedit = DateTime.Now, idPost = post.IdPost }, transaction: transaction);
+
+                        foreach (var attach in post.Attachments)
+                        {
+                            conn.Execute(QueryPostStore.InsertPostAttachment,
+                              new
+                              {
+                                  idPost = post.IdPost,
+                                  fileName = attach.FileName,
+                                  contentType = attach.ContentType,
+                                  size = attach.Size,
+                                  timestamp = DateTime.Now
+
+                              }, transaction: transaction);
+                        }
+
+                        transaction.Commit();
                     }
                     catch (Exception ex)
                     {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
@@ -82,7 +83,7 @@ namespace Confidami.Web.Controllers
 
             #region dropzone
 
-            ViewBag.Acceptedfiles = Config.UploadAcceptedFile;
+            ViewBag.Acceptedfiles = new MvcHtmlString(JsonConvert.SerializeObject(Config.AcceptedExtensions));
             ViewBag.ImageFormats = new MvcHtmlString(JsonConvert.SerializeObject(Config.UploadImageExtensions));
             #endregion
             ViewBag.CurrentUserId = CurrentUserId;
@@ -117,10 +118,45 @@ namespace Confidami.Web.Controllers
         }
 
         [Route("{id:long}/{slugUrl}/modifica", Name = "EditPost")]
+        [HttpGet]
         public ActionResult Edit(long id)
         {
-            //todo resirigere a modifica
-            return RedirectToAction(ActionsStore.ContentsInsert);
+            ViewBag.Title = "Segnalazioni - modifica";
+            ViewBag.Heding = "Modifca denuncia";
+
+            var post = PostManager.GetpostLight(id);
+
+            return View(ViewsStore.Insert,FillEditViewModel(post));
+            //todo redirigere a modifica
+        }
+
+        [Route("{id:long}/{slugUrl}/modifica", Name = "EditPostSave")]
+        [HttpPost]
+        public ActionResult Edit(EditPostViewModel model)
+        {
+            model.CannotBeNull("insertpostviewModel");
+            var post = PostManager.GetpostLight(model.IdPost);
+
+            if (!ModelState.IsValid)
+            {
+                return View(ViewsStore.Insert, FillEditViewModel(model));
+            }
+            PostManager.UpdatePost(
+                new Post()
+                {
+                    Category = new Category() { IdCategory = model.IdCategory},
+                    Title = model.Title,
+                    Body = model.Body,
+                    Status = post.Status,
+                    TimeStamp = post.TimeStamp,
+                    TimeStampApprovation = post.TimeStampApprovation,
+                    UserId = post.UserId,
+                    SlugUrl = post.SlugUrl,
+                    EditCode = post.EditCode,
+                    IdPost = post.IdPost
+                }
+                );
+            return View();
         }
 
         [HttpPost]
@@ -229,6 +265,46 @@ namespace Confidami.Web.Controllers
             var categories = PostManager.GetAllCategories();
             return new InsertPostViewModel {Categories = categories};
         }
+
+        private EditPostViewModel FillEditViewModel(PostLight postLight)
+        {
+            #region dropzone
+            ViewBag.Acceptedfiles = new MvcHtmlString(JsonConvert.SerializeObject(Config.AcceptedExtensions));
+            ViewBag.ImageFormats = new MvcHtmlString(JsonConvert.SerializeObject(Config.UploadImageExtensions));
+            #endregion
+
+            ViewBag.CurrentUserId = CurrentUserId;
+            ViewBag.IdPost = postLight.IdPost;
+
+            var categories = PostManager.GetAllCategories();
+            return new EditPostViewModel
+            {
+                Categories = categories, Body = postLight.Body, IdCategory = postLight.Category.IdCategory, Title = postLight.Title, IsModifica = true,IdPost = postLight.IdPost
+            };
+        }
+
+        private EditPostViewModel FillEditViewModel(EditPostViewModel model)
+        {
+            #region dropzone
+            ViewBag.Acceptedfiles = new MvcHtmlString(JsonConvert.SerializeObject(Config.AcceptedExtensions));
+            ViewBag.ImageFormats = new MvcHtmlString(JsonConvert.SerializeObject(Config.UploadImageExtensions));
+            #endregion
+
+            ViewBag.CurrentUserId = CurrentUserId;
+            ViewBag.IdPost = model.IdPost;
+
+            var categories = PostManager.GetAllCategories();
+            return new EditPostViewModel
+            {
+                Categories = categories,
+                Body = model.Body,
+                IdCategory = model.IdCategory,
+                Title = model.Title,
+                IsModifica = true,
+                IdPost = model.IdPost
+            };
+        }
+
 
         private InsertEditPostCodeViewModel FillInsertEditCodeModel(long idPost, string editCode)
         {

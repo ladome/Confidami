@@ -64,6 +64,21 @@ namespace Confidami.BL
             return new BaseResponse { Success = success, Message = res.ToString() };
         }
 
+        public void UpdatePost(Post post)
+        {
+            post.CannotBeNull("post");
+            BuildAttachAttachments(post);
+            post.SlugUrl = Slug.CreateSlug(true, post.Title);
+
+            if (!post.HasAttachments)
+                _postRepository.UpdatePost(post);
+            else
+            {
+                _postRepository.UpdatePostWithAttachment(post);
+                _fileManager.MoveTempInFinalFolder(post.UserId, post.IdPost.ToString());
+            }
+        }
+
 
         public BaseResponse InserEditInfo(PostEdit model)
         {
