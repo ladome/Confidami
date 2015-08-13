@@ -84,8 +84,12 @@ namespace Confidami.Common
         {
             get { return Convert.ToInt16(ConfigurationManager.AppSettings["RandomStringLenght"]); }
         }
-        
 
+        public static int NumberOfPostPerPage
+        {
+            get { return Convert.ToInt16(ConfigurationManager.AppSettings["NumberOfPostPerPage"]); }
+        }
+        
         
     }
 }

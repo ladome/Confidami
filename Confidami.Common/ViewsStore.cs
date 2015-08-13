@@ -12,6 +12,7 @@ namespace Confidami.Common
         public const string Moderation = "Moderation";
         public const string Menu = "_MainMenu";
         public const string MenuAdmin = "_MainMenuAdmin";
+        public const string PostPartial = "_Post";
         public const string Insert = "Insert";
         public const string AdminLayout = "~/Views/Shared/_LayoutAdmin.cshtml";
         public const string Login = "Login";
@@ -64,6 +65,7 @@ namespace Confidami.Common
         public const string EditPostView = "EditPostView";
         public const string EditPostInsert = "EditPostInsert";
         public const string FindEditCodeSubmit = "FindEditPostSubmit";
+        public const string Category = "CatRoute";
     }
     public class JsonAction
     {

@@ -110,6 +110,12 @@ namespace Confidami.Data
            ,[timestamp])
             VALUES (@idPost,@fileName,@contentType,@size,@timestamp)";
 
+        public const string CountAllPostsByStatus =
+            "select count(*) from tblposts where idstatus=@idStatus and deleted=0;";
+
+        public const string CountAllPostsByCategoryAndStatus =
+            "select count(*) from tblposts where idstatus=@idStatus and idcategory=@idcategory and deleted=0;";
+
         public const string PostByStatus =
            @"SELECT p.[IdPost]
           ,p.[IdCategory]
@@ -129,6 +135,27 @@ namespace Confidami.Data
            inner join tblpoststatus st on p.idStatus = st.idstatus
            inner join tblCategory cat on cat.idcategory = p.idcategory
            where p.deleted = 0 and p.IdStatus=@idStatus order by Timestamp desc;";
+
+        public const string PostByStatusPaginated =
+           @"SELECT p.[IdPost]
+          ,p.[IdCategory]
+          ,p.[userid]
+          ,[Title]
+          ,[Body]
+          ,[SlugUrl]
+          ,p.[IdStatus]
+          ,st.[Description] as StatusDescription
+          ,cat.[Description]
+          ,cat.Slug as CatSlug
+          ,p.[Deleted]
+          ,p.[Timestamp]
+          ,p.[TimestampApprovation]
+          ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+           FROM [tblPosts]  p
+           inner join tblpoststatus st on p.idStatus = st.idstatus
+           inner join tblCategory cat on cat.idcategory = p.idcategory
+           where p.deleted = 0 and p.IdStatus=@idStatus order by Timestamp desc
+           OFFSET @page ROWS FETCH NEXT @blockSize ROWS ONLY;";
 
         public const string PostById =
                 @"SELECT p.[IdPost]
@@ -242,6 +269,29 @@ namespace Confidami.Data
            inner join tblpoststatus st on p.idStatus = st.idstatus
            inner join tblCategory cat on cat.idcategory = p.idcategory
            where p.deleted = 0 and p.IdStatus=@idStatus and cat.idcategory = @idcategory order by Timestamp desc;";
+
+
+        public const string PostByStatusAndCategoryPaginated =
+           @"SELECT p.[IdPost]
+          ,p.[IdCategory]
+          ,p.[userid]
+          ,[Title]
+          ,[Body]
+          ,[SlugUrl]
+          ,p.[IdStatus]
+          ,st.[Description] as StatusDescription
+          ,cat.[Description]
+          ,cat.Slug as CatSlug
+          ,p.[Deleted]
+          ,p.[Timestamp]
+          ,p.[TimestampApprovation]
+          ,p.EditCode
+          ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+           FROM [tblPosts]  p
+           inner join tblpoststatus st on p.idStatus = st.idstatus
+           inner join tblCategory cat on cat.idcategory = p.idcategory
+           where p.deleted = 0 and p.IdStatus=@idStatus and cat.idcategory = @idcategory order by Timestamp desc 
+           OFFSET @page ROWS FETCH NEXT @blockSize ROWS ONLY;";
 
 
         public const string SetPostStatus =

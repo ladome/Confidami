@@ -6,6 +6,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.WebPages;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
@@ -21,33 +22,73 @@ namespace Confidami.Web.Controllers
     {
 
         [Route]
-        public ActionResult Index()
+        [Route("categoria/{id}/{slug}", Name = "CatRoute")]
+        public ActionResult Index(string page, int? id, string slug)
         {
-            ViewBag.Title = "Segnalazioni";
-            ViewBag.Heding = "Intestazione per tag header index segnalazioni";
-            //recupero tutti i post
-            //TODO paginazione
-            var res = PostManager.GetAllPost();
+            IEnumerable<PostLight> res = null;
 
-            var vm = FillPostViewModel(res);
-            return View(vm);
-        }
-
-        [Route("categoria/{id}/{slug}",Name = "CatRoute")]
-        public ActionResult Category(int id,string slug)
-        {
-            ViewBag.Title = "Segnalazioni - category name" + slug;
-            ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
-
-            var res = PostManager.GetCategory(id);
-            if (res == null)
+            if (!string.IsNullOrEmpty(page) && page != Constants.ViewAllPage && !page.IsInt())
                 return HttpNotFound();
 
-            if (slug != res.Slug)
-                return RedirectToRoutePermanent("CatRoute", new { id = id, slug = res.Slug });
-            var resFilt = PostManager.GetPostByCategory(id);
-            var vm = FillPostViewModel(resFilt);
-            return View("Index",vm);
+            if(page != null && page.Trim() == string.Empty)
+                return HttpNotFound();
+
+            var count = 0;
+
+            ViewBag.NextPage = -1;
+            ViewBag.PreviuosPage = -1;
+
+          
+            int currentPage = string.IsNullOrEmpty(page) ? 1 : int.Parse(page);
+
+            if (currentPage < 1)
+                return HttpNotFound();
+
+            if (!string.IsNullOrEmpty(page) && page == Constants.ViewAllPage)
+            {
+                res = PostManager.GetAllPost();
+                return View(FillPostViewModel(res));
+            }
+
+            //Senza categoria
+            if (!id.HasValue)
+            {
+                ViewBag.Title = "Segnalazioni";
+                ViewBag.Heding = "Intestazione per tag header index segnalazioni";
+
+
+                res = PostManager.GetPostsPaged(currentPage, out count);
+
+            }
+             //Con categoria
+            else
+            {
+                ViewBag.Title = "Segnalazioni - category name" + slug;
+                ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
+                ViewBag.IdCategory = id;
+
+
+                var cat = PostManager.GetCategory(id.GetValueOrDefault());
+                if (cat == null)
+                    return HttpNotFound();
+
+                if (slug != cat.Slug)
+                    return RedirectToRoutePermanent("CatRoute", new { id = id, slug = cat.Slug });
+
+                res = PostManager.GetPostByCategoryPaged(currentPage, id.GetValueOrDefault(), out count);
+            }
+
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.NumberOfPages = (int)Math.Ceiling((decimal)count/Config.NumberOfPostPerPage);
+            ViewBag.NextPage = currentPage + 1;
+            ViewBag.PreviuosPage = currentPage - 1;
+            ViewBag.IsFirstPage = currentPage == 1;
+            ViewBag.IsLastPage = count - (Config.NumberOfPostPerPage*(currentPage-1)) < Config.NumberOfPostPerPage;
+
+            return View(FillPostViewModel(res));
+
+
         }
 
         [Route("{categoryName}/{id:long}/{slugTitle?}", Name = "SingleContentRoute")]

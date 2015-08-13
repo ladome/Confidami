@@ -1,0 +1,25 @@
+﻿@model Confidami.Web.ViewModel.PostViewModel
+
+@if (Model != null)
+{
+    foreach (var post in Model.Posts)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label>@Html.RouteLink("Titolo:" + post.Title, "SingleContentRoute", new {categoryName = post.CategorySlug, id = post.IdPost, slugTitle = post.TitleSlug}, null)</label>
+
+                        <br />
+                        <label>Categoria: @post.CategoryPost</label>
+                        <br />
+                        <label>Allegati: @(post.HasAttachMents ? "Si" : "No")</label>
+                    </div>
+                    <div class="panel-body">
+                        <textarea>@Html.Raw(post.Body)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

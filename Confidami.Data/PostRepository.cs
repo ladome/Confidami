@@ -188,8 +188,21 @@ namespace Confidami.Data
         {
             using (var conn = DbUtilities.Connection)
             {
-                var lookup = new Dictionary<int, PostExtendedDb>();
                 return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatus,new {idStatus = PostStatus.Approved});
+            }
+        }
+
+        public IEnumerable<PostExtendedDb> GetPostsPaged(int page,int blockSize, out int numberOfPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                using (var multi = conn.QueryMultiple(QueryPostStore.PostByStatusPaginated + ' '+QueryPostStore.CountAllPostsByStatus,
+                    new {idStatus = PostStatus.Approved, @page = (page-1)*blockSize,blocksize=blockSize}))
+                {
+                    var posts = multi.Read<PostExtendedDb>();
+                    numberOfPost = multi.Read<int>().Single();
+                    return posts;
+                }
             }
         }
 
@@ -288,6 +301,22 @@ namespace Confidami.Data
             using (var conn = DbUtilities.Connection)
             {
                 return conn.Query<PostExtendedDb>(QueryPostStore.PostByStatusAndCategory,new { idStatus = PostStatus.Approved, idCategory = idCategory });
+            }
+        }
+
+        public IEnumerable<PostExtendedDb> GetPostsByCategoryPaged(int page, int blockSize, int idCategory,out int numberOfPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                using (
+                    var multi =
+                        conn.QueryMultiple(QueryPostStore.PostByStatusAndCategoryPaginated + ' ' +QueryPostStore.CountAllPostsByCategoryAndStatus,
+                            new { idStatus = PostStatus.Approved, idCategory = idCategory, @page = (page - 1) * blockSize, blocksize = blockSize }))
+                {
+                    var posts = multi.Read<PostExtendedDb>();
+                    numberOfPost = multi.Read<int>().Single();
+                    return posts;
+                }
             }
         }
 

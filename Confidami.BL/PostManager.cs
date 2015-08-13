@@ -170,6 +170,11 @@ namespace Confidami.BL
             return PostMapper.Map(_postRepository.GetPostsByCategory((int)idCategory));
         }
 
+        public IEnumerable<PostLight> GetPostByCategoryPaged(int page,int idCategory, out int count)
+        {
+            return PostMapper.Map(_postRepository.GetPostsByCategoryPaged(page,Config.NumberOfPostPerPage,(int)idCategory,out count));
+        }
+
         public PostLight GetpostLight(long idPost)
         {
             var res = _postRepository.GetPostLightById(idPost);
@@ -222,6 +227,12 @@ namespace Confidami.BL
         public IEnumerable<PostLight> GetAllPost()
         {
             return PostMapper.Map(_postRepository.GetAllPosts());
+        }
+
+        public IEnumerable<PostLight> GetPostsPaged(int page, out int count)
+        {
+            return PostMapper.Map(_postRepository.GetPostsPaged(page,Config.NumberOfPostPerPage,out count));
+
         }
 
         public IEnumerable<Category> GetAllCategories()
