@@ -16,6 +16,7 @@ namespace Confidami.Common
         public const string Insert = "Insert";
         public const string AdminLayout = "~/Views/Shared/_LayoutAdmin.cshtml";
         public const string Login = "Login";
+        public const string Search = "Search";
     }
 
     public class ControllerStore
@@ -52,7 +53,8 @@ namespace Confidami.Common
         public const string FindEditCode = "FindEditCode";
         public const string EditPost = "Edit";
 
-        public const string Search = "Index";
+        public const string Search = "Search";
+        public const string SearchAction = "SearchAction";
 
         public const string About = "About";
         public const string Newsletter = "Index";
@@ -66,6 +68,8 @@ namespace Confidami.Common
         public const string EditPostInsert = "EditPostInsert";
         public const string FindEditCodeSubmit = "FindEditPostSubmit";
         public const string Category = "CatRoute";
+        public const string SearchIndexRoute = "IndexSearch";
+        public const string SingleContentRoute = "SingleContentRoute";
     }
     public class JsonAction
     {

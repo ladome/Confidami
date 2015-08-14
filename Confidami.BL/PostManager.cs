@@ -235,6 +235,13 @@ namespace Confidami.BL
 
         }
 
+        public IEnumerable<PostLight> SearchPosts(int page,string key, out int count)
+        {
+            key.CannotBeNull("key");
+            return PostMapper.Map(_postRepository.GetPostsByKeyPaged(page, Config.NumberOfPostPerPage,key, out count));
+
+        }
+
         public IEnumerable<Category> GetAllCategories()
         {
             return _categoryRepository.GetCategories();

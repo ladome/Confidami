@@ -188,6 +188,7 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\ContentsController.cs" />
     <Compile Include="FiltersAttribute\MultipleButtonAttribute.cs" />
+    <Compile Include="FiltersAttribute\Pagination.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -337,7 +338,7 @@
     <Content Include="Views\Shared\_Sidebar.cshtml" />
     <Content Include="Views\Contents\Index.cshtml" />
     <Content Include="Views\Contents\Insert.cshtml" />
-    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Search\Search.cshtml" />
     <Content Include="Views\Newsletter\Index.cshtml" />
     <Content Include="Views\Search\_Form.cshtml" />
     <Content Include="Views\Search\_SearchResult.cshtml" />

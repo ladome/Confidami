@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -6,6 +7,7 @@ using System.Web.Mvc;
 using Confidami.BL;
 using Confidami.Common;
 using Confidami.Model;
+using Confidami.Web.ViewModel;
 using Microsoft.Owin;
 
 namespace Confidami.Web.Controllers
@@ -56,6 +58,23 @@ namespace Confidami.Web.Controllers
         {
             Response.StatusCode = (int)statusCode;
             return Json(Object, JsonRequestBehavior.AllowGet);
+        }
+
+        protected PostViewModel FillPostViewModel(IEnumerable<PostLight> posts)
+        {
+            var vm = new PostViewModel();
+            var pbase = posts.Select(x => new PostViewModelBase()
+            {
+                Body = x.Body,
+                Title = x.Title,
+                CategoryPost = x.Category.Description,
+                IdPost = x.IdPost,
+                HasAttachMents = x.HasAttachments,
+                CategorySlug = x.Category.Slug,
+                TitleSlug = x.SlugUrl
+            }).ToList();
+            vm.Posts = pbase;
+            return vm;
         }
     }
 

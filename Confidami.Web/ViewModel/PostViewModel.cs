@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
+using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 
 namespace Confidami.Web.ViewModel
@@ -14,19 +16,12 @@ namespace Confidami.Web.ViewModel
     public class PostViewModelBase
     {
         public long  IdPost { get; set; }
-
         public string Title { get; set; }
-
         public string Body { get; set; }
-
         public int IdCategory { get; set; }
-
         public string CategoryPost { get; set; }
-
         public string CategorySlug { get; set; }
-
         public string TitleSlug { get; set; }
-
         public virtual bool HasAttachMents { get; set; }
     }
 
@@ -54,11 +49,56 @@ namespace Confidami.Web.ViewModel
     
     public class PostViewModel
     {
+        public PostViewModel()
+        {
+            Posts = new List<PostViewModelBase>();
+        }
         public IEnumerable<PostViewModelBase> Posts { get; set; }
 
-        public bool IsAdmin { get; set; }
         //public string CurrentUser { get; set; }
+    }
 
+    public class SearchViewModel
+    {
+        private readonly PostViewModel _postvm;
+
+        public SearchViewModel()
+        {
+            _postvm = new PostViewModel();
+        }
+        public SearchViewModel(PostViewModel postvm)
+        {
+            _postvm = postvm;
+        }
+
+        [Required(ErrorMessage = "La chiave di ricerca è richiesta")]
+        public string Key { get; set; }
+
+        public PostViewModel SearchResults
+        {
+            get
+            {
+                if (_postvm != null && !string.IsNullOrEmpty(Key))
+                    _postvm.Posts.ForEach(x => { x.Body = SubStringOfSearched(x.Body, Key, 10); });
+                return _postvm;
+            }
+        }
+
+        public IEnumerable<Category> Categories { get; set; }
+
+        private string SubStringOfSearched(string body, string key,int numberofchar)
+        {
+            var idx = body.IndexOf(key, System.StringComparison.CurrentCultureIgnoreCase);
+            var lastIdx = body.LastIndexOf(key, System.StringComparison.CurrentCultureIgnoreCase);
+            var startIndexCut = 0;
+            var diff = idx - numberofchar;
+            if (diff >= 0)
+            {
+                startIndexCut = diff;
+            }
+
+            return body.Substring(startIndexCut, numberofchar + key.Length);
+        }
     }
 
 

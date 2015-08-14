@@ -49,7 +49,7 @@ namespace Confidami.Data
           ,[Title]
           ,[Body]
           ,[SlugUrl]
-          ,p.[IdStatus]
+          ,p.[IdStatus] as Status
           ,st.[Description] as StatusDescription
           ,cat.[Description]
           ,[Deleted]
@@ -110,8 +110,11 @@ namespace Confidami.Data
            ,[timestamp])
             VALUES (@idPost,@fileName,@contentType,@size,@timestamp)";
 
+        public const string CountAllPostsByStatusAndKey =
+            "select count(*) from tblposts where idstatus=@idStatus and deleted=0 and IdStatus=@idStatus and (title like @key or body like @key);";
+
         public const string CountAllPostsByStatus =
-            "select count(*) from tblposts where idstatus=@idStatus and deleted=0;";
+    "select count(*) from tblposts where idstatus=@idStatus and deleted=0;";
 
         public const string CountAllPostsByCategoryAndStatus =
             "select count(*) from tblposts where idstatus=@idStatus and idcategory=@idcategory and deleted=0;";
@@ -123,7 +126,7 @@ namespace Confidami.Data
           ,[Title]
           ,[Body]
           ,[SlugUrl]
-          ,p.[IdStatus]
+          ,p.[IdStatus] as Status
           ,st.[Description] as StatusDescription
           ,cat.[Description]
           ,cat.Slug as CatSlug
@@ -143,7 +146,7 @@ namespace Confidami.Data
           ,[Title]
           ,[Body]
           ,[SlugUrl]
-          ,p.[IdStatus]
+          ,p.[IdStatus] as Status
           ,st.[Description] as StatusDescription
           ,cat.[Description]
           ,cat.Slug as CatSlug
@@ -157,6 +160,28 @@ namespace Confidami.Data
            where p.deleted = 0 and p.IdStatus=@idStatus order by Timestamp desc
            OFFSET @page ROWS FETCH NEXT @blockSize ROWS ONLY;";
 
+        public const string PostByStatusSearchKeyPaginated =
+           @"SELECT p.[IdPost]
+                  ,p.[IdCategory]
+                  ,p.[userid]
+                  ,[Title]
+                  ,[Body]
+                  ,[SlugUrl]
+                  ,p.[IdStatus] as Status
+                  ,st.[Description] as StatusDescription
+                  ,cat.[Description]
+                  ,cat.Slug as CatSlug
+                  ,p.[Deleted]
+                  ,p.[Timestamp]
+                  ,p.[TimestampApprovation]
+                  ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+                   FROM [tblPosts]  p
+                   inner join tblpoststatus st on p.idStatus = st.idstatus
+                   inner join tblCategory cat on cat.idcategory = p.idcategory
+                   where p.deleted = 0 and p.IdStatus=@idStatus and (title like @key or body like @key)
+                   order by Timestamp desc
+                   OFFSET @page ROWS FETCH NEXT @blockSize ROWS ONLY;";
+
         public const string PostById =
                 @"SELECT p.[IdPost]
                   ,p.[IdCategory]
@@ -164,7 +189,7 @@ namespace Confidami.Data
                   ,[Title]
                   ,[Body]
                   ,[SlugUrl]
-                  ,p.[IdStatus]
+                  ,p.[IdStatus] as Status
                   ,st.[Description] as StatusDescription
                   ,cat.[Description]
                   ,cat.Slug as CatSlug
@@ -190,7 +215,7 @@ namespace Confidami.Data
                   ,[Title]
                   ,[Body]
                   ,[SlugUrl]
-                  ,p.[IdStatus]
+                  ,p.[IdStatus] as Status
                   ,st.[Description] as StatusDescription
                   ,cat.[Description]
                   ,cat.Slug as CatSlug
@@ -210,7 +235,7 @@ namespace Confidami.Data
                   ,[Title]
                   ,[Body]
                   ,[SlugUrl]
-                  ,p.[IdStatus]
+                  ,p.[IdStatus] as Status
                   ,st.[Description] as StatusDescription
                   ,cat.[Description]
                   ,cat.Slug as CatSlug
@@ -230,7 +255,7 @@ namespace Confidami.Data
               ,[Title]
               ,[Body]
               ,[SlugUrl]
-              ,p.[IdStatus]
+              ,p.[IdStatus] as Status
               ,st.[Description] as StatusDescription
               ,cat.[Description]
               ,cat.Slug as CatSlug
@@ -256,7 +281,7 @@ namespace Confidami.Data
           ,[Title]
           ,[Body]
           ,[SlugUrl]
-          ,p.[IdStatus]
+          ,p.[IdStatus] as Status
           ,st.[Description] as StatusDescription
           ,cat.[Description]
           ,cat.Slug as CatSlug
@@ -278,7 +303,7 @@ namespace Confidami.Data
           ,[Title]
           ,[Body]
           ,[SlugUrl]
-          ,p.[IdStatus]
+          ,p.[IdStatus] as Status
           ,st.[Description] as StatusDescription
           ,cat.[Description]
           ,cat.Slug as CatSlug

@@ -10,6 +10,7 @@ using System.Web.WebPages;
 using Confidami.Common;
 using Confidami.Common.Utility;
 using Confidami.Model;
+using Confidami.Web.FiltersAttribute;
 using Confidami.Web.Helpers;
 using Confidami.Web.ViewModel;
 using Newtonsoft.Json;
@@ -21,28 +22,13 @@ namespace Confidami.Web.Controllers
     public class ContentsController : BaseController
     {
 
+        [Pagination(PageParam = "page")]
         [Route]
         [Route("categoria/{id}/{slug}", Name = "CatRoute")]
         public ActionResult Index(string page, int? id, string slug)
         {
             IEnumerable<PostLight> res = null;
-
-            if (!string.IsNullOrEmpty(page) && page != Constants.ViewAllPage && !page.IsInt())
-                return HttpNotFound();
-
-            if(page != null && page.Trim() == string.Empty)
-                return HttpNotFound();
-
-            var count = 0;
-
-            ViewBag.NextPage = -1;
-            ViewBag.PreviuosPage = -1;
-
-          
-            int currentPage = string.IsNullOrEmpty(page) ? 1 : int.Parse(page);
-
-            if (currentPage < 1)
-                return HttpNotFound();
+            int currentPage = ViewBag.CurrentPage;
 
             if (!string.IsNullOrEmpty(page) && page == Constants.ViewAllPage)
             {
@@ -50,15 +36,15 @@ namespace Confidami.Web.Controllers
                 return View(FillPostViewModel(res));
             }
 
+            var count = 0;
+
             //Senza categoria
             if (!id.HasValue)
             {
                 ViewBag.Title = "Segnalazioni";
                 ViewBag.Heding = "Intestazione per tag header index segnalazioni";
 
-
                 res = PostManager.GetPostsPaged(currentPage, out count);
-
             }
              //Con categoria
             else
@@ -66,7 +52,6 @@ namespace Confidami.Web.Controllers
                 ViewBag.Title = "Segnalazioni - category name" + slug;
                 ViewBag.Heding = "Intestazione per tag header index segnalazioni per categoria";
                 ViewBag.IdCategory = id;
-
 
                 var cat = PostManager.GetCategory(id.GetValueOrDefault());
                 if (cat == null)
@@ -78,13 +63,9 @@ namespace Confidami.Web.Controllers
                 res = PostManager.GetPostByCategoryPaged(currentPage, id.GetValueOrDefault(), out count);
             }
 
-
-            ViewBag.CurrentPage = currentPage;
-            ViewBag.NumberOfPages = (int)Math.Ceiling((decimal)count/Config.NumberOfPostPerPage);
-            ViewBag.NextPage = currentPage + 1;
-            ViewBag.PreviuosPage = currentPage - 1;
-            ViewBag.IsFirstPage = currentPage == 1;
-            ViewBag.IsLastPage = count - (Config.NumberOfPostPerPage*(currentPage-1)) < Config.NumberOfPostPerPage;
+            ViewBag.Count = count;
+            ViewBag.NumberOfPages = (int)Math.Ceiling((decimal)count / Config.NumberOfPostPerPage);
+            ViewBag.IsLastPage = count - (Config.NumberOfPostPerPage * (currentPage - 1)) < Config.NumberOfPostPerPage;
 
             return View(FillPostViewModel(res));
 
@@ -129,7 +110,6 @@ namespace Confidami.Web.Controllers
             #endregion
             ViewBag.CurrentUserId = CurrentUserId;
 
-            var categories = PostManager.GetAllCategories();
 
             return View(FillInsertModel());
         }
@@ -219,7 +199,7 @@ namespace Confidami.Web.Controllers
                     IdPost = post.IdPost
                 }
                 );
-            return View();
+            return View(ViewsStore.Insert, FillEditViewModel(post));
         }
 
 
@@ -253,7 +233,7 @@ namespace Confidami.Web.Controllers
 
             if (!res.Success)
                 ModelState.AddModelError("", res.Message);
-            return View(model);
+            return View("EditPostCode",model);
         }
 
 
@@ -353,22 +333,6 @@ namespace Confidami.Web.Controllers
             return new InsertEditPostCodeViewModel {};
         }
 
-        private PostViewModel FillPostViewModel(IEnumerable<PostLight> posts)
-        {
-            var vm = new PostViewModel() { IsAdmin = IsAdmin };
-            var pbase = posts.Select(x => new PostViewModelBase()
-            {
-                Body = x.Body,
-                Title = x.Title,
-                CategoryPost = x.Category.Description,
-                IdPost = x.IdPost,
-                HasAttachMents = x.HasAttachments,
-                CategorySlug = x.Category.Slug,
-                TitleSlug = x.SlugUrl
-            }).ToList();
-            vm.Posts = pbase;
-            return vm;
-        }
 
         private PostViewModelSingleContent FillinglePostViewModel(Post post)
         {

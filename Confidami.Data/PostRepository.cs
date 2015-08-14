@@ -206,6 +206,20 @@ namespace Confidami.Data
             }
         }
 
+        public IEnumerable<PostExtendedDb> GetPostsByKeyPaged(int page, int blockSize, string key, out int numberOfPost)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                using (var multi = conn.QueryMultiple(QueryPostStore.PostByStatusSearchKeyPaginated + ' ' + QueryPostStore.CountAllPostsByStatusAndKey,
+                    new { idStatus = PostStatus.Approved, @page = (page - 1) * blockSize, blocksize = blockSize, @key="%"+key+"%" }))
+                {
+                    var posts = multi.Read<PostExtendedDb>();
+                    numberOfPost = multi.Read<int>().Single();
+                    return posts;
+                }
+            }
+        }
+
         public PostExtendedDb GetPostLightById(long idPost)
         {
             using (var conn = DbUtilities.Connection)

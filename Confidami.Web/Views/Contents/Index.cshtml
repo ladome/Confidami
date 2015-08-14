@@ -12,11 +12,13 @@
 </div>
 
 
-@pages()
-    @Html.Partial(ViewsStore.PostPartial,Model)
-    @pages()
+    @Pages()
 
-@helper  pages()
+    @Html.Partial(ViewsStore.PostPartial,Model)
+
+    @Pages()
+
+@helper  Pages()
 {
     if (ViewBag.NextPage == -1)
     {

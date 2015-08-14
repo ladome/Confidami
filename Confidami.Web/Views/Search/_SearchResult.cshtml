@@ -1,53 +1,95 @@
+@using Confidami.Common
+@model Confidami.Web.ViewModel.SearchViewModel
+
 <!--- risultati ricerce ora statico -->
 <article>
-    <div class="panel panel-success">
-        <div class="panel-heading">Risultati ricerca</div>
-        <div class="panel-body">
-            <div class="list-group">
-                <a href="#" class="list-group-item">
-                    <strong class="list-group-item-heading">Segnalazione 1.....</strong>
-                    <p class="list-group-item-text text-muted">Contenuto della segnalazione................</p>
-                </a>
+    @if (string.IsNullOrEmpty(Model.Key))
+    {
+       <h2>Effettua la tua ricerca!</h2>
+    }
+    else
+    {
+        <div class="panel panel-success">
+            <div class="panel-heading">Risultati ricerca</div>
+            <div class="panel-body">
+                @Pages()
+                <div class="list-group">
+                    @foreach (var res in Model.SearchResults.Posts)
+                    {
+                        <a href="@Url.RouteUrl(RouteStore.SingleContentRoute, new { categoryName = res.CategorySlug, id = res.IdPost, slugTitle = res.TitleSlug })" class=" list-group-item">
+                            <strong class="list-group-item-heading">@res.Title</strong>
+                            <p class="list-group-item-text text-muted">@Html.Raw(res.Body)</p>
+                        </a>
+                    }
 
-                <a href="#" class="list-group-item">
-                    <strong class="list-group-item-heading">Segnalazione 2.....</strong>
-                    <p class="list-group-item-text text-muted">Contenuto della segnalazione................</p>
-                </a>
-
-                <a href="#" class="list-group-item">
-                    <strong class="list-group-item-heading">Segnalazione 3.....</strong>
-                    <p class="list-group-item-text text-muted">Contenuto della segnalazione................</p>
-                </a>
+                </div>
 
             </div>
+            @*<div class="panel-footer">
+                <nav>
+                    <ul class="pagination pagination-sm">
 
+                        <li>
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">Fisrt</span>
+                            </a>
+                        </li>
+                        <li><a href="#">Previous</a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">Next</a></li>
+                        <li>
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">Last</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>*@
+            @Pages()
         </div>
-        <div class="panel-footer">
-            <!-- paginazione -->
-            <nav>
-                <ul class="pagination pagination-sm">
+    }
 
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true">Fisrt</span>
-                        </a>
-                    </li>
-                    <li><a href="#">Previous</a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">Next</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true">Last</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-    </div>
 
 </article>
+
+@helper  Pages()
+{
+    if (ViewBag.NumberOfPages == 1)
+    {
+        return;
+    }
+
+    <div class="row">
+
+        <ul class="pager">
+            <label>@ViewBag.CurrentPage di @ViewBag.NumberOfPages</label>
+            <li @((bool)ViewBag.IsFirstPage ? "class=disabled" : "")>
+
+                @if (!(bool)ViewBag.IsFirstPage)
+                {
+                    @Html.ActionLink("Precedente", ActionsStore.SearchAction, new { key = @Model.Key, page = ViewBag.PreviuosPage });
+                }
+                else
+                {
+                    <a href="#" onclick="return false;">Precedente</a>
+                }
+
+            <li @((bool)ViewBag.IsLastPage ? "class=disabled" : "")>
+
+                @if (!(bool)ViewBag.IsLastPage)
+                {
+                    @Html.ActionLink("Successivo", ActionsStore.SearchAction, new { key = @Model.Key,page = ViewBag.NextPage });
+                }
+                else
+                {
+                    <a href="#" onclick="return false;">Successivo</a>
+                }
+
+        </ul>
+    </div>
+}
