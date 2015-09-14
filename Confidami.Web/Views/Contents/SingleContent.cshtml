@@ -17,11 +17,11 @@
         <div class="row">
 
             <div class="col-lg-12">
-            @Model.Body
+                @Model.Body
             </div>
             @foreach (var attach in Model.AttachMenents)
             {
-            <label>Allegato: <a href="@attach.FullPath">Link</a> </label>
+                <label>Allegato: <a href="@attach.FullPath">Link</a> </label>
             }
             <div class="col-lg-6 text-muted text-left text-info">Categoria: <a href="#" class="text-capitalize">@ViewBag.CategoryName</a></div>
             <div class="col-lg-6 text-muted text-right">Pubblicato il <span class="text-info">@Model.CreationDate.ToString("dd/MM/yyyy")</span></div>
@@ -47,32 +47,32 @@
                             </div>
                         </div>
                     }
-                    </div>
-               }
+                </div>
+            }
                    
-                <!-- ALLEGATI NON IMMAGINI-->
-                @if (@Model.OtherFile.Any())
-                {
-                    <h3>Altri File</h3>
-                    <div class="col-lg-12 row">
-                        @foreach (var img in @Model.OtherFile)
-                        { 
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                                    <label>@img.Name</label>
-                                    <div class="img-test">
-                                        <div class="actions">
-                                            <button class="btn btn-xs btn-primary" role="button">Download</button>
-                                        </div>
+            <!-- ALLEGATI NON IMMAGINI-->
+            @if (@Model.OtherFile.Any())
+            {
+                <h3>Altri File</h3>
+                <div class="col-lg-12 row">
+                    @foreach (var img in @Model.OtherFile)
+                    { 
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                <label>@img.Name</label>
+                                <div class="img-test">
+                                    <div class="actions">
+                                        <button class="btn btn-xs btn-primary" role="button">Download</button>
                                     </div>
                                 </div>
                             </div>
-                                }
-                            </div>
-                }
+                        </div>
+                    }
+                </div>
+            }
 
 
-        @*<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+            @*<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
                 <div class="thumbnail">
                     <img src="http://www.larionews.com/wp-content/uploads/2015/03/News-680x300.jpg" alt="..." class="img-thumbnail">
                     <div class="caption">
@@ -88,30 +88,41 @@
                 </div>
             </div>*@
 
-    </div>
-            <!--------------->
+        </div>
+        <!--------------->
+
+
+        <div id="fb-root"></div>
+        <script>
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.4&appId=570139676365041";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+        <div class="clearfix">
+            <div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+        </div>
+
+        <div class="clearfix">
+            <div class=" fb-comments" data-href="@Request.Url" data-numposts="5"></div>
+        </div>
 
 
 
+        <div class="panel panel-default">
 
-            <div class="clearfix">
-                <div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+            <div class="panel-heading">
+                <span class="text-info">Categoria: @ViewBag.categoryName</span>
+                <span class="text-primary">Pubblicato il @Model.CreationDate.ToString("dd/MM/yyyy")</span>
             </div>
 
-            <div class="clearfix">
-                <div class=" fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5"></div>
-            </div>
-
-
-
-            <div class="panel panel-default">
-
-                <div class="panel-heading">
-                    <span class="text-info">Categoria: @ViewBag.categoryName</span>
-                    <span class="text-primary">Pubblicato il @Model.CreationDate.ToString("dd/MM/yyyy")</span>
-                </div>
-
-            </div>
+        </div>
 
     </article>
 </section>
+<script>
+    var idpost = @Model.IdPost;
+</script>

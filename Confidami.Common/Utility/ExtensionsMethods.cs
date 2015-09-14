@@ -76,5 +76,20 @@ namespace Confidami.Common.Utility
             bool isNum = Double.TryParse(Convert.ToString(expression), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out retNum);
             return isNum;
         }
+
+        public static IEnumerable<int> AllIndexesOf(this string str, string value)
+        {
+            if (String.IsNullOrEmpty(value))
+                throw new ArgumentException("the string to find may not be empty", "value");
+            for (int index = 0; ; index += value.Length)
+            {
+                index = str.IndexOf(value, index, System.StringComparison.InvariantCultureIgnoreCase);
+                if (index == -1)
+                    break;
+                yield return index;
+            }
+        }
+
+
     }
 }

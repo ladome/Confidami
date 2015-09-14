@@ -252,4 +252,37 @@ namespace Confidami.BL
             return _categoryRepository.GetCategory(idCategory);
         }
     }
+
+
+    public class CommentManager : BaseManager
+    {
+        private readonly CommentRepository _commentRepository;
+
+        public CommentManager() : this(new CommentRepository())
+        {
+        }
+
+
+        public CommentManager(CommentRepository postRepository)
+        {
+            _commentRepository = postRepository;
+        }
+
+
+        public List<TopCommentator> GetTopCommentator()
+        {
+           return _commentRepository.GetTopCommentators(Config.NumberOfTopCommentator).ToList();
+        }
+
+        public BaseResponse InsertComment(CommentDto comment)
+        {
+            comment.CannotBeNull("comment");
+            var user = _commentRepository.GetUserBySocialId(comment.UserId);
+            var res = user == null ? _commentRepository.InsertCommentAndUser(comment) : _commentRepository.InsertComment(comment,user.IdUser);
+            return new BaseResponse() { Message = res > 0 ? res.ToString() : "ko", Success = res > 0 };
+
+
+        }
+
+    }
 }

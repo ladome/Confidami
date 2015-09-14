@@ -25,12 +25,11 @@ namespace Confidami.Web.Controllers
             ViewBag.Title = "Ricerca segnalazione";
             ViewBag.Heding = "Intestazione per tag header cerca";
             return View(FillSearchModel(string.Empty, new PostViewModel()));
-
         }
 
         [Route("filtro")]
         [Pagination(PageParam = "page")]
-        public ActionResult SearchAction(SearchViewModel search, string page)
+        public ActionResult SearchAction(SearchViewModel search,string page)
         {
             ViewBag.Title = "Ricerca segnalazione";
             ViewBag.Heding = "Intestazione per tag header cerca";

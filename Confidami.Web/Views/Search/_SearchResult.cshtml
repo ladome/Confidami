@@ -5,57 +5,47 @@
 <article>
     @if (string.IsNullOrEmpty(Model.Key))
     {
-       <h2>Effettua la tua ricerca!</h2>
+        <h2>Effettua la tua ricerca!</h2>
     }
     else
     {
-        <div class="panel panel-success">
-            <div class="panel-heading">Risultati ricerca</div>
-            <div class="panel-body">
-                @Pages()
-                <div class="list-group">
-                    @foreach (var res in Model.SearchResults.Posts)
-                    {
-                        <a href="@Url.RouteUrl(RouteStore.SingleContentRoute, new { categoryName = res.CategorySlug, id = res.IdPost, slugTitle = res.TitleSlug })" class=" list-group-item">
-                            <strong class="list-group-item-heading">@res.Title</strong>
-                            <p class="list-group-item-text text-muted">@Html.Raw(res.Body)</p>
-                        </a>
-                    }
+        if (@Model.SearchResults.Posts.Any())
+        {
+            <div class="panel panel-success">
+                <div class="panel-heading">Risultati ricerca</div>
+                <div class="panel-body">
+                    @Pages()
+                    <div class="list-group">
+                        @foreach (var res in Model.SearchResults.Posts)
+                        {
+                            <a href="@Url.RouteUrl(RouteStore.SingleContentRoute, new {categoryName = res.CategorySlug, id = res.IdPost, slugTitle = res.TitleSlug})" class=" list-group-item">
+                                <strong class="list-group-item-heading">@HighLightWord(@res.Title,Model.Key)</strong>
+                                <p class="list-group-item-text text-muted">@HighLightWord(res.Body, Model.Key))</p>
+                            </a>
+                        }
+
+                    </div>
 
                 </div>
 
+                @Pages()
             </div>
-            @*<div class="panel-footer">
-                <nav>
-                    <ul class="pagination pagination-sm">
+        }
+        else
+        {
+            <h2>Nessun risultato trovato!</h2>
 
-                        <li>
-                            <a href="#" aria-label="Previous">
-                                <span aria-hidden="true">Fisrt</span>
-                            </a>
-                        </li>
-                        <li><a href="#">Previous</a></li>
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">Next</a></li>
-                        <li>
-                            <a href="#" aria-label="Next">
-                                <span aria-hidden="true">Last</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
-            </div>*@
-            @Pages()
-        </div>
+        }
     }
 
 
 </article>
+
+@helper HighLightWord(string body,string key)
+{
+
+     {WriteLiteral(body.Replace(key, String.Format("<strong>{0}</strong>", key)));}
+}
 
 @helper  Pages()
 {

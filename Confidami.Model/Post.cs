@@ -52,5 +52,51 @@ namespace Confidami.Model
         public string UserId { get; set; }
     }
 
+    public class UserComments
+    {
+        public UserComments()
+        {
+            Comments = new List<PostComment>();
+        }
+
+        public long IdUser { get; set; }
+        public string IdSocialUserId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public IEnumerable<PostComment> Comments { get; set; } 
+    }
+
+    public class PostComment
+    {
+        public long IdPostComment { get; set; }
+        public string IdSocialComment { get; set; }
+        public long IdPost { get; set; }
+        public long IdUser { get; set; }
+        public string Text { get; set; }
+        public string PageUrl { get; set; }
+    }
+
+    public class TopCommentator
+    {
+        public long IdUser { get; set; }
+        public string IdSocialUserId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public long NumberOfComment { get; set; }
+    }
+
+
+    public class CommentDto
+    {
+        public string IdComment { get; set; }
+        public string UserId { get; set; }
+        public string UserMail { get; set; }
+        public string Name { get; set; }
+        public string Comment { get; set; }
+        public string PageUrl { get; set; }
+        public string IdPost { get; set; }
+    }
+
+
 
 }

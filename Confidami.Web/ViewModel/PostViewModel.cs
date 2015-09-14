@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using Confidami.Common;
 using Confidami.Common.Utility;
@@ -88,16 +89,12 @@ namespace Confidami.Web.ViewModel
 
         private string SubStringOfSearched(string body, string key,int numberofchar)
         {
-            var idx = body.IndexOf(key, System.StringComparison.CurrentCultureIgnoreCase);
-            var lastIdx = body.LastIndexOf(key, System.StringComparison.CurrentCultureIgnoreCase);
-            var startIndexCut = 0;
-            var diff = idx - numberofchar;
-            if (diff >= 0)
-            {
-                startIndexCut = diff;
-            }
+            var idxs = body.AllIndexesOf(key);
+            var sb = new StringBuilder(body);
 
-            return body.Substring(startIndexCut, numberofchar + key.Length);
+
+
+            return sb.ToString();
         }
     }
 

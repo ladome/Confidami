@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Confidami.Common.Utility;
 using Confidami.Data.Entities;
 using Confidami.Model;
 using Dapper;
@@ -366,87 +367,82 @@ namespace Confidami.Data
         }
     }
 
-    public class CategoryRepository : BaseRepository
+    public class CommentRepository : BaseRepository
     {
-        public IEnumerable<Category> GetCategories()
+        public IEnumerable<TopCommentator> GetTopCommentators(int number)
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<Category>(QueryPostStore.AllCategory);
+                return conn.Query<TopCommentator>(QueryCommentStore.UserCommentsTopN, new { topN = number });
             }
         }
 
-        public Category GetCategory(int idcategory)
+        public UserDb GetUserBySocialId(string socialId)
         {
+            socialId.CannotBeNull("socialId");
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<Category>(QueryPostStore.SingleCategory, new { idcategory }).SingleOrDefault();
+                return conn.Query<UserDb>(QueryCommentStore.UserBySocialId, new { IdSocialUserId = socialId }).SingleOrDefault();
             }
         }
 
-    }
-
-    public class FileRepository : BaseRepository
-    {
-        public int InsertTempUpload(string userId, string fileName, string contentType, int fileSize)
+        public int InsertCommentAndUser(CommentDto comment)
         {
             using (var conn = DbUtilities.Connection)
             {
-                return conn.Query<int>(QueryFileStore.InsertUploadTemp + QueryStore.LastInsertedId,
-                    new {userid = userId, filename = fileName, contentType = contentType, size = fileSize,@timestamp=DateTime.Now}).SingleOrDefault();
+                conn.Open();
+                using (var transaction = conn.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    try
+                    {
+                        var identity = conn.Query<int>(QueryCommentStore.InsertUser + " " + QueryStore.LastInsertedId,
+                            new
+                            {
+                                idsocialuserid = comment.UserId,
+                                name = comment.Name,
+                                email = comment.UserMail
+                            }, transaction: transaction).SingleOrDefault();
+                        ;
+
+                        identity = InsertComment(comment, identity, transaction);
+
+                        transaction.Commit();
+
+                        return identity;
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
             }
         }
 
-        public void DeleteInTempFile(string userId)
-        {
-            using (var conn = DbUtilities.Connection)
-            {
-                conn.Execute(QueryFileStore.DeleteInTempFolder,
-                    new { userid = userId});
-            }
-        }
-
-        public void DeleteTempAttachment(int id)
-        {
-            using (var conn = DbUtilities.Connection)
-            {
-                conn.Execute(QueryFileStore.DeleteTempAttachment,
-                    new { id = id });
-            }
-        }
 
 
-        public void DeleteAttachment(int id)
+        public int InsertComment(CommentDto comment, long idUser, IDbTransaction transaction = null)
         {
-            using (var conn = DbUtilities.Connection)
-            {
-                conn.Execute(QueryFileStore.DeleteAttachment,
-                    new { id = id });
-            }
-        }
+                comment.CannotBeNull("comment");
+                var conn = transaction != null ? transaction.Connection :  DbUtilities.Connection;
 
-        public IEnumerable<TempAttachMent> GetTempAttachmentsByUserId(string userId)
-        {
-            using (var conn = DbUtilities.Connection)
-            {
-                return conn.Query<TempAttachMent>(QueryFileStore.SelectUploadTempByUserId,new {userid=userId});
-            }
-        }
+                var res = conn.Query<int>(QueryCommentStore.InsertPostComment + " " + QueryStore.LastInsertedId,
+                new
+                {
+                    idsocialcomment = comment.IdComment,
+                    idpost = comment.IdPost,
+                    iduser = idUser,
+                    text = comment.Comment,
+                    pageurl = comment.PageUrl,
+                    timestamp = DateTime.Now
+                }, transaction: transaction).SingleOrDefault();
 
-        public TempAttachMent GetTempAttachmentById(int id)
-        {
-            using (var conn = DbUtilities.Connection)
-            {
-                return conn.Query<TempAttachMent>(QueryFileStore.TempAttachmentById, new { id = id}).SingleOrDefault();
-            }
-        }
+            if (transaction != null) return res;
 
-        public IEnumerable<AttachMent> GetAttachmentsByIdPost(long idPost)
-        {
-            using (var conn = DbUtilities.Connection)
-            {
-                return conn.Query<AttachMent>(QueryFileStore.AttachmentsByIdPost, new { idPost = idPost });
-            }
+            conn.Close();
+            conn.Dispose();
+            return res;
+
         }
     }
 }

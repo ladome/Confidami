@@ -89,6 +89,11 @@ namespace Confidami.Common
         {
             get { return Convert.ToInt16(ConfigurationManager.AppSettings["NumberOfPostPerPage"]); }
         }
+
+        public static int NumberOfTopCommentator
+        {
+            get { return Convert.ToInt16(ConfigurationManager.AppSettings["NumberOfTopCommentator"]); }
+        }
         
         
     }

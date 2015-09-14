@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Confidami.Model;
@@ -50,4 +51,13 @@ namespace Confidami.Data.Entities
     {
         public string EditCode { get; set; }
     }
+
+    public class UserDb
+    {
+        public long IdUser { get; set; }
+        public string IdSocialUserId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+    }
+
 }

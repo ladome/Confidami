@@ -324,6 +324,56 @@ namespace Confidami.Data
            " WHERE idpost = @idPost;";
     }
 
+    public class QueryCommentStore : QueryStore
+    {
+        public const string UserCommentsTopN =
+            @"SELECT   top {topN}
+			     us.iduser, 
+                 us.idsocialuserid, 
+                 us.NAME,
+				 us.email,
+				 count(*)
+                FROM   tblusers us
+                INNER JOIN tblpostcomments pc
+                ON us.iduser = pc.iduser 
+                where pc.deleted = 0 and us.deleted=0
+                group by us.iduser,idsocialuserid,NAME,email";
+
+        public const string UserBySocialId =
+            @"SELECT [IdUser]
+              ,[IdSocialUserId]
+              ,[Name]
+              ,[Email]
+              ,[Deleted]
+            FROM [tblUsers] where IdSocialUserId=@idsocialUserId";
+
+        public const string InsertUser =
+            @"INSERT INTO [tblUsers]
+           ([IdSocialUserId]
+           ,[Name]
+           ,[Email])
+            VALUES
+           (@idsocialuserid
+           ,@name
+           ,@email)";
+
+        public const string InsertPostComment =
+            @"INSERT INTO [dbo].[tblPostComments]
+           ([IdSocialCommentId]
+           ,[IdPost]
+           ,[IdUser]
+           ,[Text]
+           ,[PageUrl]
+           ,[TimeStamp])
+     VALUES
+           (@idsocialcomment
+           ,@idpost
+           ,@iduser
+           ,@text
+           ,@pageurl
+           ,@timestamp)";
+    }
+
 
     public class QueryFileStore
     {

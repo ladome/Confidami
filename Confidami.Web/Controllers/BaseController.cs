@@ -19,6 +19,7 @@ namespace Confidami.Web.Controllers
         private PostManager _postManager;
         private FileManager _fileManager;
         private Validation _validation;
+        private CommentManager _commentManager;
 
         public string CurrentUserId { get; set; }
 
@@ -38,6 +39,11 @@ namespace Confidami.Web.Controllers
         {
             get { return new Validation(); }
             set { _validation = value; }
+        }
+        public CommentManager CommentManager
+        {
+            get { return new CommentManager(); }
+            set { _commentManager = value; }
         }
 
         public bool IsAdmin { get { return User.IsInRole(RolesStore.AdminRole); } }

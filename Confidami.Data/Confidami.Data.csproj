@@ -58,8 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CategoryRepository.cs" />
     <Compile Include="DbUtilities.cs" />
     <Compile Include="Entities\PostExtendedDb.cs" />
+    <Compile Include="FileRepository.cs" />
     <Compile Include="PostRepository.cs" />
     <Compile Include="QueryPostStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

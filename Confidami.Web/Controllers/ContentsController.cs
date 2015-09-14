@@ -65,7 +65,7 @@ namespace Confidami.Web.Controllers
 
             ViewBag.Count = count;
             ViewBag.NumberOfPages = (int)Math.Ceiling((decimal)count / Config.NumberOfPostPerPage);
-            ViewBag.IsLastPage = count - (Config.NumberOfPostPerPage * (currentPage - 1)) < Config.NumberOfPostPerPage;
+            ViewBag.IsLastPage = count - (Config.NumberOfPostPerPage * (currentPage)) < Config.NumberOfPostPerPage;
 
             return View(FillPostViewModel(res));
 
@@ -115,6 +115,7 @@ namespace Confidami.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         [Route("inserisci")]
         public ActionResult Insert(InsertPostViewModel postVm)
         {
@@ -123,9 +124,9 @@ namespace Confidami.Web.Controllers
 
             var post = new Post
             {
-                Body = postVm.Body,
+                Body = Server.HtmlEncode(postVm.Body),
                 Category = new Category { IdCategory = postVm.IdCategory },
-                Title = postVm.Title,
+                Title = Server.HtmlEncode(postVm.Title),
                 UserId = CurrentUserId
             };
 
@@ -301,7 +302,12 @@ namespace Confidami.Web.Controllers
             var categories = PostManager.GetAllCategories();
             return new EditPostViewModel
             {
-                Categories = categories, Body = postLight.Body, IdCategory = postLight.Category.IdCategory, Title = postLight.Title, IsModifica = true,IdPost = postLight.IdPost
+                Categories = categories,
+                Body = Server.HtmlEncode(postLight.Body),
+                IdCategory = postLight.Category.IdCategory,
+                Title = postLight.Title,
+                IsModifica = true,
+                IdPost = postLight.IdPost
             };
         }
 
