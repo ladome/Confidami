@@ -278,7 +278,21 @@ namespace Confidami.BL
         {
             comment.CannotBeNull("comment");
             var user = _commentRepository.GetUserBySocialId(comment.UserId);
-            var res = user == null ? _commentRepository.InsertCommentAndUser(comment) : _commentRepository.InsertComment(comment,user.IdUser);
+            int res;
+            if (user == null)
+            {
+               res =  _commentRepository.InsertCommentAndUser(comment);
+            }
+            else
+            {
+                res = _commentRepository.InsertComment(comment, user.IdUser);
+                if (string.IsNullOrEmpty(user.Email) && comment.UserMail != null)
+                {
+                    user.Email = comment.UserMail;
+                    _commentRepository.UpdateSocialUser(user);
+                }
+            }
+
             return new BaseResponse() { Message = res > 0 ? res.ToString() : "ko", Success = res > 0 };
 
 

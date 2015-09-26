@@ -345,7 +345,12 @@ namespace Confidami.Data
               ,[Name]
               ,[Email]
               ,[Deleted]
-            FROM [tblUsers] where IdSocialUserId=@idsocialUserId";
+            FROM [tblUsers] where IdSocialUserId=@idsocialUserId;";
+
+        public const string UpdateSocialUser =
+            @"UPDATE [tblUsers]
+              SET [Name] = @name,[Email] = @email
+            WHERE [IdSocialUserId] = @IdSocialUserId";
 
         public const string InsertUser =
             @"INSERT INTO [tblUsers]

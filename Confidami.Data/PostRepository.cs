@@ -420,6 +420,15 @@ namespace Confidami.Data
         }
 
 
+        public bool UpdateSocialUser(UserDb user)
+        {
+            user.CannotBeNull("user");
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Query<int>(QueryCommentStore.UpdateSocialUser, new { IdSocialUserId = user.IdSocialUserId, name=user.Name,email=user.Email }).SingleOrDefault() > 0;
+            }
+        }
+
 
         public int InsertComment(CommentDto comment, long idUser, IDbTransaction transaction = null)
         {
