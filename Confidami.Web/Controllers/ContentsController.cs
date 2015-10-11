@@ -116,7 +116,6 @@ namespace Confidami.Web.Controllers
 
         [HttpPost]
         [ValidateInput(true)]
-        [ValidateAntiForgeryToken]
         [Route("inserisci")]
         public ActionResult Insert(InsertPostViewModel postVm)
         {
