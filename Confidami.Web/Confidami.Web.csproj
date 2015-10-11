@@ -222,6 +222,14 @@
     <Content Include="Content\img\sedona.jpg" />
     <Content Include="Content\img\stormy-sky.jpg" />
     <Content Include="Content\parsley.css" />
+    <Content Include="Content\raty-2.7.0\fonts\raty.svg" />
+    <Content Include="Content\raty-2.7.0\images\cancel-off.png" />
+    <Content Include="Content\raty-2.7.0\images\cancel-on.png" />
+    <Content Include="Content\raty-2.7.0\images\star-half.png" />
+    <Content Include="Content\raty-2.7.0\images\star-off.png" />
+    <Content Include="Content\raty-2.7.0\images\star-on.png" />
+    <Content Include="Content\raty-2.7.0\jquery.raty.css" />
+    <Content Include="Content\raty-2.7.0\jquery.raty.js" />
     <Content Include="Content\skin\darkly\bootstrap.min.css" />
     <Content Include="Content\skin\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\skin\paper\bootstrap.min.css" />
@@ -240,6 +248,9 @@
     <Content Include="Content\skin\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\skin\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\skin\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\raty-2.7.0\fonts\raty.eot" />
+    <Content Include="Content\raty-2.7.0\fonts\raty.ttf" />
+    <Content Include="Content\raty-2.7.0\fonts\raty.woff" />
     <None Include="Properties\PublishProfiles\denunciami.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Icon.png" />
@@ -292,6 +303,7 @@
     <Content Include="Scripts\parsley\src\parsley\validator.js" />
     <Content Include="Scripts\parsley\src\wrap\append.js" />
     <Content Include="Scripts\parsley\src\wrap\prepend.js" />
+    <Content Include="Scripts\raty.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />

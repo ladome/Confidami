@@ -28,6 +28,7 @@ namespace Confidami.Data.Entities
         public string StatusDescription { get; set; }
         public int NumberOfAttachment { get; set; }
         public string EditCode { get; set; }
+        public int Votes { get; set; }
     }
 
     public class PostExtendedDbWithAttachments : PostExtendedDb

@@ -134,6 +134,7 @@ namespace Confidami.Data
           ,p.[Timestamp]
           ,p.[TimestampApprovation]
           ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+          ,Votes
            FROM [tblPosts]  p
            inner join tblpoststatus st on p.idStatus = st.idstatus
            inner join tblCategory cat on cat.idcategory = p.idcategory
@@ -154,6 +155,7 @@ namespace Confidami.Data
           ,p.[Timestamp]
           ,p.[TimestampApprovation]
           ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+          ,Votes
            FROM [tblPosts]  p
            inner join tblpoststatus st on p.idStatus = st.idstatus
            inner join tblCategory cat on cat.idcategory = p.idcategory
@@ -175,10 +177,11 @@ namespace Confidami.Data
                   ,p.[Timestamp]
                   ,p.[TimestampApprovation]
                   ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+                  ,Votes
                    FROM [tblPosts]  p
                    inner join tblpoststatus st on p.idStatus = st.idstatus
                    inner join tblCategory cat on cat.idcategory = p.idcategory
-                   where p.deleted = 0 and p.IdStatus=@idStatus and (title like @key or body like @key)
+                   where p.deleted = 0 and p.IdStatus=@idStatus and (title like @key or body like @key) and (cat.idcategory=@category or @category=-1)
                    order by Timestamp desc
                    OFFSET @page ROWS FETCH NEXT @blockSize ROWS ONLY;";
 
@@ -197,6 +200,7 @@ namespace Confidami.Data
                   ,p.[Timestamp]
                   ,p.[TimestampApprovation]
                   ,p.EditCode,
+                  votes,
                   pa.IdPost,
 		          pa.IdPostAttachment,
 		          pa.FileName,
@@ -223,6 +227,7 @@ namespace Confidami.Data
                   ,p.[Timestamp]
                   ,p.[TimestampApprovation]
                   ,p.EditCode
+                  ,Votes
                    FROM [tblPosts]  p
                    inner join tblpoststatus st on p.idStatus = st.idstatus
                    inner join tblCategory cat on cat.idcategory = p.idcategory
@@ -243,6 +248,7 @@ namespace Confidami.Data
                   ,p.[Timestamp]
                   ,p.[TimestampApprovation]
                   ,p.EditCode
+                  ,Votes
                    FROM [tblPosts]  p
                    inner join tblpoststatus st on p.idStatus = st.idstatus
                    inner join tblCategory cat on cat.idcategory = p.idcategory
@@ -267,7 +273,8 @@ namespace Confidami.Data
 		      pa.IdPostAttachment,
 		      pa.FileName,
 		      pa.ContentType,
-		      pa.Size
+		      pa.Size,
+              Votes
                FROM [tblPosts]  p
                inner join tblpoststatus st on p.idStatus = st.idstatus
                inner join tblCategory cat on cat.idcategory = p.idcategory
@@ -312,6 +319,7 @@ namespace Confidami.Data
           ,p.[TimestampApprovation]
           ,p.EditCode
           ,(select count(idpost) from tblPostsAttachments pa where pa.idpost = p.IdPost and pa.deleted=0) as NumberOfAttachment
+          ,Votes
            FROM [tblPosts]  p
            inner join tblpoststatus st on p.idStatus = st.idstatus
            inner join tblCategory cat on cat.idcategory = p.idcategory
@@ -322,6 +330,9 @@ namespace Confidami.Data
         public const string SetPostStatus =
            @"UPDATE tblPosts SET idStatus=@idStatus,timestampApprovation=@timestamp" +
            " WHERE idpost = @idPost;";
+
+        public const string UpdatePostVote =
+            @"update tblposts set votes = votes+@vote where idpost=@idpost;";
     }
 
     public class QueryCommentStore : QueryStore

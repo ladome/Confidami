@@ -51,6 +51,13 @@ namespace Confidami.Web
             bundles.Add(new StyleBundle("~/Content/dropzonescss").Include(
                      "~/Scripts/dropzone/basic.css",
                      "~/Scripts/dropzone/dropzone.css"));
+
+
+            bundles.Add(new ScriptBundle("~/Content/raty-2.7.0/js").IncludeDirectory("~/Content/raty-2.7.0", "*.js", true));
+            bundles.Add(new StyleBundle("~/Content/raty-2.7.0/css").Include("~/Content/raty-2.7.0/*.css"));
+            bundles.Add(new ScriptBundle("~/Scripts/raty").Include("~/Scripts/raty.js"));
+
+
         }
     }
 }

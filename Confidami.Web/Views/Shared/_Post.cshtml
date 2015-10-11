@@ -5,22 +5,30 @@
 {
     foreach (var post in Model.Posts)
     {
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <label>@Html.RouteLink("Titolo:" + post.Title, RouteStore.SingleContentRoute, new {categoryName = post.CategorySlug, id = post.IdPost, slugTitle = post.TitleSlug}, null)</label>
 
-                        <br />
-                        <label>Categoria: @post.CategoryPost</label>
-                        <br />
-                        <label>Allegati: @(post.HasAttachMents ? "Si" : "No")</label>
-                    </div>
-                    <div class="panel-body">
-                        <textarea>@Html.Raw(post.Body)</textarea>
-                    </div>
-                </div>
-            </div>
+    <div class="col-md-12">
+        <h2>@Html.RouteLink(post.Title, RouteStore.SingleContentRoute, new { categoryName = post.CategorySlug, id = post.IdPost, slugTitle = post.TitleSlug }, null)</h2>
+        <p>
+            @Html.Raw(post.Body)
+        </p>
+        <ul class="list-inline list-unstyled">
+            <li><span><i class="glyphicon glyphicon-calendar"></i> 2 days, 8 hours </span></li>
+            <li>|</li>
+            <li><span><i class="glyphicon glyphicon-comment"></i> 2 comments</span></li>
+            <li>|</li>
+            <li>
+                <span>Voti: @post.Votes</span>
+            </li>
+            <li>|</li>
+            <li>
+                <span>@(post.HasAttachMents ? "Si" : "No")</span>
+            </li>
+            <li>|</li>
+            <li>
+                <span>Categoria: @post.CategoryPost</span>
+            </li>
+        </ul>
+    <hr>
         </div>
-    }
-}
+        }
+        }

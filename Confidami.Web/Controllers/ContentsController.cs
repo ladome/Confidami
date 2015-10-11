@@ -115,7 +115,8 @@ namespace Confidami.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateInput(false)]
+        [ValidateInput(true)]
+        [ValidateAntiForgeryToken]
         [Route("inserisci")]
         public ActionResult Insert(InsertPostViewModel postVm)
         {
@@ -124,9 +125,9 @@ namespace Confidami.Web.Controllers
 
             var post = new Post
             {
-                Body = Server.HtmlEncode(postVm.Body),
+                Body = postVm.Body,
                 Category = new Category { IdCategory = postVm.IdCategory },
-                Title = Server.HtmlEncode(postVm.Title),
+                Title = postVm.Title,
                 UserId = CurrentUserId
             };
 
@@ -283,6 +284,7 @@ namespace Confidami.Web.Controllers
             }), JsonRequestBehavior.AllowGet);
         }
 
+
         private InsertPostViewModel FillInsertModel()
         {
             var categories = PostManager.GetAllCategories();
@@ -342,6 +344,14 @@ namespace Confidami.Web.Controllers
 
         private PostViewModelSingleContent FillinglePostViewModel(Post post)
         {
+            int uservote = 0;
+            var lastVote = GetLastVoteInfo();
+            if (lastVote != null)
+            {
+                var found = lastVote.Find(x => x.Item1 == post.IdPost);
+                uservote = found == null ? 0 : found.Item3;
+            }
+
             return new PostViewModelSingleContent()
             {
                 Body = post.Body,
@@ -354,7 +364,9 @@ namespace Confidami.Web.Controllers
                     Size = x.Size
                     
                 }).ToList(),
-                CreationDate = post.TimeStamp
+                CreationDate = post.TimeStamp,
+                Votes = post.Votes,
+                LastVote = uservote
             };
         }
 

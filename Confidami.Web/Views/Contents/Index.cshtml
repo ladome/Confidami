@@ -11,12 +11,18 @@
     </div>
 </div>
 
+    @if (ViewBag.NumberOfPages == 0)
+    {
+        <h2>Nessun risultato</h2>
+    }
+    else
+    {
+        @Pages()
 
-    @Pages()
+        @Html.Partial(ViewsStore.PostPartial, Model)
 
-    @Html.Partial(ViewsStore.PostPartial,Model)
-
-    @Pages()
+        @Pages()
+    }
 
 @helper  Pages()
 {

@@ -24,7 +24,7 @@ namespace Confidami.Web.Controllers
         {
             ViewBag.Title = "Ricerca segnalazione";
             ViewBag.Heding = "Intestazione per tag header cerca";
-            return View(FillSearchModel(string.Empty, new PostViewModel()));
+            return View(FillSearchModel(string.Empty, -1, new PostViewModel()));
         }
 
         [Route("filtro")]
@@ -35,27 +35,27 @@ namespace Confidami.Web.Controllers
             ViewBag.Heding = "Intestazione per tag header cerca";
 
             if (!ModelState.IsValid)
-                return View(ViewsStore.Search,FillSearchModel(search.Key, new PostViewModel()));
+                return View(ViewsStore.Search, FillSearchModel(search.Key, search.Category <= 0 ? -1 : search.Category, new PostViewModel()));
 
             TempData["key"] = search.Key;
             var count = 0;
 
-            var postvm = FillPostViewModel(PostManager.SearchPosts(ViewBag.CurrentPage, search.Key, out count));
+            var postvm = FillPostViewModel(PostManager.SearchPosts(ViewBag.CurrentPage, search.Key,search.Category, out count));
 
             ViewBag.Count = count;
             ViewBag.NumberOfPages = (int)Math.Ceiling((decimal)count / Config.NumberOfPostPerPage);
             ViewBag.IsLastPage = count - (Config.NumberOfPostPerPage * (ViewBag.CurrentPage - 1)) < Config.NumberOfPostPerPage;
 
-            return View(ViewsStore.Search,FillSearchModel(search.Key, postvm));
+            return View(ViewsStore.Search, FillSearchModel(search.Key, search.Category <= 0 ? -1 : search.Category, postvm));
         }
 
 
 
-
-        private SearchViewModel FillSearchModel(string key, PostViewModel postvm)
+        
+        private SearchViewModel FillSearchModel(string key,int category, PostViewModel postvm)
         {
             var categories = PostManager.GetAllCategories();
-            return new SearchViewModel(postvm) { Categories = categories,Key = key};
+            return new SearchViewModel(postvm) { Categories = categories,Key = key,Category = category};
         }
         
      

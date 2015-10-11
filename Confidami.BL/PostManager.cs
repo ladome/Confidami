@@ -235,10 +235,10 @@ namespace Confidami.BL
 
         }
 
-        public IEnumerable<PostLight> SearchPosts(int page,string key, out int count)
+        public IEnumerable<PostLight> SearchPosts(int page,string key,int category, out int count)
         {
             key.CannotBeNull("key");
-            return PostMapper.Map(_postRepository.GetPostsByKeyPaged(page, Config.NumberOfPostPerPage,key, out count));
+            return PostMapper.Map(_postRepository.GetPostsByKeyPaged(page,Config.NumberOfPostPerPage,key,category, out count));
 
         }
 
@@ -250,6 +250,13 @@ namespace Confidami.BL
         public Category GetCategory(int idCategory)
         {
             return _categoryRepository.GetCategory(idCategory);
+        }
+
+        public BaseResponse UpdateVote(long idpost, int vote)
+        {
+            var res = _postRepository.UpdateVote(idpost, vote);
+            return new BaseResponse() { Message = res > 0 ? "ok" : "ko", Success = res > 0 };
+
         }
     }
 
@@ -294,7 +301,6 @@ namespace Confidami.BL
             }
 
             return new BaseResponse() { Message = res > 0 ? res.ToString() : "ko", Success = res > 0 };
-
 
         }
 

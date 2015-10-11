@@ -24,6 +24,7 @@ namespace Confidami.Web.ViewModel
         public string CategorySlug { get; set; }
         public string TitleSlug { get; set; }
         public virtual bool HasAttachMents { get; set; }
+        public int Votes { get; set; }
     }
 
     public class PostViewModelSingleContent : PostViewModelBase
@@ -45,6 +46,8 @@ namespace Confidami.Web.ViewModel
         {
             get { return AttachMenents.Where(x => !x.IsImage).ToList(); }
         }
+
+        public int LastVote { get; set; }
 
     }
     
@@ -74,6 +77,9 @@ namespace Confidami.Web.ViewModel
 
         [Required(ErrorMessage = "La chiave di ricerca è richiesta")]
         public string Key { get; set; }
+        public int Category { get; set; }
+
+
 
         public PostViewModel SearchResults
         {

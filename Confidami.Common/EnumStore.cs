@@ -7,7 +7,10 @@ namespace Confidami.Common
 {
     public enum ErrorCode
     {
+        Generic = -1,
         FilePresent =1,
-        NotAdmittedExtension =2
+        NotAdmittedExtension =2,
+        TooManyVotes=3
     }
+
 }

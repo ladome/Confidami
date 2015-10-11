@@ -1,7 +1,6 @@
 /*
 * Common functions js
 */
-var APIURL = "/api";
 $(function () {
     //capire come ottenere l'user id senza autorizzazione all'app
     $.ajaxSetup({ cache: true });
@@ -74,3 +73,4 @@ function CreateComment(commentid,href) {
     }
 );
 }
+

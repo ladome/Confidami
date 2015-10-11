@@ -9,6 +9,7 @@ using Confidami.Common;
 using Confidami.Model;
 using Confidami.Web.ViewModel;
 using Microsoft.Owin;
+using Newtonsoft.Json;
 
 namespace Confidami.Web.Controllers
 {
@@ -77,11 +78,22 @@ namespace Confidami.Web.Controllers
                 IdPost = x.IdPost,
                 HasAttachMents = x.HasAttachments,
                 CategorySlug = x.Category.Slug,
-                TitleSlug = x.SlugUrl
+                TitleSlug = x.SlugUrl,
+                Votes = x.Votes
             }).ToList();
             vm.Posts = pbase;
             return vm;
         }
+
+        protected List<Tuple<long, long,int>> GetLastVoteInfo()
+        {
+            var res = Request.Cookies.Get("lastvote");
+            if (res == null)
+                return null;
+            var result = JsonConvert.DeserializeObject(res.Value, typeof(List<Tuple<long, long,int>>));
+            return (List<Tuple<long, long,int>>)result;
+        }
+
     }
 
     public class HttpCookieFilter : ActionFilterAttribute
@@ -99,7 +111,8 @@ namespace Confidami.Web.Controllers
                     cookieItem = new HttpCookie(cookieName)
                     {
                         Domain = "",
-                        Value = Guid.NewGuid().ToString()
+                        Value = Guid.NewGuid().ToString(),
+                        Expires = DateTime.Now.AddDays(3)
                     };
                     filterContext.RequestContext.HttpContext.Response.Cookies.Add(cookieItem);
                     controller.CurrentUserId = cookieItem.Value;

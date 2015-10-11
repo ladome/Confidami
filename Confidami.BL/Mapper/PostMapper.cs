@@ -24,7 +24,8 @@ namespace Confidami.BL.Mapper
                 TimeStamp = x.TimeStamp,
                 TimeStampApprovation = x.TimeStampApprovation,
                 UserId = x.UserId,
-                HasAttachments = x.NumberOfAttachment > 0
+                HasAttachments = x.NumberOfAttachment > 0,
+                Votes = x.Votes
             }).ToList();
         }
 
@@ -43,7 +44,8 @@ namespace Confidami.BL.Mapper
                 TimeStampApprovation = x.TimeStampApprovation,
                 UserId = x.UserId,
                 HasAttachments = x.NumberOfAttachment > 0,
-                EditCode = x.EditCode
+                EditCode = x.EditCode,
+                Votes = x.Votes
             };
         }
 
@@ -62,6 +64,7 @@ namespace Confidami.BL.Mapper
                 TimeStampApprovation = post.TimeStampApprovation,
                 Attachments = post.Attachments,
                 UserId = post.UserId,
+                Votes = post.Votes
             };
         }
 

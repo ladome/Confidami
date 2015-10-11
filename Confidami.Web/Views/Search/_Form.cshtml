@@ -14,12 +14,11 @@
             <label for="category" class="col-sm-2 control-label">Categoria</label>
             <div class="col-sm-10">
                 <select class="form-control" id="cat" name="category" data-toggle="popover" data-content="Filtra per categoria" data-trigger="hover" data-placement="top" title="Categoria">
-                    <option>Tutte</option>
-                    <option>C 1</option>
-                    <option>C 2</option>
-                    <option>C 3</option>
-                    <option>C 4</option>
-                    <option>C 5</option>
+                    <option value="-1">Tutte</option>
+                    @foreach (var item in Model.Categories)
+                    {
+                        <option value="@item.IdCategory" @(item.IdCategory == @Model.Category ? @"selected=""selected""" : "")>@item.Description</option>
+                    }
                 </select>
             </div>
         </div>

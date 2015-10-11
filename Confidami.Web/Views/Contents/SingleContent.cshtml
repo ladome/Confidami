@@ -1,9 +1,15 @@
-﻿@model Confidami.Web.ViewModel.PostViewModelSingleContent
+﻿@using System.Web.UI.WebControls
+@model Confidami.Web.ViewModel.PostViewModelSingleContent
 
 @{
     ViewBag.Title = "Dettaglio Post";
 }
+@section Scripts {
+    @Styles.Render("~/Content/raty-2.7.0/css")
+    @Scripts.Render("~/Content/raty-2.7.0/js")
+    @Scripts.Render("~/Scripts/raty")
 
+}
 <div class="col-lg-12">
     <div class="row">
         <header>
@@ -71,7 +77,6 @@
                 </div>
             }
 
-
             @*<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
                 <div class="thumbnail">
                     <img src="http://www.larionews.com/wp-content/uploads/2015/03/News-680x300.jpg" alt="..." class="img-thumbnail">
@@ -91,7 +96,8 @@
         </div>
         <!--------------->
 
-
+        Vota: <div id="rate" class="star" data-score="@Model.LastVote"> </div>
+        Numero di voti : <span>@Model.Votes</span>
         <div id="fb-root"></div>
         <script>
 

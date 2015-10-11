@@ -207,12 +207,12 @@ namespace Confidami.Data
             }
         }
 
-        public IEnumerable<PostExtendedDb> GetPostsByKeyPaged(int page, int blockSize, string key, out int numberOfPost)
+        public IEnumerable<PostExtendedDb> GetPostsByKeyPaged(int page, int blockSize, string key,int category, out int numberOfPost)
         {
             using (var conn = DbUtilities.Connection)
             {
                 using (var multi = conn.QueryMultiple(QueryPostStore.PostByStatusSearchKeyPaginated + ' ' + QueryPostStore.CountAllPostsByStatusAndKey,
-                    new { idStatus = PostStatus.Approved, @page = (page - 1) * blockSize, blocksize = blockSize, @key="%"+key+"%" }))
+                    new { idStatus = PostStatus.Approved, @page = (page - 1) * blockSize, blocksize = blockSize, @key="%"+key+"%",category=category }))
                 {
                     var posts = multi.Read<PostExtendedDb>();
                     numberOfPost = multi.Read<int>().Single();
@@ -363,6 +363,15 @@ namespace Confidami.Data
             {
                 return conn.Execute(QueryPostStore.InserEditInfo,
                     new { idPost = idPostEdit, email = email, secretkey = secretkey });
+            }
+        }
+
+        public int UpdateVote(long idPost, int vote)
+        {
+            using (var conn = DbUtilities.Connection)
+            {
+                return conn.Execute(QueryPostStore.UpdatePostVote,
+                    new { idPost = idPost, vote = vote});
             }
         }
     }
